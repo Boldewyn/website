@@ -4,6 +4,9 @@
 class Settings(object):
 
     def __init__(self):
+        self.DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
+        self.DEBUG = False
+
         try:
             config = __import__("_config", level=1)
         except ImportError:

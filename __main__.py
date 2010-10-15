@@ -7,6 +7,7 @@ import sys
 import shutil
 from _settings import settings
 import _articles
+import _categories
 from mako.template import Template
 
 
@@ -21,30 +22,15 @@ def init(target):
             ignore=shutil.ignore_patterns("_*", ".*swp", ".git*"))
 
 
-def render_template(template, path, **ctx):
-    """"""
-    template = Template(filename=_dir+"/_templates/"+template+
-                                      '.mako')
-    to = open(path, 'w')
-    to.write(template.render(**ctx))
-    to.close()
-
-
 def main(target):
     """"""
     init(target)
     articles = _articles.get_articles()
-    categories = {}
     for article in articles:
         article.save(target)
-        p = os.path.dirname(article.path)
-        if p not in categories:
-            categories[p] = []
-        categories[p].append(article)
-    for category, a in categories.iteritems():
-        if category+"/index.html" not in a:
-            render_template("category", os.path.abspath(target)+"/"+
-                            category+"/index.html", **locals())
+    _categories.render_tags(target, articles)
+    _categories.render_archives(target, articles)
+    _categories.render_indexes(target, articles)
     return 0
 
 
