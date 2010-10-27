@@ -8,7 +8,6 @@ import shutil
 from _settings import settings
 import _articles
 import _categories
-from mako.template import Template
 
 
 _dir = os.path.dirname(__file__)
@@ -35,6 +34,8 @@ def main(target):
 
 
 if __name__ == "__main__":
-    target = "site"
+    target = settings.BUILD_TARGET
+    if target is None:
+        target = "site"
     sys.exit(main(target))
 

@@ -3,15 +3,17 @@
 
 import os
 from mako.template import Template
+from mako.lookup import TemplateLookup
 
 
 _dir = os.path.dirname(__file__)
+_lookup = TemplateLookup(directories=["."])
 
 
 def render_template(template, path, **ctx):
     """"""
-    template = Template(filename=_dir+"/_templates/"+template+
-                                      '.mako')
+    template = Template(filename="_templates/"+template+
+                                      '.mako', lookup=_lookup)
     if not os.path.isdir(os.path.dirname(path)):
         os.makedirs(os.path.dirname(path))
     to = open(path, 'w')
