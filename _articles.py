@@ -32,8 +32,11 @@ def get_articles(dir=""):
 def get_headers(string):
     """Convert the HTTP-style headers of articles to dict"""
     headers = {}
+    string = re.sub(re.compile(r'^#.*', re.M), r'', string)
     string = re.sub(r'[ \t]*\n[ \t]+', ' ', string)
     for line in string.splitlines():
+        if not line:
+            continue
         k,v = line.split(":", 1)
         k = k.upper()
         v = v.strip()

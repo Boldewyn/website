@@ -24,7 +24,7 @@ def render_template(template, path, **ctx):
         os.makedirs(os.path.dirname(path))
     to = open(path, 'w')
     try:
-        to.write(tpl.render(**ctx))
+        to.write(tpl.render_unicode(**ctx).encode("UTF-8"))
     except:
         print exceptions.text_error_template().render()
         exit()
