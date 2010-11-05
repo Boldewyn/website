@@ -8,6 +8,7 @@ import shutil
 from _settings import settings
 import _articles
 import _categories
+import _templates
 
 
 _dir = os.path.dirname(__file__)
@@ -26,10 +27,13 @@ def main(target):
     init(target)
     articles = _articles.get_articles()
     for article in articles:
-        article.save(target)
+        article.save(target, articles=articles)
     _categories.render_tags(target, articles)
     _categories.render_archives(target, articles)
     _categories.render_indexes(target, articles)
+    if not os.path.isfile(target+"/index.html") and \
+       os.path.isfile("_templates/index.mako"):
+        _templates.render_template("index", os.path.abspath(target)+"/index.html", articles=articles)
     return 0
 
 

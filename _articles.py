@@ -6,16 +6,13 @@ import os
 import pygments
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name, guess_lexer
-from mako.template import Template
-from mako.lookup import TemplateLookup
-from mako import exceptions
 from BeautifulSoup import BeautifulSoup
 from _settings import settings
 from datetime import datetime
+import _templates
 
 
 _dir = os.path.dirname(__file__)
-mylookup = TemplateLookup(directories=["."])
 
 
 def get_articles(dir=""):
@@ -47,38 +44,15 @@ def get_headers(string):
     return headers
 
 
-class Formatter(HtmlFormatter):
-
-    def __init__(self, **kwargs):
-        super(Formatter, self).__init__(**kwargs)
-        self.nowrap = True
-        self.classprefix = "s_"
-        self.encoding = "UTF-8"
-
-    #def wrap(self, source, outfile):
-    #    return self._wrap_code(source)
-
-    #def _wrap_code(self, source):
-    #    yield 0, '<code>'
-    #    for i, t in source:
-    #        if i == 1:
-    #            # it's a line of formatted code
-    #            t += '<br>'
-    #        yield i, t
-    #    yield 0, '</code>'
-
-
 class Article(object):
     """"""
 
     def __init__(self, path):
         """"""
-        self.headers = {
-            "DATE": datetime.now(),
-        }
+        self.headers = {}
         self.path = path
-        headers, content = open(_dir + "/_articles/" + path, 'r').read().split("\n\n", 1)
-        self.set_headers(get_headers(headers))
+        head, content = open(_dir + "/_articles/" + path, 'r').read().split("\n\n", 1)
+        self.set_headers(get_headers(head))
         self.raw_content = unicode(content.decode("utf-8")).replace("\r\n", "\n")
         self.process_content()
         self.category = os.path.dirname(path).strip("/")
@@ -87,10 +61,16 @@ class Article(object):
         """"""
         for k, v in headers.iteritems():
             self.set_header(k, v)
+        if "ID" not in self.headers:
+            self.headers["ID"] = "article-"+re.sub(re.compile(r'\W+', re.U), '-', self.path)
+        if "DATE" not in self.headers:
+            self.headers["DATE"] = datetime.now()
+        if "AUTHOR" not in self.headers:
+            self.headers["AUTHOR"] = settings.DEFAULT_AUTHOR or ""
 
     def set_header(self, name, value):
         """"""
-        if name == "DATE":
+        if name == "DATE" and isinstance(value, basestring):
             value = datetime.strptime(value, settings.DATE_FORMAT)
         elif name == "SUBJECT":
             value = [ x.strip() for x in value.split(",") ]
@@ -100,7 +80,7 @@ class Article(object):
         """"""
         content = content or self.raw_content
         soup = BeautifulSoup(content)
-        pres = soup.findAll("pre", {"class": re.compile(r".")})
+        pres = soup.findAll("pre", {"class": re.compile(r"\blang:\S+\b")})
         formatter = HtmlFormatter(encoding='UTF-8', classprefix='s_')
         for pre in pres:
             lang = re.sub(r"^.*\blang:(\S+).*$", r"\1", pre["class"])
@@ -118,22 +98,13 @@ class Article(object):
             else:
                 self.headers["ABSTRACT"] = self.content[:40]+"..."
 
-    def save(self, target):
+    def save(self, target, **additions):
         """"""
         target = os.path.abspath(target)
         if settings.ARTICLE_PATH:
             target += "/" + settings.ARTICLE_PATH
-        if not os.path.isdir(target + "/" + os.path.dirname(self.path)):
-            os.makedirs(target + "/" + os.path.dirname(self.path))
-        f = open(target + "/" + self.path, 'w')
-        try:
-            template = Template(filename="_templates/article.mako",
-                                lookup=mylookup)
-            f.write(template.render(content=self.content, article=self))
-        except:
-            print exceptions.text_error_template().render()
-            exit()
-        return f.close()
+        _templates.render_template("article", target+"/"+self.path,
+                content=self.content, article=self, **additions)
 
     def __unicode__(self):
         return self.content

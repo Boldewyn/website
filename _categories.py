@@ -1,24 +1,7 @@
 """"""
 
 
-import os
-from mako.template import Template
-from mako.lookup import TemplateLookup
-
-
-_dir = os.path.dirname(__file__)
-_lookup = TemplateLookup(directories=["."])
-
-
-def render_template(template, path, **ctx):
-    """"""
-    template = Template(filename="_templates/"+template+
-                                      '.mako', lookup=_lookup)
-    if not os.path.isdir(os.path.dirname(path)):
-        os.makedirs(os.path.dirname(path))
-    to = open(path, 'w')
-    to.write(template.render(**ctx))
-    to.close()
+from _templates import render_template
 
 
 def render_tags(target, articles):
@@ -31,7 +14,7 @@ def render_tags(target, articles):
                 tags[a_tag] = []
             tags[a_tag].append(article)
     for tag, a in tags.iteritems():
-        render_template("tag", os.path.abspath(target)+"/tag/"+
+        render_template("tag", target+"/tag/"+
                         tag+"/index.html", **locals())
 
 
@@ -44,7 +27,7 @@ def render_archives(target, articles):
             dates[d] = []
         dates[d].append(article)
     for date, a in dates.iteritems():
-        render_template("archive", os.path.abspath(target)+"/archive/"+
+        render_template("archive", target+"/archive/"+
                         date+"/index.html", **locals())
 
 
@@ -57,6 +40,6 @@ def render_indexes(target, articles):
         categories[article.category].append(article)
     for category, a in categories.iteritems():
         if category+"/index.html" not in a:
-            render_template("category", os.path.abspath(target)+"/"+
+            render_template("category", target+"/"+
                             category+"/index.html", **locals())
 
