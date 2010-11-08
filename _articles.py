@@ -101,7 +101,7 @@ class Article(object):
             if "DESCRIPTION" in self.headers:
                 self.headers["ABSTRACT"] = self.headers['DESCRIPTION']
             else:
-                self.headers["ABSTRACT"] = self.content[:40]+"..."
+                self.headers["ABSTRACT"] = re.sub(r"<[^>]+>", "", self.content)[:200]+u"\u2026"
 
     def save(self, target, **additions):
         """"""
