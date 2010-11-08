@@ -8,21 +8,22 @@ from mako.lookup import TemplateLookup
 from _settings import settings
 
 
-_dir = os.path.dirname(__file__)
-_lookup = TemplateLookup(directories=["."], default_filters=["x"])
-
-
 def render_template(template, path, **ctx):
     """"""
     ctx['settings'] = settings
-    if "articles" in ctx and "categories" not in ctx:
-        ctx["categories"] = get_categories(ctx["articles"])
-    if "articles" in ctx and "tagcloud" not in ctx:
-        ctx["tagcloud"] = get_tagcloud(ctx["articles"])
-    if "articles" in ctx and "archives" not in ctx:
-        ctx["archives"] = get_archives(ctx["articles"])
+    if "articles" in ctx:
+        if "categories" not in ctx:
+            ctx["categories"] = get_categories(ctx["articles"])
+        if "tagcloud" not in ctx:
+            ctx["tagcloud"] = get_tagcloud(ctx["articles"])
+        if "archives" not in ctx:
+            ctx["archives"] = get_archives(ctx["articles"])
+        ctx["latest_articles"] = list(ctx["articles"])
+        ctx["latest_articles"].sort(lambda a, b: cmp(x.headers["DATE"], y.headers["DATE"]))
+        ctx["latest_articles"] = ctx["latest_articles"][:5]
     path = os.path.abspath(path)
-    tpl = Template(filename="_templates/"+template+'.mako',
+    _lookup = TemplateLookup(directories=["."], default_filters=["x"], module_directory='_mod')
+    tpl = Template(filename="_templates/"+template+'.mako', module_directory='_mod',
                    lookup=_lookup, default_filters=["x"])
     if not os.path.isdir(os.path.dirname(path)):
         os.makedirs(os.path.dirname(path))

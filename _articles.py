@@ -83,16 +83,18 @@ class Article(object):
         """"""
         content = content or self.raw_content
         soup = BeautifulSoup(content)
-        pres = soup.findAll("pre", {"class": re.compile(r"\blang:\S+\b")})
+        pres = soup.findAll("pre", {"data-lang": re.compile(r".*")})
         formatter = HtmlFormatter(encoding='UTF-8', classprefix='s_')
         for pre in pres:
-            lang = re.sub(r"^.*\blang:(\S+).*$", r"\1", pre["class"])
+            lang = pre["data-lang"]
             try:
                 lexer = get_lexer_by_name(lang)
             except pygments.util.ClassNotFound:
                 lexer = guess_lexer(pre.renderContents())
             result = pygments.highlight(pre.renderContents(), lexer, formatter)
             pre.contents = BeautifulSoup(result).pre.contents
+            if "class" not in pre:
+                pre["class"] = ""
             pre['class'] += " highlight"
         self.content = unicode(soup)
         if "ABSTRACT" not in self.headers:
