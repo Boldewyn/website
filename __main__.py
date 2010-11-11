@@ -12,18 +12,16 @@ import _templates
 from _templates import template_engine
 
 
-_dir = os.path.dirname(__file__)
-
-
 def init():
     """"""
     shutil.rmtree(settings.BUILD_TARGET, True)
-    shutil.copytree(_dir, settings.BUILD_TARGET,
+    shutil.copytree(".", settings.BUILD_TARGET,
             ignore=shutil.ignore_patterns("_*", ".*swp", ".git*"))
 
 
 def main():
     """"""
+    os.chdir(os.path.dirname(__file__))
     init()
     articles = _articles.get_articles()
     template_engine.set("articles", articles)

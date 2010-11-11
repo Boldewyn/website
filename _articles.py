@@ -13,15 +13,12 @@ from datetime import datetime
 from _templates import template_engine
 
 
-_dir = os.path.dirname(__file__)
-
-
 def get_articles(dir=""):
     """Recursively fetch articles"""
     dir = dir.strip("/") + "/"
     articles = []
-    for a in os.listdir(_dir + "/_articles/" + dir):
-        if os.path.isdir(_dir + "/_articles/" + dir + a):
+    for a in os.listdir("_articles/" + dir):
+        if os.path.isdir("_articles/" + dir + a):
             r = get_articles(dir + a)
             if r:
                 articles.extend(r)
@@ -163,7 +160,7 @@ class Article(object):
         """Initialize with path to article source"""
         self.headers = ArticleHeaders()
         self.path = path
-        head, content = open(_dir + "/_articles/" + path, 'r').read().split("\n\n", 1)
+        head, content = open("_articles/" + path, 'r').read().split("\n\n", 1)
         self.headers.set_headers(get_headers(head))
         self.raw_content = unicode(content.decode("utf-8")).replace("\r\n", "\n")
         self.process_content()
