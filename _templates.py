@@ -22,7 +22,7 @@ def render_template(template, path, **ctx):
         if "archives" not in ctx:
             ctx["archives"] = get_archives(ctx["articles"])
         ctx["latest_articles"] = list(ctx["articles"])
-        ctx["latest_articles"].sort(lambda a, b: cmp(x.headers["DATE"], y.headers["DATE"]))
+        ctx["latest_articles"].sort(lambda a, b: cmp(a.headers.date, b.headers.date))
         ctx["latest_articles"] = ctx["latest_articles"][:5]
     path = os.path.abspath(path)
     _lookup = TemplateLookup(directories=["."], default_filters=["x"], module_directory='_mod')

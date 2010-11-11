@@ -33,7 +33,9 @@ def main(target):
     _categories.render_indexes(target, articles)
     if not os.path.isfile(target+"/index.html") and \
        os.path.isfile("_templates/index.mako"):
-        _templates.render_template("index", os.path.abspath(target)+"/index.html", articles=articles)
+        _categories.render_paginated("index",
+                os.path.abspath(target)+"/index.html",
+                a=list(articles), articles=articles)
     return 0
 
 
