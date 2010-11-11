@@ -1,6 +1,7 @@
 """"""
 
 
+import gettext
 import os
 from mako.template import Template
 from mako import exceptions
@@ -10,6 +11,8 @@ from _settings import settings
 
 def render_template(template, path, **ctx):
     """"""
+    t = gettext.translation('website', "_locale", fallback=True)
+    ctx["_"] = t.ugettext
     ctx['settings'] = settings
     if "articles" in ctx:
         if "categories" not in ctx:
