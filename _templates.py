@@ -9,34 +9,78 @@ from mako.lookup import TemplateLookup
 from _settings import settings
 
 
-def render_template(template, path, **ctx):
+class TemplateEngine(object):
     """"""
-    t = gettext.translation('website', "_locale", fallback=True)
-    ctx["_"] = t.ugettext
-    ctx['settings'] = settings
-    if "articles" in ctx:
-        if "categories" not in ctx:
-            ctx["categories"] = get_categories(ctx["articles"])
-        if "tagcloud" not in ctx:
-            ctx["tagcloud"] = get_tagcloud(ctx["articles"])
-        if "archives" not in ctx:
-            ctx["archives"] = get_archives(ctx["articles"])
-        ctx["latest_articles"] = list(ctx["articles"])
-        ctx["latest_articles"].sort(lambda a, b: cmp(a.headers.date, b.headers.date))
-        ctx["latest_articles"] = ctx["latest_articles"][:5]
-    path = os.path.abspath(path)
-    _lookup = TemplateLookup(directories=["."], default_filters=["x"], module_directory='_mod')
-    tpl = Template(filename="_templates/"+template+'.mako', module_directory='_mod',
-                   lookup=_lookup, default_filters=["x"])
-    if not os.path.isdir(os.path.dirname(path)):
-        os.makedirs(os.path.dirname(path))
-    to = open(path, 'w')
-    try:
-        to.write(tpl.render_unicode(**ctx).encode("UTF-8"))
-    except:
-        print exceptions.text_error_template().render()
-        exit()
-    to.close()
+
+    def __init__(self):
+        self.ctx = {}
+
+    def set(self, name, value):
+        self.ctx[name] = value
+
+    def collect_page_requisites(self):
+        if "articles" in self.ctx:
+            if "categories" not in self.ctx:
+                self.ctx["categories"] = get_categories(self.ctx["articles"])
+            if "tagcloud" not in self.ctx:
+                self.ctx["tagcloud"] = get_tagcloud(self.ctx["articles"])
+            if "archives" not in self.ctx:
+                self.ctx["archives"] = get_archives(self.ctx["articles"])
+            self.ctx["latest_articles"] = list(self.ctx["articles"])
+            def sort_by(a, b):
+                return cmp(a.headers.date, b.headers.date) or \
+                       cmp(a.headers.ID, b.headers.ID)
+            self.ctx["latest_articles"].sort(sort_by)
+            self.ctx["latest_articles"] = self.ctx["latest_articles"][:5]
+        self.ctx['settings'] = settings
+
+    def render_paginated(self, template, path, **ctx):
+        """"""
+        pl = settings.PAGINATE_N
+        articles = ctx["a"][:]
+        if len(articles) > pl:
+            if "pag" not in ctx:
+                ctx["pag"] = {}
+            if "base" not in ctx["pag"]:
+                ctx["pag"]["base"] = "page_%s.html"
+            pages = (len(articles)-1) // pl + 1
+            ctx["pag"]["first"] =  path.split("/")[-1]
+            ctx["pag"]["pages"] = pages
+            for p in range(1, pages):
+                ctx["pag"]["cur"] = p+1
+                ctx["a"] = articles[p*pl:(p+1)*pl]
+                self.render_template(template,
+                        "/".join(path.split("/")[:-1]) +
+                        "/" + ctx["pag"]["base"]%(p+1), **ctx)
+            ctx["pag"]["cur"] = 1
+            ctx["a"] = articles[:pl]
+        self.render_template(template, path, **ctx)
+
+    def render_template(self, template, path, **ctx):
+        """"""
+        #for lang in settings.LANGUAGES:
+        self.collect_page_requisites()
+        nctx = self.ctx.copy()
+        nctx.update(ctx)
+        ctx = nctx
+        t = gettext.translation('website', "_locale", fallback=True)
+        ctx["_"] = t.ugettext
+        save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
+        _lookup = TemplateLookup(directories=["."], default_filters=["x"], module_directory='_mod')
+        tpl = Template(filename="_templates/"+template+'.mako', module_directory='_mod',
+                    lookup=_lookup, default_filters=["x"])
+        if not os.path.isdir(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
+        to = open(save_path, 'w')
+        try:
+            to.write(tpl.render_unicode(**ctx).encode("UTF-8"))
+        except:
+            print exceptions.text_error_template().render()
+            exit()
+        to.close()
+
+
+template_engine = TemplateEngine()
 
 
 def get_tagcloud(articles, offset=1):

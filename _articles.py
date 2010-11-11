@@ -9,7 +9,7 @@ from pygments.lexers import get_lexer_by_name, guess_lexer
 from BeautifulSoup import BeautifulSoup
 from _settings import settings
 from datetime import datetime
-import _templates
+from _templates import template_engine
 
 
 _dir = os.path.dirname(__file__)
@@ -50,22 +50,26 @@ def get_headers(string):
 class ArticleHeaders(object):
     """Store article headers in a highly accessible key:value db"""
 
-    dc_terms = ("abstract", "accessrights", "accrualmethod",
-                "accrualperiodicity", "accrualpolicy", "alternative", "audience",
-                "available", "bibliographiccitation", "conformsto", "contributor",
-                "coverage", "created", "creator", "date", "dateaccepted",
-                "datecopyrighted", "datesubmitted", "description", "educationlevel",
-                "extent", "format", "hasformat", "haspart", "hasversion",
-                "identifier", "instructionalmethod", "isformatof", "ispartof",
-                "isreferencedby", "isreplacedby", "isrequiredby", "issued",
-                "isversionof", "language", "license", "mediator", "medium",
-                "modified", "provenance", "publisher", "references", "relation",
-                "replaces", "requires", "rights", "rightsholder", "source", "spatial",
-                "subject", "tableofcontents", "temporal", "title", "type", "valid")
-    dc_alias = {
-        "id": "identifier",
-        "author": "creator",
+    DC_TERMS = ("ABSTRACT", "ACCESSRIGHTS", "ACCRUALMETHOD",
+                "ACCRUALPERIODICITY", "ACCRUALPOLICY", "ALTERNATIVE", "AUDIENCE",
+                "AVAILABLE", "BIBLIOGRAPHICCITATION", "CONFORMSTO", "CONTRIBUTOR",
+                "COVERAGE", "CREATED", "CREATOR", "DATE", "DATEACCEPTED",
+                "DATECOPYRIGHTED", "DATESUBMITTED", "DESCRIPTION", "EDUCATIONLEVEL",
+                "EXTENT", "FORMAT", "HASFORMAT", "HASPART", "HASVERSION",
+                "IDENTIFIER", "INSTRUCTIONALMETHOD", "ISFORMATOF", "ISPARTOF",
+                "ISREFERENCEDBY", "ISREPLACEDBY", "ISREQUIREDBY", "ISSUED",
+                "ISVERSIONOF", "LANGUAGE", "LICENSE", "MEDIATOR", "MEDIUM",
+                "MODIFIED", "PROVENANCE", "PUBLISHER", "REFERENCES", "RELATION",
+                "REPLACES", "REQUIRES", "RIGHTS", "RIGHTSHOLDER", "SOURCE", "SPATIAL",
+                "SUBJECT", "TABLEOFCONTENTS", "TEMPORAL", "TITLE", "TYPE", "VALID")
+    DC_ALIAS = {
+        "ID": "IDENTIFIER",
+        "AUTHOR": "CREATOR",
     }
+    BOOLS = ("STANDALONE")
+    DATES = ("DATE", "MODIFIED", "AVAILABLE", "CREATED", "DATEACCEPTED", "DATECOPYRIGHTED",
+             "DATESUBMITTED", "ISSUED", "MODIFIED")
+    LISTS = ("SUBJECT")
 
     def __init__(self, data=None):
         """Initialize header storage"""
@@ -82,20 +86,26 @@ class ArticleHeaders(object):
 
     def set_header(self, name, value):
         """Set a single header"""
-        if name == "DATE" and isinstance(value, basestring):
+        name = name.upper()
+        if name in self.DATES and isinstance(value, basestring):
             value = datetime.strptime(value, settings.DATE_FORMAT)
-        elif name == "SUBJECT" and not isinstance(value, list):
+        elif name in self.LISTS and not isinstance(value, list):
             value = [ x.strip() for x in value.split(",") ]
+        elif name in self.BOOLS:
+            if re.search("^(False|0)", value, re.I):
+                value = False
+            else:
+                value = bool(value)
         self.h[name] = value
 
     def get_dc(self):
         """Get the Dublin Core headers together"""
         dc = {}
         for k,v in self.h.iteritems():
-            if k.lower() in self.dc_terms:
+            if k in self.DC_TERMS:
                 dc[k.lower()] = self.value_to_string(v)
-            elif k.lower() in self.dc_alias:
-                dc[self.dc_alias[k.lower()]] = self.value_to_string(v)
+            elif k in self.DC_ALIAS:
+                dc[self.DC_ALIAS[k].lower()] = self.value_to_string(v)
         return dc
 
     def value_to_string(self, value):
@@ -173,9 +183,11 @@ class Article(object):
             if k not in self.headers:
                 self.headers[k] = v
 
-    def process_content(self, content = None):
+    def process_content(self):
         """"""
-        content = content or self.raw_content
+        content = self.raw_content
+        if self.headers.standalone:
+            return True
         soup = BeautifulSoup(content, convertEntities=BeautifulSoup.HTML_ENTITIES)
         pres = soup.findAll("pre", {"data-lang": re.compile(r".*")})
         for pre in pres:
@@ -192,14 +204,12 @@ class Article(object):
             pre['class'] += " highlight"
         self.content = unicode(soup)
 
-    def save(self, target, **additions):
+    def save(self, **additions):
         """"""
-        target = os.path.abspath(target)
         if "LANGUAGE" in self.headers:
             additions["lang"] = self.headers["LANGUAGE"]
-        if settings.ARTICLE_PATH:
-            target += "/" + settings.ARTICLE_PATH
-        _templates.render_template("article", target+"/"+self.path,
+        target = settings.get("ARTICLE_PATH", "")
+        template_engine.render_template("article", target+"/"+self.path,
                 content=self.content, article=self, **additions)
 
     def __unicode__(self):
