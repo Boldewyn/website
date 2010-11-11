@@ -31,7 +31,7 @@ def get_articles(dir=""):
                 articles.append(candidate)
     if dir == "/":
         articles.sort()
-        return frozenset(articles)
+        return tuple(articles)
     return articles
 
 
