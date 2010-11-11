@@ -54,7 +54,7 @@ def render_indexes(articles):
                 categories[rootcat] = []
             categories[rootcat].append(article)
     for category, a in categories.iteritems():
-        if category+"/index.html" not in a:
+        if category+"/index.html" not in [x.path for x in a]:
             description = None
             if os.path.exists("_doc/%s.category.html" % category):
                 description = open("_doc/%s.category.html" % category).read()

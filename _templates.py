@@ -3,6 +3,7 @@
 
 import gettext
 import os
+from datetime import datetime
 from mako.template import Template
 from mako import exceptions
 from mako.lookup import TemplateLookup
@@ -14,6 +15,7 @@ class TemplateEngine(object):
 
     def __init__(self):
         self.ctx = {}
+        self.sitemap = []
 
     def set(self, name, value):
         self.ctx[name] = value
@@ -27,10 +29,7 @@ class TemplateEngine(object):
             if "archives" not in self.ctx:
                 self.ctx["archives"] = get_archives(self.ctx["articles"])
             self.ctx["latest_articles"] = list(self.ctx["articles"])
-            def sort_by(a, b):
-                return cmp(a.headers.date, b.headers.date) or \
-                       cmp(a.headers.ID, b.headers.ID)
-            self.ctx["latest_articles"].sort(sort_by)
+            self.ctx["latest_articles"].sort()
             self.ctx["latest_articles"] = self.ctx["latest_articles"][:5]
         self.ctx['settings'] = settings
 
@@ -58,17 +57,18 @@ class TemplateEngine(object):
 
     def render_template(self, template, path, **ctx):
         """"""
-        #for lang in settings.LANGUAGES:
+        #for lang in settings.get("LANGUAGES", ["en"]):
         self.collect_page_requisites()
         nctx = self.ctx.copy()
         nctx.update(ctx)
         ctx = nctx
-        t = gettext.translation('website', "_locale", fallback=True)
+        t = gettext.translation("website", "_locale", fallback=True)
         ctx["_"] = t.ugettext
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
-        _lookup = TemplateLookup(directories=["."], default_filters=["x"], module_directory='_mod')
-        tpl = Template(filename="_templates/"+template+'.mako', module_directory='_mod',
-                    lookup=_lookup, default_filters=["x"])
+        _lookup = TemplateLookup(directories=["."], default_filters=["x"],
+                                 module_directory="_mod")
+        tpl = Template(filename="_templates/"+template+".mako", module_directory="_mod",
+                       lookup=_lookup, default_filters=["x"])
         if not os.path.isdir(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
         to = open(save_path, 'w')
@@ -78,6 +78,35 @@ class TemplateEngine(object):
             print exceptions.text_error_template().render()
             exit()
         to.close()
+        sitemap = [path, datetime.now(), "yearly", 0.5]
+        if "sitemap_lastmod" in ctx:
+            sitemap[1] = ctx["sitemap_lastmod"]
+        if "sitemap_changefreq" in ctx:
+            sitemap[2] = ctx["sitemap_changefreq"]
+        if "sitemap_priority" in ctx:
+            sitemap[3] = ctx["sitemap_priority"]
+        self.sitemap.append(sitemap)
+
+    def render_sitemap(self):
+        """Render a sitemap.xml"""
+        if not os.path.isfile(settings.BUILD_TARGET+"/sitemap.xml"):
+            data = {"sitemap": self.sitemap}
+            _lookup = TemplateLookup(directories=["."], default_filters=["x"],
+                                     module_directory="_mod")
+            tpl = Template(filename="_templates/sitemap.xml.mako", module_directory='_mod',
+                           lookup=_lookup, default_filters=["x"])
+            data["local_sitemap"] = ""
+            if os.path.isfile("_doc/local.sitemap"):
+                data["local_sitemap"] = open("_doc/local.sitemap", "rb").read()
+            to = open(os.path.join(settings.BUILD_TARGET, "sitemap.xml"), 'w')
+            try:
+                to.write(tpl.render_unicode(**data).encode("UTF-8"))
+            except:
+                print exceptions.text_error_template().render()
+                exit()
+            to.close()
+        else:
+            print "Sitemap already exists."
 
 
 template_engine = TemplateEngine()

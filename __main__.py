@@ -34,6 +34,7 @@ def main():
        os.path.isfile("_templates/index.mako"):
         template_engine.render_paginated("index", "index.html",
                 a=list(articles), articles=articles)
+    template_engine.render_sitemap()
     return 0
 
 

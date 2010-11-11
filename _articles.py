@@ -1,6 +1,7 @@
 """"""
 
 
+import hashlib
 import re
 import os
 import pygments
@@ -25,8 +26,13 @@ def get_articles(dir=""):
             if r:
                 articles.extend(r)
         else:
-            articles.append(Article(dir + a))
-    return frozenset(articles)
+            candidate = Article(dir + a)
+            if candidate.is_live():
+                articles.append(candidate)
+    if dir == "/":
+        articles.sort()
+        return frozenset(articles)
+    return articles
 
 
 def get_headers(string):
@@ -66,7 +72,7 @@ class ArticleHeaders(object):
         "ID": "IDENTIFIER",
         "AUTHOR": "CREATOR",
     }
-    BOOLS = ("STANDALONE")
+    BOOLS = ("STANDALONE", "EXCLUDE")
     DATES = ("DATE", "MODIFIED", "AVAILABLE", "CREATED", "DATEACCEPTED", "DATECOPYRIGHTED",
              "DATESUBMITTED", "ISSUED", "MODIFIED")
     LISTS = ("SUBJECT")
@@ -91,8 +97,8 @@ class ArticleHeaders(object):
             value = datetime.strptime(value, settings.DATE_FORMAT)
         elif name in self.LISTS and not isinstance(value, list):
             value = [ x.strip() for x in value.split(",") ]
-        elif name in self.BOOLS:
-            if re.search("^(False|0)", value, re.I):
+        elif name in self.BOOLS and not isinstance(value, bool):
+            if re.search("^(False|0+)$", value, re.I):
                 value = False
             else:
                 value = bool(value)
@@ -164,12 +170,27 @@ class Article(object):
         self.complete_headers()
         self.category = os.path.dirname(path).strip("/")
 
+    def is_live(self):
+        """Check meta info, to see if this article is live"""
+        now = datetime.now()
+        if self.headers.available and self.headers.available < now:
+            return False
+        if self.headers.issued and self.headers.issued > now:
+            return False
+        if self.headers.valid and self.headers.valid < now:
+            return False
+        if self.headers.exclude == True:
+            return False
+        return True
+
     def complete_headers(self):
-        """"""
+        """Set default headers, that are missing"""
         if "ID" not in self.headers:
             self.headers.id = "article-"+re.sub(re.compile(r'\W+', re.U), '-', self.path)
         if "date" not in self.headers:
             self.headers.date = datetime.now()
+        if "exclude" not in self.headers:
+            self.headers.exclude = False
         if "description" not in self.headers:
             if "abstract" in self.headers:
                 self.headers.description = self.headers.abstract
@@ -184,7 +205,7 @@ class Article(object):
                 self.headers[k] = v
 
     def process_content(self):
-        """"""
+        """Change the raw content to a renderable state"""
         content = self.raw_content
         if self.headers.standalone:
             return True
@@ -206,12 +227,28 @@ class Article(object):
 
     def save(self, **additions):
         """"""
-        if "LANGUAGE" in self.headers:
-            additions["lang"] = self.headers["LANGUAGE"]
+        if "language" in self.headers:
+            additions["lang"] = self.headers.language
+        if "modified" in self.headers:
+            additions["sitemap_lastmod"] = self.headers.modified
+        else:
+            additions["sitemap_lastmod"] = self.headers.date
+        if "accrualperiodicity" in self.headers:
+            additions["sitemap_changefreq"] = self.headers.accrualperiodicity
         target = settings.get("ARTICLE_PATH", "")
         template_engine.render_template("article", target+"/"+self.path,
                 content=self.content, article=self, **additions)
 
     def __unicode__(self):
         return self.content
+
+    def __hash__(self):
+        s = hashlib.sha224(self.headers.date.strftime("%Y-%m-%dT%H:%m:%s") +
+                           "_" + self.headers.ID).hexdigest()
+        return int(s, 16)
+
+    def __cmp__(self, other):
+        s = self.headers.date.strftime("%Y-%m-%dT%H:%m:%s") + "_" + self.headers.ID
+        o = other.headers.date.strftime("%Y-%m-%dT%H:%m:%s") + "_" + other.headers.ID
+        return cmp(s, o)
 
