@@ -8,9 +8,9 @@ import pygments
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name, guess_lexer
 from BeautifulSoup import BeautifulSoup
-from _settings import settings
+from .settings import settings
 from datetime import datetime
-from _templates import template_engine
+from .templates import template_engine
 
 
 def get_articles(dir=""):

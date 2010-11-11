@@ -7,7 +7,7 @@ from datetime import datetime
 from mako.template import Template
 from mako import exceptions
 from mako.lookup import TemplateLookup
-from _settings import settings
+from .settings import settings
 
 
 class TemplateEngine(object):
@@ -16,6 +16,8 @@ class TemplateEngine(object):
     def __init__(self):
         self.ctx = {}
         self.sitemap = []
+        self.lookup = TemplateLookup(directories=["."], default_filters=["x"],
+                                     module_directory="_webtools/mod")
 
     def set(self, name, value):
         self.ctx[name] = value
@@ -65,10 +67,8 @@ class TemplateEngine(object):
         t = gettext.translation("website", "_locale", fallback=True)
         ctx["_"] = t.ugettext
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
-        _lookup = TemplateLookup(directories=["."], default_filters=["x"],
-                                 module_directory="_mod")
         tpl = Template(filename="_templates/"+template+".mako", module_directory="_mod",
-                       lookup=_lookup, default_filters=["x"])
+                       lookup=self.lookup, default_filters=["x"])
         if not os.path.isdir(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
         to = open(save_path, 'w')
@@ -91,10 +91,8 @@ class TemplateEngine(object):
         """Render a sitemap.xml"""
         if not os.path.isfile(settings.BUILD_TARGET+"/sitemap.xml"):
             data = {"sitemap": self.sitemap}
-            _lookup = TemplateLookup(directories=["."], default_filters=["x"],
-                                     module_directory="_mod")
             tpl = Template(filename="_templates/sitemap.xml.mako", module_directory='_mod',
-                           lookup=_lookup, default_filters=["x"])
+                           lookup=self.lookup, default_filters=["x"])
             data["local_sitemap"] = ""
             if os.path.isfile("_doc/local.sitemap"):
                 data["local_sitemap"] = open("_doc/local.sitemap", "rb").read()

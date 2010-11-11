@@ -5,11 +5,11 @@
 import os
 import sys
 import shutil
-from _settings import settings
-import _articles
-import _categories
-import _templates
-from _templates import template_engine
+from _webtools.settings import settings
+import _webtools.articles
+import _webtools.categories
+import _webtools.templates
+from _webtools.templates import template_engine
 
 
 def init():
@@ -23,11 +23,11 @@ def main():
     """"""
     os.chdir(os.path.dirname(__file__))
     init()
-    articles = _articles.get_articles()
+    articles = _webtools.articles.get_articles()
     template_engine.set("articles", articles)
     for article in articles:
         article.save()
-    _categories.render(articles)
+    _webtools.categories.render(articles)
     if not os.path.isfile(settings.BUILD_TARGET+"/index.html") and \
        os.path.isfile("_templates/index.mako"):
         template_engine.render_paginated("index", "index.html",

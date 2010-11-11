@@ -2,7 +2,7 @@
 
 
 import os
-from _templates import template_engine
+from .templates import template_engine
 
 
 def render(articles):
