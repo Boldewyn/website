@@ -23,15 +23,18 @@ def main():
     """"""
     os.chdir(os.path.dirname(__file__))
     init()
-    articles = _webtools.articles.get_articles()
+    all_articles = _webtools.articles.get_articles()
+    articles = [a for a in all_articles \
+               if "noref" not in a.headers.get("requires", "").lower()]
+    articles.sort()
     template_engine.set("articles", articles)
-    for article in articles:
+    for article in all_articles:
         article.save()
     _webtools.categories.render(articles)
     if not os.path.isfile(settings.BUILD_TARGET+"/index.html") and \
        os.path.isfile("_templates/index.mako"):
         template_engine.render_paginated("index", "index.html",
-                a=list(articles), articles=articles)
+                                         a=articles, articles=articles)
     template_engine.render_sitemap()
     return 0
 

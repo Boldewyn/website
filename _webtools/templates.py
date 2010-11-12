@@ -66,18 +66,13 @@ class TemplateEngine(object):
         ctx = nctx
         t = gettext.translation("website", "_locale", fallback=True)
         ctx["_"] = t.ugettext
-        save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
         tpl = Template(filename="_templates/"+template+".mako", module_directory="_mod",
                        lookup=self.lookup, default_filters=["x"])
-        if not os.path.isdir(os.path.dirname(save_path)):
-            os.makedirs(os.path.dirname(save_path))
-        to = open(save_path, 'w')
         try:
-            to.write(tpl.render_unicode(**ctx).encode("UTF-8"))
+            self.write_to(path, tpl.render_unicode(**ctx))
         except:
             print exceptions.text_error_template().render()
             exit()
-        to.close()
         sitemap = [path, datetime.now(), "yearly", 0.5]
         if "sitemap_lastmod" in ctx:
             sitemap[1] = ctx["sitemap_lastmod"]
@@ -86,6 +81,19 @@ class TemplateEngine(object):
         if "sitemap_priority" in ctx:
             sitemap[3] = ctx["sitemap_priority"]
         self.sitemap.append(sitemap)
+
+    def write_to(self, path, content):
+        """"""
+        save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
+        if not os.path.isdir(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
+        to = open(save_path, 'w')
+        try:
+            to.write(content.encode("UTF-8"))
+        except:
+            print exceptions.text_error_template().render()
+            exit()
+        to.close()
 
     def render_sitemap(self):
         """Render a sitemap.xml"""

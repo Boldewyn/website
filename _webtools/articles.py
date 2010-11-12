@@ -178,6 +178,8 @@ class Article(object):
             return False
         if self.headers.exclude == True:
             return False
+        if "draft" in self.headers.status.lower() and not settings.DEBUG:
+            return False
         return True
 
     def complete_headers(self):
@@ -205,6 +207,7 @@ class Article(object):
         """Change the raw content to a renderable state"""
         content = self.raw_content
         if self.headers.standalone:
+            self.content = self.raw_content
             return True
         soup = BeautifulSoup(content, convertEntities=BeautifulSoup.HTML_ENTITIES)
         pres = soup.findAll("pre", {"data-lang": re.compile(r".*")})
@@ -233,8 +236,11 @@ class Article(object):
         if "accrualperiodicity" in self.headers:
             additions["sitemap_changefreq"] = self.headers.accrualperiodicity
         target = settings.get("ARTICLE_PATH", "")
-        template_engine.render_template("article", target+"/"+self.path,
-                content=self.content, article=self, **additions)
+        if self.headers.standalone:
+            template_engine.write_to(target+"/"+self.path, self.content)
+        else:
+            template_engine.render_template("article", target+"/"+self.path,
+                    content=self.content, article=self, **additions)
 
     def __unicode__(self):
         return self.content
