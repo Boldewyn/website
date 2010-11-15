@@ -6,12 +6,17 @@ import re
 import os
 import pygments
 import shutil
+from htmlentitydefs import name2codepoint
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name, guess_lexer
 from BeautifulSoup import BeautifulSoup
 from .settings import settings
 from datetime import datetime
 from .templates import template_engine
+
+
+# define a determined "now"
+_now = datetime.now()
 
 
 def get_articles(dir=""):
@@ -36,6 +41,32 @@ def get_articles(dir=""):
         articles.sort()
         return tuple(articles)
     return articles
+
+
+def generate_description(markup, length=200, append=u"\u2026"):
+    """If the description is missing, generate it"""
+    plain = re.sub(r"<[^>]+>", "", markup)
+    if len(plain) < length:
+        return plain
+    if "&" in plain:
+        plain = plain.replace("&apos;", "'")
+        def repl_quot(m):
+            p = m.group(1)
+            if p.lower().startswith("#x"):
+                return unichr(int("0x"+p[2:]))
+            elif p.startswith("#"):
+                return unichr(int(p[1:]))
+            elif p in name2codepoint:
+                return unichr(name2codepoint[p])
+            else:
+                return "X"
+        plain = re.sub(r'&\([^;]+\);', repl_quot, plain)
+    if len(plain) < length:
+        return plain
+    plainadd = ""
+    if " " in plain[length:length+50]:
+        plainadd = plain[length:length+50].split(" ")[0]
+    return plain[:length]+plainadd+append
 
 
 def get_headers(string):
@@ -175,12 +206,11 @@ class Article(object):
 
     def is_live(self):
         """Check meta info, to see if this article is live"""
-        now = datetime.now()
-        if self.headers.available and self.headers.available < now:
+        if self.headers.available and self.headers.available < _now:
             return False
-        if self.headers.issued and self.headers.issued > now:
+        if self.headers.issued and self.headers.issued > _now:
             return False
-        if self.headers.valid and self.headers.valid < now:
+        if self.headers.valid and self.headers.valid < _now:
             return False
         if self.headers.exclude == True:
             return False
@@ -193,25 +223,23 @@ class Article(object):
         if "ID" not in self.headers:
             self.headers.id = "article-"+re.sub(re.compile(r'\W+', re.U), '-', self.path)
         if "date" not in self.headers:
-            self.headers.date = datetime.now()
+            self.headers.date = _now
         if "exclude" not in self.headers:
             self.headers.exclude = False
         if "subject" not in self.headers:
             self.headers.subject = []
         if "title" not in self.headers:
             if "standalone" in self.headers:
-                self.headers.title = BeautifulSoup(self.content).h1.string
+                self.headers.title = BeautifulSoup(self.content).html.head.title.string
             else:
                 self.headers.title = "No Title"
         if "description" not in self.headers:
             if "abstract" in self.headers:
                 self.headers.description = self.headers.abstract
+            elif self.headers.standalone:
+                self.headers.description = generate_description(unicode(BeautifulSoup(self.content).body))
             else:
-                plain = re.sub(r"<[^>]+>", "", self.content)
-                plainadd = ""
-                if " " in plain[200:250]:
-                    plainadd = plain[200:250].split(" ")[0]
-                self.headers.description = plain[:200]+plainadd+u"\u2026"
+                self.headers.description = generate_description(self.content)
         for k, v in settings.DEFAULTS:
             if k not in self.headers:
                 self.headers[k] = v
