@@ -66,7 +66,8 @@ class TemplateEngine(object):
         ctx = nctx
         t = gettext.translation("website", "_locale", fallback=True)
         ctx["_"] = t.ugettext
-        tpl = Template(filename="_templates/"+template+".mako", module_directory="_mod",
+        tpl = Template(filename="_templates/"+template+".mako",
+                       module_directory="_webtools/mod",
                        lookup=self.lookup, default_filters=["x"])
         try:
             self.write_to(path, tpl.render_unicode(**ctx))
@@ -99,7 +100,8 @@ class TemplateEngine(object):
         """Render a sitemap.xml"""
         if not os.path.isfile(settings.BUILD_TARGET+"/sitemap.xml"):
             data = {"sitemap": self.sitemap}
-            tpl = Template(filename="_templates/sitemap.xml.mako", module_directory='_mod',
+            tpl = Template(filename="_templates/sitemap.xml.mako",
+                           module_directory='_webtools/mod',
                            lookup=self.lookup, default_filters=["x"])
             data["local_sitemap"] = ""
             if os.path.isfile("_doc/local.sitemap"):

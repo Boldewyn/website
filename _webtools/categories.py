@@ -3,6 +3,7 @@
 
 import os
 from .templates import template_engine
+from .settings import settings
 
 
 def render(articles):
@@ -54,7 +55,11 @@ def render_indexes(articles):
                 categories[rootcat] = []
             categories[rootcat].append(article)
     for category, a in categories.iteritems():
-        if category+"/index.html" not in [x.path for x in a]:
+        if category == "":
+            if not os.path.isfile(settings.BUILD_TARGET+"/index.html"):
+                template_engine.render_paginated("index", "index.html",
+                                                a=articles, articles=articles)
+        elif not os.path.isfile(settings.BUILD_TARGET+"/"+category+"/index.html"):
             description = None
             if os.path.exists("_doc/%s.category.html" % category):
                 description = open("_doc/%s.category.html" % category).read()

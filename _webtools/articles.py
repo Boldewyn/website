@@ -5,6 +5,7 @@ import hashlib
 import re
 import os
 import pygments
+import shutil
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name, guess_lexer
 from BeautifulSoup import BeautifulSoup
@@ -22,6 +23,11 @@ def get_articles(dir=""):
             r = get_articles(dir + a)
             if r:
                 articles.extend(r)
+        elif not a.endswith("html"):
+            if not os.path.isdir(settings.BUILD_TARGET + "/" + dir):
+                os.makedirs(settings.BUILD_TARGET + "/" + dir)
+            shutil.copy("_articles/" + dir + a,
+                    settings.BUILD_TARGET + "/" + dir + a)
         else:
             candidate = Article(dir + a)
             if candidate.is_live():
@@ -148,7 +154,7 @@ class ArticleHeaders(object):
 
     # Missing dict methods
     __len__ = lambda self: len(self.h)
-    __contains__ = lambda self, v: self.h.__contains__(v)
+    __contains__ = lambda self, v: self.h.__contains__(v.upper())
     __iter__ = lambda self: self.h.__iter__()
     iterkeys = __iter__
 
@@ -159,7 +165,7 @@ class Article(object):
     def __init__(self, path):
         """Initialize with path to article source"""
         self.headers = ArticleHeaders()
-        self.path = path
+        self.path = "/"+path.lstrip("/")
         head, content = open("_articles/" + path, 'r').read().split("\n\n", 1)
         self.headers.set_headers(get_headers(head))
         self.raw_content = unicode(content.decode("utf-8")).replace("\r\n", "\n")
@@ -178,7 +184,7 @@ class Article(object):
             return False
         if self.headers.exclude == True:
             return False
-        if "draft" in self.headers.status.lower() and not settings.DEBUG:
+        if "draft" in self.headers.get("status", "").lower() and not settings.DEBUG:
             return False
         return True
 
@@ -190,6 +196,13 @@ class Article(object):
             self.headers.date = datetime.now()
         if "exclude" not in self.headers:
             self.headers.exclude = False
+        if "subject" not in self.headers:
+            self.headers.subject = []
+        if "title" not in self.headers:
+            if "standalone" in self.headers:
+                self.headers.title = BeautifulSoup(self.content).h1.string
+            else:
+                self.headers.title = "No Title"
         if "description" not in self.headers:
             if "abstract" in self.headers:
                 self.headers.description = self.headers.abstract
@@ -207,7 +220,7 @@ class Article(object):
         """Change the raw content to a renderable state"""
         content = self.raw_content
         if self.headers.standalone:
-            self.content = self.raw_content
+            self.content = unicode(self.raw_content)
             return True
         soup = BeautifulSoup(content, convertEntities=BeautifulSoup.HTML_ENTITIES)
         pres = soup.findAll("pre", {"data-lang": re.compile(r".*")})
@@ -227,6 +240,8 @@ class Article(object):
 
     def save(self, **additions):
         """"""
+        if settings.DEBUG:
+            print self.path
         if "language" in self.headers:
             additions["lang"] = self.headers.language
         if "modified" in self.headers:
