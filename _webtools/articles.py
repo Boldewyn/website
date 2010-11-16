@@ -46,6 +46,7 @@ def get_articles(dir=""):
 def generate_description(markup, length=200, append=u"\u2026"):
     """If the description is missing, generate it"""
     plain = re.sub(r"<[^>]+>", "", markup)
+    plain = re.sub(r"\s+", " ", plain).strip()
     if len(plain) < length:
         return plain
     if "&" in plain:

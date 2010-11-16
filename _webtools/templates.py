@@ -123,16 +123,24 @@ template_engine = TemplateEngine()
 def get_tagcloud(articles, offset=1):
     """Get all tags from the categories"""
     tags = {}
+    min_n = 100000
+    max_n = 0
     for article in articles:
         for tag in article.headers['SUBJECT']:
             if tag in tags:
                 tags[tag] += 1
             else:
                 tags[tag] = 1
-    if offset > 1:
-        for tag, n in tags.iteritems():
-            if n < offset:
-                del tags[tag]
+    for tag, n in tags.iteritems():
+        if n < offset:
+            del tags[tag]
+        if n > max_n:
+            max_n = n
+        if n < min_n:
+            min_n = n
+    for tag, n in tags.iteritems():
+        normed_n = int((min_n + (max_n-n))/min_n)
+        tags[tag] = str(normed_n)
     return tags
 
 

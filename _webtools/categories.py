@@ -2,6 +2,7 @@
 
 
 import os
+from datetime import datetime
 from .templates import template_engine
 from .settings import settings
 
@@ -59,10 +60,24 @@ def render_indexes(articles):
             if not os.path.isfile(settings.BUILD_TARGET+"/index.html"):
                 template_engine.render_paginated("index", "index.html",
                                                 a=articles, articles=articles)
+            render_feed(articles, category)
         elif not os.path.isfile(settings.BUILD_TARGET+"/"+category+"/index.html"):
             description = None
             if os.path.exists("_doc/%s.category.html" % category):
                 description = open("_doc/%s.category.html" % category).read()
             template_engine.render_paginated("category", category+
                             "/index.html", **locals())
+            render_feed(a, category)
+
+
+def render_feed(articles, category=""):
+    """Render the atom newsfeed"""
+    author = dict(settings.DEFAULTS)['AUTHOR']
+    updated = datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z")
+    link = settings.URL+category+"/index.html"
+    title = dict(settings.DEFAULTS)['TITLE']
+    if category != "" and category in settings.CATEGORY:
+        title = u"Category \u201C%s\u201D \u2014 %s" % (settings.CATEGORY[category]['title'], dict(settings.DEFAULTS)['TITLE'])
+    id = settings.URL + category
+    template_engine.render_template("feed", category+"/feed.xml", **locals())
 

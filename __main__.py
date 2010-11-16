@@ -35,6 +35,8 @@ def main():
        os.path.isfile("_templates/index.mako"):
         template_engine.render_paginated("index", "index.html",
                                          a=articles, articles=articles)
+    if not os.path.isfile(settings.BUILD_TARGET+"/feed.xml"):
+        _webtools.categories.render_feed(articles)
     template_engine.render_sitemap()
     return 0
 
