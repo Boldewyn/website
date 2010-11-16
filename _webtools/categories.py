@@ -28,6 +28,7 @@ def render_tags(articles):
             description = open("_doc/%s.tag.html" % tag).read()
         template_engine.render_paginated("tag", "tag/"+
                         tag+"/index.html", **locals())
+        render_feed(a, "tag/%s" % tag)
 
 
 def render_archives(articles):
@@ -41,6 +42,7 @@ def render_archives(articles):
     for date, a in dates.iteritems():
         template_engine.render_paginated("archive", "archive/"+
                         date+"/index.html", **locals())
+        render_feed(a, "archive/%s" % date)
 
 
 def render_indexes(articles):
@@ -70,14 +72,19 @@ def render_indexes(articles):
             render_feed(a, category)
 
 
-def render_feed(articles, category=""):
+def render_feed(all_articles, category=""):
     """Render the atom newsfeed"""
+    articles = all_articles[:settings.get("FEED_LENGTH", len(all_articles))]
     author = dict(settings.DEFAULTS)['AUTHOR']
     updated = datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z")
     link = settings.URL+category+"/index.html"
     title = dict(settings.DEFAULTS)['TITLE']
-    if category != "" and category in settings.CATEGORY:
-        title = u"Category \u201C%s\u201D \u2014 %s" % (settings.CATEGORY[category]['title'], dict(settings.DEFAULTS)['TITLE'])
+    if category.startswith("tag/"):
+        title = u"Tag \u201C%s\u201D \u2014 %s" % (category[4:], title)
+    elif category.startswith("archive/"):
+        title = u"Archive for %s \u2014 %s" % (category[8:], title)
+    elif category != "" and category in settings.CATEGORY:
+        title = u"Category \u201C%s\u201D \u2014 %s" % (settings.CATEGORY[category]['title'], title)
     id = settings.URL + category
     template_engine.render_template("feed", category+"/feed.xml", **locals())
 
