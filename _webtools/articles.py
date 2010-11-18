@@ -110,7 +110,7 @@ class ArticleHeaders(object):
     BOOLS = ("STANDALONE", "EXCLUDE")
     DATES = ("DATE", "MODIFIED", "AVAILABLE", "CREATED", "DATEACCEPTED", "DATECOPYRIGHTED",
              "DATESUBMITTED", "ISSUED", "MODIFIED")
-    LISTS = ("SUBJECT")
+    LISTS = ("SUBJECT", "STYLESHEET", "SCRIPT")
 
     def __init__(self, data=None):
         """Initialize header storage"""
@@ -133,7 +133,7 @@ class ArticleHeaders(object):
         elif name in self.LISTS and not isinstance(value, list):
             value = [ x.strip() for x in value.split(",") ]
         elif name in self.BOOLS and not isinstance(value, bool):
-            if re.search("^(False|0+)$", value, re.I):
+            if re.search("^(False|0+|No)$", value, re.I):
                 value = False
             else:
                 value = bool(value)
@@ -198,6 +198,9 @@ class Article(object):
         """Initialize with path to article source"""
         self.headers = ArticleHeaders()
         self.path = "/"+path.lstrip("/")
+        self.rdf_path = self.path+".rdf"
+        if self.rdf_path.endswith("html.rdf"):
+            self.rdf_path = ".".join(self.path.split(".")[:-1]) + ".rdf"
         head, content = open("_articles/" + path, 'r').read().split("\n\n", 1)
         self.headers.set_headers(get_headers(head))
         self.raw_content = unicode(content.decode("utf-8")).replace("\r\n", "\n")
@@ -229,6 +232,14 @@ class Article(object):
             self.headers.exclude = False
         if "subject" not in self.headers:
             self.headers.subject = []
+        if "stylesheet" not in self.headers:
+            self.headers.stylesheet = []
+        if "script" not in self.headers:
+            self.headers.script = []
+        if "type" not in self.headers:
+            self.headers.type = "Text"
+        if "format" not in self.headers:
+            self.headers.format = "application/xhtml+xml"
         if "title" not in self.headers:
             if "standalone" in self.headers:
                 self.headers.title = BeautifulSoup(self.content).html.head.title.string
@@ -285,6 +296,8 @@ class Article(object):
         else:
             template_engine.render_template("article", target+"/"+self.path,
                     content=self.content, article=self, **additions)
+        template_engine.render_template("article.rdf", target+"/"+self.rdf_path,
+                content=self.content, article=self, **additions)
 
     def __unicode__(self):
         return self.content

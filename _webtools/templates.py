@@ -2,6 +2,7 @@
 
 
 import gettext
+import math
 import os
 from datetime import datetime
 from mako.template import Template
@@ -122,7 +123,16 @@ template_engine = TemplateEngine()
 
 def get_tagcloud(articles, offset=1):
     """Get all tags from the categories"""
+    def thresholds(mn, mx, steps=5):
+        mn = float(mn)
+        mx = float(mx)
+        th = []
+        for x in range(steps-1):
+            th.append(mn + (1+x)*(mx-mn)/(steps))
+        th.append(mx)
+        return th
     tags = {}
+    rtags = []
     min_n = 100000
     max_n = 0
     for article in articles:
@@ -138,10 +148,14 @@ def get_tagcloud(articles, offset=1):
             max_n = n
         if n < min_n:
             min_n = n
+    th = thresholds(min_n, max_n)
     for tag, n in tags.iteritems():
-        normed_n = int((min_n + (max_n-n))/min_n)
-        tags[tag] = str(normed_n)
-    return tags
+        normed_n = 0
+        while th[normed_n] < float(n):
+            normed_n += 1
+        rtags.append((tag, normed_n+1, n))
+    rtags.sort()
+    return rtags
 
 
 def get_categories(articles):
