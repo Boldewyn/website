@@ -8,7 +8,6 @@ import shutil
 from _webtools.settings import settings
 import _webtools.articles
 import _webtools.categories
-import _webtools.templates
 from _webtools.templates import template_engine
 
 

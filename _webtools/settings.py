@@ -7,6 +7,8 @@ class Settings(object):
         self.h = {
             "DATE_FORMAT": "%Y-%m-%dT%H:%M:%S",
             "DEBUG": False,
+            "CREATE_NEGOTIABLE_LANGUAGES": True,
+            "DEFAULTS": [],
         }
 
         try:

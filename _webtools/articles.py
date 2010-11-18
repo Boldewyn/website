@@ -139,6 +139,21 @@ class ArticleHeaders(object):
                 value = bool(value)
         self.h[name] = value
 
+    def set_defaults(self, d):
+        """Set default values en gros"""
+        for k, v in d.iteritems():
+            if k not in self:
+                self.set_header(k, v)
+        for k, v in settings.DEFAULTS:
+            if k not in self:
+                self.set_header(k, v)
+        for k in self.BOOLS:
+            if k not in self:
+                self.set_header(k, False)
+        for k in self.LISTS:
+            if k not in self:
+                self.set_header(k, [])
+
     def get_dc(self):
         """Get the Dublin Core headers together"""
         dc = {}
@@ -224,27 +239,15 @@ class Article(object):
 
     def complete_headers(self):
         """Set default headers, that are missing"""
-        if "ID" not in self.headers:
-            self.headers.id = "article-"+re.sub(re.compile(r'\W+', re.U), '-', self.path)
-        if "date" not in self.headers:
-            self.headers.date = _now
-        if "exclude" not in self.headers:
-            self.headers.exclude = False
-        if "subject" not in self.headers:
-            self.headers.subject = []
-        if "stylesheet" not in self.headers:
-            self.headers.stylesheet = []
-        if "script" not in self.headers:
-            self.headers.script = []
-        if "type" not in self.headers:
-            self.headers.type = "Text"
-        if "format" not in self.headers:
-            self.headers.format = "application/xhtml+xml"
-        if "title" not in self.headers:
-            if "standalone" in self.headers:
-                self.headers.title = BeautifulSoup(self.content).html.head.title.string
-            else:
-                self.headers.title = "No Title"
+        defaults = {
+            "ID": settings.URL+self.path.lstrip("/"),
+            "date": _now,
+            "type": "Text",
+            "format": "application/xhtml+xml",
+            "title": "No Title",
+        }
+        if self.headers.standalone:
+            self.headers.title = BeautifulSoup(self.content).html.head.title.string
         if "description" not in self.headers:
             if "abstract" in self.headers:
                 self.headers.description = self.headers.abstract
@@ -252,9 +255,7 @@ class Article(object):
                 self.headers.description = generate_description(unicode(BeautifulSoup(self.content).body))
             else:
                 self.headers.description = generate_description(self.content)
-        for k, v in settings.DEFAULTS:
-            if k not in self.headers:
-                self.headers[k] = v
+        self.headers.set_defaults(defaults)
 
     def process_content(self):
         """Change the raw content to a renderable state"""
@@ -296,6 +297,7 @@ class Article(object):
         else:
             template_engine.render_template("article", target+"/"+self.path,
                     content=self.content, article=self, **additions)
+        additions["nolang"] = True
         template_engine.render_template("article.rdf", target+"/"+self.rdf_path,
                 content=self.content, article=self, **additions)
 

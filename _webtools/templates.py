@@ -19,6 +19,10 @@ class TemplateEngine(object):
         self.sitemap = []
         self.lookup = TemplateLookup(directories=["."], default_filters=["x"],
                                      module_directory="_webtools/mod")
+        self.languages = [x for x in os.listdir("_locale") if os.path.isdir("_locale/"+x)]
+        l = dict(settings.DEFAULTS)['LANGUAGE']
+        if l not in self.languages:
+            self.languages.append(l)
 
     def set(self, name, value):
         self.ctx[name] = value
@@ -60,21 +64,30 @@ class TemplateEngine(object):
 
     def render_template(self, template, path, **ctx):
         """"""
-        #for lang in settings.get("LANGUAGES", ["en"]):
         self.collect_page_requisites()
         nctx = self.ctx.copy()
         nctx.update(ctx)
         ctx = nctx
-        t = gettext.translation("website", "_locale", fallback=True)
-        ctx["_"] = t.ugettext
         tpl = Template(filename="_templates/"+template+".mako",
                        module_directory="_webtools/mod",
                        lookup=self.lookup, default_filters=["x"])
-        try:
-            self.write_to(path, tpl.render_unicode(**ctx))
-        except:
-            print exceptions.text_error_template().render()
-            exit()
+        if not settings.CREATE_NEGOTIABLE_LANGUAGES or ctx.get("nolang", False):
+            ctx["_"] = lambda s: unicode(s)
+            try:
+                self.write_to(path, tpl.render_unicode(**ctx))
+            except:
+                print exceptions.text_error_template().render()
+                exit()
+        else:
+            for lang in self.languages:
+                t = gettext.translation("website", "_locale", languages=[lang], fallback=True)
+                ctx["_"] = t.ugettext
+                ctx["lang"] = lang
+                try:
+                    self.write_to(path+"."+lang, tpl.render_unicode(**ctx))
+                except:
+                    print exceptions.text_error_template().render()
+                    exit()
         sitemap = [path, datetime.now(), "yearly", 0.5]
         if "sitemap_lastmod" in ctx:
             sitemap[1] = ctx["sitemap_lastmod"]
