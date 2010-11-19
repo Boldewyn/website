@@ -41,7 +41,7 @@ class TemplateEngine(object):
         self.ctx['settings'] = settings
 
     def render_paginated(self, template, path, **ctx):
-        """"""
+        """Render a template, but break the content into multiple pages"""
         pl = settings.PAGINATE_N
         articles = ctx["a"][:]
         if len(articles) > pl:
@@ -63,11 +63,13 @@ class TemplateEngine(object):
         self.render_template(template, path, **ctx)
 
     def render_template(self, template, path, **ctx):
-        """"""
+        """Render a template within the given context ctx"""
         self.collect_page_requisites()
         nctx = self.ctx.copy()
         nctx.update(ctx)
         ctx = nctx
+        if "url" not in ctx:
+            ctx["url"] = path
         tpl = Template(filename="_templates/"+template+".mako",
                        module_directory="_webtools/mod",
                        lookup=self.lookup, default_filters=["x"])
@@ -98,7 +100,7 @@ class TemplateEngine(object):
         self.sitemap.append(sitemap)
 
     def write_to(self, path, content):
-        """"""
+        """Write content to a file"""
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
         if not os.path.isdir(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
