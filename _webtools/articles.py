@@ -213,9 +213,6 @@ class Article(object):
     def __init__(self, path):
         """Initialize with path to article source"""
         self.path = "/"+path.lstrip("/")
-        self.rdf_path = self.path+".rdf"
-        if self.rdf_path.endswith("html.rdf"):
-            self.rdf_path = ".".join(self.path.split(".")[:-1]) + ".rdf"
         head, content = open("_articles" + self.path, 'r').read().split("\n\n", 1)
         self.headers = ArticleHeaders(head)
         self.raw_content = unicode(content.decode("utf-8")).replace("\r\n", "\n")
@@ -298,9 +295,6 @@ class Article(object):
         else:
             template_engine.render_template("article", target+"/"+self.path,
                     content=self.content, article=self, **additions)
-        additions["nolang"] = True
-        template_engine.render_template("article.rdf", target+"/"+self.rdf_path,
-                content=self.content, article=self, **additions)
 
     def __unicode__(self):
         return self.content
