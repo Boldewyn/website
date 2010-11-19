@@ -70,42 +70,24 @@ def generate_description(markup, length=200, append=u"\u2026"):
     return plain[:length]+plainadd+append
 
 
-def get_headers(string):
-    """Convert the HTTP-style headers of articles to dict"""
-    headers = {}
-    string = re.sub(re.compile(r'^#.*', re.M), r'', string)
-    string = re.sub(r'[ \t]*\n[ \t]+', ' ', string)
-    for line in string.splitlines():
-        if not line:
-            continue
-        k,v = line.split(":", 1)
-        k = k.upper()
-        v = v.strip()
-        if k in headers:
-            headers[k] += ", " + v
-        else:
-            headers[k] = v
-    return headers
-
-
 class ArticleHeaders(object):
     """Store article headers in a highly accessible key:value db"""
 
-    DC_TERMS = ("ABSTRACT", "ACCESSRIGHTS", "ACCRUALMETHOD",
-                "ACCRUALPERIODICITY", "ACCRUALPOLICY", "ALTERNATIVE", "AUDIENCE",
-                "AVAILABLE", "BIBLIOGRAPHICCITATION", "CONFORMSTO", "CONTRIBUTOR",
-                "COVERAGE", "CREATED", "CREATOR", "DATE", "DATEACCEPTED",
-                "DATECOPYRIGHTED", "DATESUBMITTED", "DESCRIPTION", "EDUCATIONLEVEL",
-                "EXTENT", "FORMAT", "HASFORMAT", "HASPART", "HASVERSION",
-                "IDENTIFIER", "INSTRUCTIONALMETHOD", "ISFORMATOF", "ISPARTOF",
-                "ISREFERENCEDBY", "ISREPLACEDBY", "ISREQUIREDBY", "ISSUED",
-                "ISVERSIONOF", "LANGUAGE", "LICENSE", "MEDIATOR", "MEDIUM",
-                "MODIFIED", "PROVENANCE", "PUBLISHER", "REFERENCES", "RELATION",
-                "REPLACES", "REQUIRES", "RIGHTS", "RIGHTSHOLDER", "SOURCE", "SPATIAL",
-                "SUBJECT", "TABLEOFCONTENTS", "TEMPORAL", "TITLE", "TYPE", "VALID")
+    DC_TERMS = ("abstract", "accessRights", "accrualMethod",
+                "accrualPeriodicity", "accrualPolicy", "alternative", "audience",
+                "available", "bibliographicCitation", "conformsTo", "contributor",
+                "coverage", "created", "creator", "date", "dateAccepted",
+                "dateCopyrighted", "dateSubmitted", "description", "educationLevel",
+                "extent", "format", "hasFormat", "hasPart", "hasVersion",
+                "identifier", "instructionalMethod", "isFormatOf", "isPartOf",
+                "isReferencedBy", "isReplacedBy", "isRequiredBy", "issued",
+                "isVersionOf", "language", "license", "mediator", "medium",
+                "modified", "provenance", "publisher", "references", "relation",
+                "replaces", "requires", "rights", "rightsHolder", "source", "spatial",
+                "subject", "tableOfContents", "temporal", "title", "type", "valid")
     DC_ALIAS = {
-        "ID": "IDENTIFIER",
-        "AUTHOR": "CREATOR",
+        "ID": "identifier",
+        "AUTHOR": "creator",
     }
     BOOLS = ("STANDALONE", "EXCLUDE")
     DATES = ("DATE", "MODIFIED", "AVAILABLE", "CREATED", "DATEACCEPTED", "DATECOPYRIGHTED",
@@ -114,54 +96,62 @@ class ArticleHeaders(object):
 
     def __init__(self, data=None):
         """Initialize header storage"""
-        self.h = {}
+        self._h = {}
         if isinstance(data, dict):
             self.set_headers(data)
         elif isinstance(data, basestring):
-            self.set_headers(get_headers(data))
+            self.parse_headers(data)
+
+    def parse_headers(self, string):
+        """Convert the HTTP-style headers of articles to dict"""
+        headers = {}
+        string = re.sub(re.compile(r'^#.*', re.M), r'', string)
+        string = re.sub(r'[ \t]*\n[ \t]+', ' ', string)
+        for line in string.splitlines():
+            if not line:
+                continue
+            k,v = line.split(":", 1)
+            k = k.upper()
+            v = v.strip()
+            if k in headers:
+                headers[k] += ", " + v
+            else:
+                headers[k] = v
+        self.set_headers(headers)
+        return headers
 
     def set_headers(self, headers):
         """Set a bulk of headers (string or dict)"""
         for k, v in headers.iteritems():
-            self.set_header(k, v)
-
-    def set_header(self, name, value):
-        """Set a single header"""
-        name = name.upper()
-        if name in self.DATES and isinstance(value, basestring):
-            value = datetime.strptime(value, settings.DATE_FORMAT)
-        elif name in self.LISTS and not isinstance(value, list):
-            value = [ x.strip() for x in value.split(",") ]
-        elif name in self.BOOLS and not isinstance(value, bool):
-            if re.search("^(False|0+|No)$", value, re.I):
-                value = False
-            else:
-                value = bool(value)
-        self.h[name] = value
+            self.set(k, v)
 
     def set_defaults(self, d):
         """Set default values en gros"""
         for k, v in d.iteritems():
             if k not in self:
-                self.set_header(k, v)
+                self.set(k, v)
         for k, v in settings.DEFAULTS:
             if k not in self:
-                self.set_header(k, v)
+                self.set(k, v)
         for k in self.BOOLS:
             if k not in self:
-                self.set_header(k, False)
+                self.set(k, False)
         for k in self.LISTS:
             if k not in self:
-                self.set_header(k, [])
+                self.set(k, [])
 
     def get_dc(self):
-        """Get the Dublin Core headers together"""
+        """Get the Dublin Core headers together
+
+        The result is a dictionary of strings, ready to be printed.
+        """
         dc = {}
-        for k,v in self.h.iteritems():
-            if k in self.DC_TERMS:
-                dc[k.lower()] = self.value_to_string(v)
-            elif k in self.DC_ALIAS:
-                dc[self.DC_ALIAS[k].lower()] = self.value_to_string(v)
+        for term in self.DC_TERMS:
+            if term in self:
+                dc[term] = self.value_to_string(self[term])
+        for alias, term in self.DC_ALIAS.iteritems():
+            if alias in self and term not in dc:
+                dc[term] = self.value_to_string(self[alias])
         return dc
 
     def value_to_string(self, value):
@@ -175,8 +165,8 @@ class ArticleHeaders(object):
 
     def __getattr__(self, name, default=None):
         """Get a header, via dict method, too"""
-        if name.upper() in self.h:
-            return self.h[name.upper()]
+        if name.upper() in self._h:
+            return self._h[name.upper()]
         else:
             return default
 
@@ -185,24 +175,35 @@ class ArticleHeaders(object):
 
     def __setattr__(self, name, value):
         """Set a header, via dict method, too"""
-        if name == "h":
+        if name == "_h":
             object.__setattr__(self, name, value)
         else:
-            self.set_header(name.upper(), value)
+            name = name.upper()
+            if name in self.DATES and isinstance(value, basestring):
+                value = datetime.strptime(value, settings.DATE_FORMAT)
+            elif name in self.LISTS and not isinstance(value, list):
+                value = [ x.strip() for x in value.split(",") ]
+            elif name in self.BOOLS and not isinstance(value, bool):
+                if re.search("^(False|0+|No)$", value, re.I):
+                    value = False
+                else:
+                    value = bool(value)
+            self._h[name] = value
 
     __setitem__ = __setattr__
+    set = __setattr__
 
     def __delattr__(self, name):
        """Delete a header, via dict method, too"""
-       if name.upper() in self.h:
-           del self.h[name.upper()]
+       if name.upper() in self._h:
+           del self._h[name.upper()]
 
     __delitem__ = __delattr__
 
     # Missing dict methods
-    __len__ = lambda self: len(self.h)
-    __contains__ = lambda self, v: self.h.__contains__(v.upper())
-    __iter__ = lambda self: self.h.__iter__()
+    __len__ = lambda self: len(self._h)
+    __contains__ = lambda self, v: self._h.__contains__(v.upper())
+    __iter__ = lambda self: self._h.__iter__()
     iterkeys = __iter__
 
 
@@ -211,13 +212,12 @@ class Article(object):
 
     def __init__(self, path):
         """Initialize with path to article source"""
-        self.headers = ArticleHeaders()
         self.path = "/"+path.lstrip("/")
         self.rdf_path = self.path+".rdf"
         if self.rdf_path.endswith("html.rdf"):
             self.rdf_path = ".".join(self.path.split(".")[:-1]) + ".rdf"
-        head, content = open("_articles/" + path, 'r').read().split("\n\n", 1)
-        self.headers.set_headers(get_headers(head))
+        head, content = open("_articles" + self.path, 'r').read().split("\n\n", 1)
+        self.headers = ArticleHeaders(head)
         self.raw_content = unicode(content.decode("utf-8")).replace("\r\n", "\n")
         self.process_content()
         self.complete_headers()
@@ -245,6 +245,7 @@ class Article(object):
             "type": "Text",
             "format": "application/xhtml+xml",
             "title": "No Title",
+            "status": "live",
         }
         if self.headers.standalone:
             self.headers.title = BeautifulSoup(self.content).html.head.title.string
