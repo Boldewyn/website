@@ -13,6 +13,11 @@ from BeautifulSoup import BeautifulSoup
 from .settings import settings
 from datetime import datetime
 from .templates import template_engine
+try:
+    from dateutil.parser import parse as date_parse
+except ImportError:
+    def date_parse(str):
+        return datetime.strptime(str, settings.DATE_FORMAT)
 
 
 # define a determined "now"
@@ -180,7 +185,7 @@ class ArticleHeaders(object):
         else:
             name = name.upper()
             if name in self.DATES and isinstance(value, basestring):
-                value = datetime.strptime(value, settings.DATE_FORMAT)
+                value = date_parse(value)
             elif name in self.LISTS and not isinstance(value, list):
                 value = [ x.strip() for x in value.split(",") ]
             elif name in self.BOOLS and not isinstance(value, bool):
