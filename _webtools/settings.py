@@ -14,7 +14,7 @@ class Settings(object):
         try:
             config = __import__("_config", level=1)
         except ImportError:
-            pass
+            print "No config imported!"
         else:
             for k,v in config.__dict__.iteritems():
                 if k[0] != "_":
