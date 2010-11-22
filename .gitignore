@@ -1,3 +1,4 @@
 *.pyc
 /site/
 /_webtools/mod/
+/_config.py
