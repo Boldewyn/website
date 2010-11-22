@@ -70,7 +70,10 @@ class TemplateEngine(object):
         ctx = nctx
         if "url" not in ctx:
             ctx["url"] = path
-        tpl = Template(filename="_templates/"+template+".mako",
+        filename = template
+        if "full_path" not in ctx or ctx["full_path"] == False:
+            filename = "_templates/"+template+".mako"
+        tpl = Template(filename=filename,
                        module_directory="_webtools/mod",
                        lookup=self.lookup, default_filters=["x"])
         if not settings.CREATE_NEGOTIABLE_LANGUAGES or ctx.get("nolang", False):
