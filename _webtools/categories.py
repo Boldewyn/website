@@ -47,17 +47,17 @@ def render_archives(articles):
 
 def render_indexes(articles):
     """"""
-    categories = {}
+    cats = {}
     for article in articles:
-        if article.category not in categories:
-            categories[article.category] = []
-        categories[article.category].append(article)
+        if article.category not in cats:
+            cats[article.category] = []
+        cats[article.category].append(article)
         if "/" in article.category:
             rootcat = article.category.split("/")[0]
-            if rootcat not in categories:
-                categories[rootcat] = []
-            categories[rootcat].append(article)
-    for category, a in categories.iteritems():
+            if rootcat not in cats:
+                cats[rootcat] = []
+            cats[rootcat].append(article)
+    for category, a in cats.iteritems():
         if category == "":
             if not os.path.isfile(settings.BUILD_TARGET+"/index.html"):
                 template_engine.render_paginated("index", "index.html",
