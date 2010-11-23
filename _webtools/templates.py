@@ -23,6 +23,8 @@ class TemplateEngine(object):
         l = dict(settings.DEFAULTS)['LANGUAGE']
         if l not in self.languages:
             self.languages.append(l)
+        self.ctx['all_languages'] = self.languages
+        self.ctx['all_languages'].sort()
 
     def set(self, name, value):
         self.ctx[name] = value
