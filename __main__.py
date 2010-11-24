@@ -2,6 +2,7 @@
 """"""
 
 
+import glob
 import os
 import sys
 import shutil
@@ -44,14 +45,14 @@ def main():
     articles.sort()
     template_engine.set("articles", articles)
     for article in all_articles:
-        article.save()
+        article.save(articles=articles)
     _webtools.categories.render(articles)
     for template in get_templates():
         template_engine.render_template(template,
                 template.replace(".mako", ".html"), a=articles, articles=articles,
                 full_path=True)
-    if not os.path.isfile(settings.BUILD_TARGET+"/index.html") and \
-       os.path.isfile("_templates/index.mako"):
+    if not glob.glob(settings.BUILD_TARGET+"/index.html*") and \
+       not glob.glob(settings.BUILD_TARGET+"/index.xhtml*"):
         template_engine.render_paginated("index", "index.html",
                                          a=articles, articles=articles)
     if not os.path.isfile(settings.BUILD_TARGET+"/feed.xml"):

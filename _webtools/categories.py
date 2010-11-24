@@ -1,6 +1,7 @@
 """"""
 
 
+import glob
 import os
 from datetime import datetime
 from .templates import template_engine
@@ -59,11 +60,13 @@ def render_indexes(articles):
             cats[rootcat].append(article)
     for category, a in cats.iteritems():
         if category == "":
-            if not os.path.isfile(settings.BUILD_TARGET+"/index.html"):
+            if not glob.glob(settings.BUILD_TARGET+"/index.html*") and \
+               not glob.glob(settings.BUILD_TARGET+"/index.xhtml*"):
                 template_engine.render_paginated("index", "index.html",
                                                 a=articles, articles=articles)
             render_feed(articles, category)
-        elif not os.path.isfile(settings.BUILD_TARGET+"/"+category+"/index.html"):
+        elif not glob.glob(settings.BUILD_TARGET+"/"+category+"/index.html*") and \
+             not glob.glob(settings.BUILD_TARGET+"/"+category+"/index.xhtml*"):
             description = None
             if os.path.exists("_doc/%s.category.html" % category):
                 description = open("_doc/%s.category.html" % category).read()
