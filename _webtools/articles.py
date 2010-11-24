@@ -94,10 +94,10 @@ class ArticleHeaders(object):
         "ID": "identifier",
         "AUTHOR": "creator",
     }
-    BOOLS = ("STANDALONE", "EXCLUDE")
+    BOOLS = ()
     DATES = ("DATE", "MODIFIED", "AVAILABLE", "CREATED", "DATEACCEPTED", "DATECOPYRIGHTED",
              "DATESUBMITTED", "ISSUED", "MODIFIED")
-    LISTS = ("SUBJECT", "STYLESHEET", "SCRIPT")
+    LISTS = ("SUBJECT", "STYLESHEET", "SCRIPT", "STATUS")
 
     def __init__(self, data=None):
         """Initialize header storage"""
@@ -193,6 +193,8 @@ class ArticleHeaders(object):
                     value = False
                 else:
                     value = bool(value)
+            if name == "STATUS":
+                value = [x.lower() for x in value]
             self._h[name] = value
 
     __setitem__ = __setattr__
@@ -218,12 +220,17 @@ class Article(object):
     def __init__(self, path):
         """Initialize with path to article source"""
         self.path = "/"+path.lstrip("/")
-        head, content = open("_articles" + self.path, 'r').read().split("\n\n", 1)
-        self.headers = ArticleHeaders(head)
-        self.raw_content = unicode(content.decode("utf-8")).replace("\r\n", "\n")
-        self.process_content()
-        self.complete_headers()
         self.category = os.path.dirname(path).strip("/")
+        self.content = ""
+
+        f = open("_articles" + self.path, 'r')
+        head, content = f.read().replace("\r\n", "\n").split("\n\n", 1)
+        f.close()
+        self.headers = ArticleHeaders(head)
+        self.raw_content = unicode(content.decode("utf-8"))
+
+        self.complete_headers()
+        self.process_content()
 
     def is_live(self):
         """Check meta info, to see if this article is live"""
@@ -233,9 +240,9 @@ class Article(object):
             return False
         if self.headers.valid and self.headers.valid < _now:
             return False
-        if self.headers.exclude == True:
+        if "exclude" in self.headers.status:
             return False
-        if "draft" in self.headers.get("status", "").lower() and not settings.DEBUG:
+        if "draft" in self.headers.get("status", []) and not settings.DEBUG:
             return False
         return True
 
@@ -246,27 +253,32 @@ class Article(object):
             "date": _now,
             "type": "Text",
             "format": "application/xhtml+xml",
-            "title": "No Title",
-            "status": "live",
+            "status": [],
         }
-        if self.headers.standalone:
-            self.headers.title = BeautifulSoup(self.content).html.head.title.string
+        self.headers.set_defaults(defaults)
+        if "title" not in self.headers:
+            if "standalone" in self.headers.status:
+                self.process_content()
+                self.headers.title = BeautifulSoup(self.content).html.head.title.string
+            else:
+                self.headers.title = _("No Title")
         if "description" not in self.headers:
+            self.process_content()
             if "abstract" in self.headers:
                 self.headers.description = self.headers.abstract
-            elif self.headers.standalone:
+            elif "standalone" in self.headers.status:
                 self.headers.description = generate_description(unicode(BeautifulSoup(self.content).body))
             else:
                 self.headers.description = generate_description(self.content)
-        self.headers.set_defaults(defaults)
 
     def process_content(self):
         """Change the raw content to a renderable state"""
-        content = self.raw_content
-        if self.headers.standalone:
+        if len(self.content):
+            return True
+        elif "standalone" in self.headers.status:
             self.content = unicode(self.raw_content)
             return True
-        soup = BeautifulSoup(content, convertEntities=BeautifulSoup.HTML_ENTITIES)
+        soup = BeautifulSoup(self.raw_content, convertEntities=BeautifulSoup.HTML_ENTITIES)
         pres = soup.findAll("pre", {"data-lang": re.compile(r".*")})
         for pre in pres:
             formatter = HtmlFormatter(encoding='UTF-8', classprefix='s_', hl_lines=pre.get("data-hl", "").split(","))
@@ -285,6 +297,8 @@ class Article(object):
     def save(self, **additions):
         """"""
         if settings.DEBUG:
+            if "draft" in self.headers.status:
+                print "*DRAFT* ",
             print self.path
         if "language" in self.headers:
             additions["lang"] = self.headers.language
@@ -295,7 +309,7 @@ class Article(object):
         if "accrualperiodicity" in self.headers:
             additions["sitemap_changefreq"] = self.headers.accrualperiodicity
         target = settings.get("ARTICLE_PATH", "")
-        if self.headers.standalone:
+        if "standalone" in self.headers.status:
             template_engine.write_to(target+"/"+self.path, self.content)
         else:
             template_engine.render_template("article", target+"/"+self.path,
