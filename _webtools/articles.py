@@ -300,18 +300,20 @@ class Article(object):
             if "draft" in self.headers.status:
                 print "*DRAFT* ",
             print self.path
-        if "language" in self.headers:
-            additions["lang"] = self.headers.language
-        if "modified" in self.headers:
-            additions["sitemap_lastmod"] = self.headers.modified
-        else:
-            additions["sitemap_lastmod"] = self.headers.date
-        if "accrualperiodicity" in self.headers:
-            additions["sitemap_changefreq"] = self.headers.accrualperiodicity
+        elif "draft" in self.headers.status:
+            raise ValueError("Can't save drafts")
         target = settings.get("ARTICLE_PATH", "")
         if "standalone" in self.headers.status:
             template_engine.write_to(target+"/"+self.path, self.content)
         else:
+            if "language" in self.headers:
+                additions["lang"] = self.headers.language
+            if "modified" in self.headers:
+                additions["sitemap_lastmod"] = self.headers.modified
+            else:
+                additions["sitemap_lastmod"] = self.headers.date
+            if "accrualperiodicity" in self.headers:
+                additions["sitemap_changefreq"] = self.headers.accrualperiodicity
             template_engine.render_template("article", target+"/"+self.path,
                     content=self.content, article=self, **additions)
 
