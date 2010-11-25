@@ -125,7 +125,7 @@ class TemplateEngine(object):
                            module_directory='_webtools/mod',
                            lookup=self.lookup, default_filters=["x"])
             data["local_sitemap"] = ""
-            if os.path.isfile("_doc/local.sitemap"):
+            if os.path.isfile("_doc/local_sitemap.xml"):
                 data["local_sitemap"] = open("_doc/local.sitemap", "rb").read()
             to = open(os.path.join(settings.BUILD_TARGET, "sitemap.xml"), 'w')
             try:
