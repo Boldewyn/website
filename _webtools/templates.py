@@ -4,6 +4,7 @@
 import gettext
 import math
 import os
+import re
 from datetime import datetime
 from mako.template import Template
 from mako import exceptions
@@ -109,6 +110,8 @@ class TemplateEngine(object):
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
         if not os.path.isdir(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
+        if ".php." in os.path.basename(path):
+            save_path = re.sub(r"^(.+)\.php\.(.+)$", r"\1.\2.php", save_path)
         to = open(save_path, 'w')
         try:
             to.write(content.encode("UTF-8"))
@@ -126,7 +129,7 @@ class TemplateEngine(object):
                            lookup=self.lookup, default_filters=["x"])
             data["local_sitemap"] = ""
             if os.path.isfile("_doc/local_sitemap.xml"):
-                data["local_sitemap"] = open("_doc/local.sitemap", "rb").read()
+                data["local_sitemap"] = open("_doc/local_sitemap.xml", "rb").read()
             to = open(os.path.join(settings.BUILD_TARGET, "sitemap.xml"), 'w')
             try:
                 to.write(tpl.render_unicode(**data).encode("UTF-8"))
