@@ -33,15 +33,19 @@ def get_articles(dir=""):
             r = get_articles(dir + a)
             if r:
                 articles.extend(r)
-        elif not a.endswith("html"):
+        elif not any([a.endswith("."+x) for x in ("html","xhtml","php")]):
             if not os.path.isdir(settings.BUILD_TARGET + "/" + dir):
                 os.makedirs(settings.BUILD_TARGET + "/" + dir)
             shutil.copy("_articles/" + dir + a,
-                    settings.BUILD_TARGET + "/" + dir + a)
+                        settings.BUILD_TARGET + "/" + dir + a)
         else:
-            candidate = Article(dir + a)
-            if candidate.is_live():
-                articles.append(candidate)
+            try:
+                candidate = Article(dir + a)
+            except ValueError:
+                print "*Error* Couldn't process _articles/" + dir + a
+            else:
+                if candidate.is_live():
+                    articles.append(candidate)
     if dir == "/":
         articles.sort()
         return tuple(articles)
@@ -314,8 +318,9 @@ class Article(object):
                 additions["sitemap_lastmod"] = self.headers.date
             if "accrualperiodicity" in self.headers:
                 additions["sitemap_changefreq"] = self.headers.accrualperiodicity
-            template_engine.render_template("article", target+"/"+self.path,
-                    content=self.content, article=self, **additions)
+            template_engine.render_template(self.headers.get("template", "article"),
+                                            target+"/"+self.path, content=self.content,
+                                            article=self, **additions)
 
     def __unicode__(self):
         return self.content
