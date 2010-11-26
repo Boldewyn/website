@@ -40,6 +40,10 @@ def render_archives(articles):
         if d not in dates:
             dates[d] = []
         dates[d].append(article)
+        y = article.headers['DATE'].strftime("%Y")
+        if y not in dates:
+            dates[y] = []
+        dates[y].append(article)
     for date, a in dates.iteritems():
         template_engine.render_paginated("archive", "archive/"+
                         date+"/index.html", **locals())
