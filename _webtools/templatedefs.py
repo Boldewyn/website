@@ -19,3 +19,17 @@ def aa(path):
     return settings.URL + uu(path.lstrip("/"))
 
 
+def static(path):
+    """Make a static path absolute"""
+    if re.match(r"[a-z0-9\-]+:", path) or path.startswith("//"):
+        return path
+    return settings.STATICURL.rstrip("/") + "/" + uu(path.lstrip("/"))
+
+
+def repl(base, path="#a#"):
+    """Replace placeholders with paths"""
+    base = base.replace("#a#", path.rstrip("/") + "/")
+    base = base.replace("#s#", settings.STATICURL.rstrip("/") + "/")
+    return base
+
+
