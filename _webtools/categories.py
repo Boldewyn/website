@@ -85,7 +85,7 @@ def render_feed(all_articles, category=""):
     author = dict(settings.DEFAULTS)['AUTHOR']
     updated = datetime.now().isoformat()
     link = (settings.URL+category).rstrip("/") + "/"
-    title = dict(settings.DEFAULTS)['TITLE']
+    title = settings.get("TITLE", "")
     if category.startswith("tag/"):
         title = u"Tag \u201C%s\u201D \u2014 %s" % (category[4:], title)
     elif category.startswith("archive/"):

@@ -5,10 +5,12 @@ class Settings(object):
 
     def __init__(self):
         self.h = {
+            "PAGINATE_N": 20,
             "DATE_FORMAT": "%Y-%m-%dT%H:%M:%S",
             "DEBUG": False,
             "CREATE_NEGOTIABLE_LANGUAGES": True,
-            "DEFAULTS": [],
+            "DEFAULTS": (("LANGUAGE", "en"), ("AUTHOR", "unknown")),
+            "CATEGORY": [],
         }
 
         try:
@@ -20,6 +22,11 @@ class Settings(object):
                 if k[0] != "_":
                     self.h[k] = v
             del config
+        if "STATICURL" not in self.h:
+            self.h["STATICURL"] = self.h["URL"]
+        if "AUTHOR" not in dict(self.h["DEFAULTS"]):
+            self.h["DEFAULTS"] = list(self.h["DEFAULTS"])
+            self.h["DEFAULTS"].append(("AUTHOR", "unknown"))
 
     def __str__(self):
         return str(self.h)
