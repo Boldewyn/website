@@ -83,8 +83,8 @@ def render_feed(all_articles, category=""):
     """Render the atom newsfeed"""
     articles = all_articles[:settings.get("FEED_LENGTH", len(all_articles))]
     author = dict(settings.DEFAULTS)['AUTHOR']
-    updated = datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z")
-    link = settings.URL+category+"/index.html"
+    updated = datetime.now().isoformat()
+    link = (settings.URL+category).rstrip("/") + "/"
     title = dict(settings.DEFAULTS)['TITLE']
     if category.startswith("tag/"):
         title = u"Tag \u201C%s\u201D \u2014 %s" % (category[4:], title)
