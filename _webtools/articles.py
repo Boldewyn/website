@@ -265,7 +265,7 @@ class Article(object):
                 self.process_content()
                 self.headers.title = BeautifulSoup(self.content).html.head.title.string
             else:
-                self.headers.title = _("No Title")
+                self.headers.title = ""
         if "description" not in self.headers:
             self.process_content()
             if "abstract" in self.headers:
