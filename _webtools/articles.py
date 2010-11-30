@@ -232,6 +232,7 @@ class Article(object):
         f.close()
         self.headers = ArticleHeaders(head)
         self.raw_content = unicode(content.decode("utf-8"))
+        self.soup = BeautifulSoup(self.raw_content, convertEntities=BeautifulSoup.HTML_ENTITIES)
 
         self.complete_headers()
         self.process_content()
@@ -263,7 +264,7 @@ class Article(object):
         if "title" not in self.headers:
             if "standalone" in self.headers.status:
                 self.process_content()
-                self.headers.title = BeautifulSoup(self.content).html.head.title.string
+                self.headers.title = self.soup.html.head.title.string
             else:
                 self.headers.title = ""
         if "description" not in self.headers:
@@ -271,7 +272,7 @@ class Article(object):
             if "abstract" in self.headers:
                 self.headers.description = self.headers.abstract
             elif "standalone" in self.headers.status:
-                self.headers.description = generate_description(unicode(BeautifulSoup(self.content).body))
+                self.headers.description = generate_description(unicode(self.soup.body))
             else:
                 self.headers.description = generate_description(self.content)
 
@@ -282,8 +283,7 @@ class Article(object):
         elif "standalone" in self.headers.status:
             self.content = unicode(self.raw_content)
             return True
-        soup = BeautifulSoup(self.raw_content, convertEntities=BeautifulSoup.HTML_ENTITIES)
-        pres = soup.findAll("pre", {"data-lang": re.compile(r".*")})
+        pres = self.soup.findAll("pre", {"data-lang": re.compile(r".*")})
         for pre in pres:
             formatter = HtmlFormatter(encoding='UTF-8', classprefix='s_', hl_lines=pre.get("data-hl", "").split(","))
             lang = pre["data-lang"]
@@ -296,7 +296,7 @@ class Article(object):
             if "class" not in pre:
                 pre["class"] = ""
             pre['class'] += " highlight"
-        self.content = unicode(soup)
+        self.content = unicode(self.soup)
 
     def save(self, **additions):
         """"""
