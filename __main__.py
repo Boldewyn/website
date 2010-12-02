@@ -37,7 +37,8 @@ def get_templates(dir=""):
 
 def main():
     """"""
-    os.chdir(os.path.dirname(__file__))
+    if "/" in __file__:
+        os.chdir(os.path.dirname(__file__))
     init()
     all_articles = _webtools.articles.get_articles()
     articles = [a for a in all_articles \
