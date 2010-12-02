@@ -20,12 +20,7 @@ class TemplateEngine(object):
         self.sitemap = []
         self.lookup = TemplateLookup(directories=["."], default_filters=["x"],
                                      module_directory="_webtools/mod")
-        self.languages = [x for x in os.listdir("_locale") if os.path.isdir("_locale/"+x)]
-        l = dict(settings.DEFAULTS)['LANGUAGE']
-        if l not in self.languages:
-            self.languages.append(l)
-        self.ctx['all_languages'] = self.languages
-        self.ctx['all_languages'].sort()
+        self.ctx['all_languages'] = settings.languages
 
     def set(self, name, value):
         self.ctx[name] = value
@@ -87,8 +82,9 @@ class TemplateEngine(object):
                 print exceptions.text_error_template().render()
                 exit()
         else:
-            for lang in self.languages:
-                t = gettext.translation("website", "_locale", languages=[lang], fallback=True)
+            for lang in settings.languages:
+                t = gettext.translation("website", "_locale",
+                                        languages=[lang], fallback=True)
                 ctx["_"] = t.ugettext
                 ctx["lang"] = lang
                 try:

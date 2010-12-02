@@ -1,6 +1,9 @@
 """"""
 
 
+import os
+
+
 class Settings(object):
 
     def __init__(self):
@@ -9,6 +12,7 @@ class Settings(object):
             "DEBUG": False,
             "CREATE_NEGOTIABLE_LANGUAGES": True,
             "DEFAULTS": [],
+            "PAGINATE_N": 20,
         }
 
         try:
@@ -20,6 +24,11 @@ class Settings(object):
                 if k[0] != "_":
                     self.h[k] = v
             del config
+        self.h['languages'] = [x for x in os.listdir("_locale") if os.path.isdir("_locale/"+x)]
+        l = dict(self.DEFAULTS).get('LANGUAGE', '')
+        if l not in self.languages:
+            self.h['languages'].append(l)
+        self.h['languages'].sort()
 
     def __str__(self):
         return str(self.h)
