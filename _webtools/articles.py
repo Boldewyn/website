@@ -285,13 +285,15 @@ class Article(object):
             return True
         pres = self.soup.findAll("pre", {"data-lang": re.compile(r".*")})
         for pre in pres:
-            formatter = HtmlFormatter(encoding='UTF-8', classprefix='s_', hl_lines=pre.get("data-hl", "").split(","))
+            ArticleFormatter = HtmlFormatter(encoding='UTF-8', classprefix='s_', hl_lines=pre.get("data-hl", "").split(","))
             lang = pre["data-lang"]
             try:
                 lexer = get_lexer_by_name(lang)
             except pygments.util.ClassNotFound:
+                if settings.DEBUG:
+                    print "Couldn't find lexer for %s" % lang
                 lexer = guess_lexer(pre.renderContents())
-            result = pygments.highlight(pre.renderContents(), lexer, formatter)
+            result = pygments.highlight(pre.renderContents(), lexer, ArticleFormatter)
             pre.contents = BeautifulSoup(result).pre.contents
             if "class" not in pre:
                 pre["class"] = ""
