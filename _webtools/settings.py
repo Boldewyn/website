@@ -1,6 +1,9 @@
 """"""
 
 
+import os
+
+
 class Settings(object):
 
     def __init__(self):
@@ -9,8 +12,9 @@ class Settings(object):
             "DATE_FORMAT": "%Y-%m-%dT%H:%M:%S",
             "DEBUG": False,
             "CREATE_NEGOTIABLE_LANGUAGES": True,
-            "DEFAULTS": (("LANGUAGE", "en"), ("AUTHOR", "unknown")),
             "CATEGORY": [],
+            "PAGINATE_N": 20,
+            "LANGUAGE": "en",
         }
 
         try:
@@ -27,6 +31,11 @@ class Settings(object):
         if "AUTHOR" not in dict(self.h["DEFAULTS"]):
             self.h["DEFAULTS"] = list(self.h["DEFAULTS"])
             self.h["DEFAULTS"].append(("AUTHOR", "unknown"))
+        self.h['languages'] = [x for x in os.listdir("_locale") if os.path.isdir("_locale/"+x)]
+        l = self.h['LANGUAGE']
+        if l not in self.languages:
+            self.h['languages'].append(l)
+        self.h['languages'].sort()
 
     def __str__(self):
         return str(self.h)

@@ -42,7 +42,7 @@ def main():
     init()
     all_articles = _webtools.articles.get_articles()
     articles = [a for a in all_articles \
-               if "noref" not in a.headers.get("requires", "").lower()]
+                if "noref" not in a.headers.status]
     articles.sort()
     template_engine.set("articles", articles)
     for article in all_articles:

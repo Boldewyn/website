@@ -226,6 +226,7 @@ class Article(object):
         self.path = "/"+path.lstrip("/")
         self.category = os.path.dirname(path).strip("/")
         self.content = ""
+        self.extensions = os.path.basename(path).split(".")[1:]
 
         f = open("_articles" + self.path, 'r')
         head, content = f.read().replace("\r\n", "\n").split("\n\n", 1)
@@ -320,6 +321,8 @@ class Article(object):
                 additions["sitemap_lastmod"] = self.headers.date
             if "accrualperiodicity" in self.headers:
                 additions["sitemap_changefreq"] = self.headers.accrualperiodicity
+            if any([ (x in settings.languages) for x in self.extensions]):
+                additions['nolang'] = True
             template_engine.render_template(self.headers.get("template", "article"),
                                             target+"/"+self.path, content=self.content,
                                             article=self, **additions)
