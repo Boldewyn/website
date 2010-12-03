@@ -36,6 +36,8 @@ class Settings(object):
         if l not in self.languages:
             self.h['languages'].append(l)
         self.h['languages'].sort()
+        self.h['known_extensions'] = self.h['languages'] + self.h.get('KNOWN_EXTENSIONS', []) + \
+                                     ["html", "htm", "xhtml", "xht", "php"]
 
     def __str__(self):
         return str(self.h)

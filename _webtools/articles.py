@@ -33,7 +33,7 @@ def get_articles(dir=""):
             r = get_articles(dir + a)
             if r:
                 articles.extend(r)
-        elif not any([a.endswith("."+x) for x in ("html","xhtml","php")]):
+        elif not set(get_extensions(a)) & set(["html","xhtml","htm","xht"]):
             if not os.path.isdir(settings.BUILD_TARGET + "/" + dir):
                 os.makedirs(settings.BUILD_TARGET + "/" + dir)
             shutil.copy("_articles/" + dir + a,
@@ -50,6 +50,16 @@ def get_articles(dir=""):
         articles.sort()
         return tuple(articles)
     return articles
+
+
+def get_extensions(path):
+    """Get the list of known extensions of a path"""
+    base = os.path.basename(path)
+    extensions = []
+    probes = base.split(".")
+    while len(probes) > 1 and probes[-1] in settings.known_extensions:
+        extensions.append(probes.pop())
+    return extensions
 
 
 def generate_description(markup, length=200, append=u"\u2026"):
@@ -224,9 +234,13 @@ class Article(object):
     def __init__(self, path):
         """Initialize with path to article source"""
         self.path = "/"+path.lstrip("/")
+        self.live_path = path
         self.category = os.path.dirname(path).strip("/")
         self.content = ""
-        self.extensions = os.path.basename(path).split(".")[1:]
+        self.extensions = get_extensions(path)
+        if settings.CREATE_NEGOTIABLE_LANGUAGES:
+            while self.live_path.split(".")[-1] in self.extensions:
+                self.live_path = ".".join(self.live_path.split(".")[:-1])
 
         f = open("_articles" + self.path, 'r')
         head, content = f.read().replace("\r\n", "\n").split("\n\n", 1)
