@@ -76,6 +76,10 @@ class TemplateEngine(object):
                        lookup=self.lookup, default_filters=["x"])
         if not settings.CREATE_NEGOTIABLE_LANGUAGES or ctx.get("nolang", False):
             ctx["_"] = lambda s: unicode(s)
+            if "lang" in ctx:
+                t = gettext.translation("website", "_locale",
+                                        languages=[ctx['lang']], fallback=True)
+                ctx["_"] = t.ugettext
             try:
                 self.write_to(path, tpl.render_unicode(**ctx))
             except:
