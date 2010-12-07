@@ -193,7 +193,13 @@ def get_categories(articles):
             rootcat = article.category.split("/")[0]
             if rootcat not in categories:
                 categories.append(rootcat)
-    categories.sort()
+    def s(a, b):
+        oa = settings.CATEGORY.get(a, {}).get("order", 100)
+        ob = settings.CATEGORY.get(b, {}).get("order", 100)
+        if oa == ob:
+            return cmp(a, b)
+        return cmp(oa, ob)
+    categories.sort(s)
     return categories
 
 
