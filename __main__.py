@@ -16,7 +16,8 @@ def init():
     """"""
     shutil.rmtree(settings.BUILD_TARGET, True)
     shutil.copytree(".", settings.BUILD_TARGET,
-            ignore=shutil.ignore_patterns("_*", ".*swp", ".git*", "*.mako"))
+            ignore=shutil.ignore_patterns("_*", ".*swp", ".git*",
+                                          "*.mako", "Makefile"))
 
 
 def get_templates(dir=""):
