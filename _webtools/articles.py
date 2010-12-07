@@ -274,6 +274,7 @@ class Article(object):
             "type": "Text",
             "format": "application/xhtml+xml",
             "status": [],
+            "language": settings.LANGUAGE,
         }
         self.headers.set_defaults(defaults)
         if "title" not in self.headers:

@@ -80,6 +80,8 @@ class TemplateEngine(object):
                 t = gettext.translation("website", "_locale",
                                         languages=[ctx['lang']], fallback=True)
                 ctx["_"] = t.ugettext
+            else:
+                ctx["lang"] = settings.LANGUAGE
             try:
                 self.write_to(path, tpl.render_unicode(**ctx))
             except:
