@@ -9,7 +9,12 @@ from datetime import datetime
 from mako.template import Template
 from mako import exceptions
 from mako.lookup import TemplateLookup
+from calendar import timegm
 from .settings import settings
+
+
+# A defined "now". Should be merged with articles._now
+_now = datetime.now()
 
 
 class TemplateEngine(object):
@@ -83,7 +88,7 @@ class TemplateEngine(object):
             else:
                 ctx["lang"] = settings.LANGUAGE
             try:
-                self.write_to(path, tpl.render_unicode(**ctx))
+                self.write_to(path, tpl.render_unicode(**ctx), ctx.get("date", _now))
             except:
                 print exceptions.text_error_template().render()
                 exit()
@@ -94,7 +99,7 @@ class TemplateEngine(object):
                 ctx["_"] = t.ugettext
                 ctx["lang"] = lang
                 try:
-                    self.write_to(path+"."+lang, tpl.render_unicode(**ctx))
+                    self.write_to(path+"."+lang, tpl.render_unicode(**ctx), ctx.get("date", _now))
                 except:
                     print exceptions.text_error_template().render()
                     exit()
@@ -107,7 +112,7 @@ class TemplateEngine(object):
             sitemap[3] = ctx["sitemap_priority"]
         self.sitemap.append(sitemap)
 
-    def write_to(self, path, content):
+    def write_to(self, path, content, mtime=_now):
         """Write content to a file"""
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
         if not os.path.isdir(os.path.dirname(save_path)):
@@ -121,6 +126,7 @@ class TemplateEngine(object):
             print exceptions.text_error_template().render()
             exit()
         to.close()
+        os.utime(save_path, (timegm(mtime.timetuple()), timegm(mtime.timetuple())))
 
     def render_sitemap(self):
         """Render a sitemap.xml"""
