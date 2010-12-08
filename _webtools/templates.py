@@ -103,7 +103,7 @@ class TemplateEngine(object):
                 except:
                     print exceptions.text_error_template().render()
                     exit()
-        sitemap = [path, datetime.now(), "yearly", 0.5]
+        sitemap = [path, ctx.get("date", _now), "yearly", 0.5]
         if "sitemap_lastmod" in ctx:
             sitemap[1] = ctx["sitemap_lastmod"]
         if "sitemap_changefreq" in ctx:
@@ -126,6 +126,8 @@ class TemplateEngine(object):
             print exceptions.text_error_template().render()
             exit()
         to.close()
+        if not isinstance(mtime, datetime):
+            mtime = _now
         os.utime(save_path, (timegm(mtime.timetuple()), timegm(mtime.timetuple())))
 
     def render_sitemap(self):

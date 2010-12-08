@@ -44,10 +44,14 @@ def render_archives(articles):
         if y not in dates:
             dates[y] = []
         dates[y].append(article)
-    for date, a in dates.iteritems():
+    for xdate, a in dates.iteritems():
+        if len(xdate) == 4:
+            date = datetime(int(xdate), 12, 31)
+        else:
+            date = datetime(int(xdate[:4]), int(xdate[5:7]), 1)
         template_engine.render_paginated("archive", "archive/"+
-                        date+"/index.html", **locals())
-        render_feed(a, "archive/%s" % date)
+                        xdate+"/index.html", **locals())
+        render_feed(a, "archive/%s" % xdate)
 
 
 def render_indexes(articles):
