@@ -1,6 +1,7 @@
 """"""
 
 
+import json
 import re
 import urllib
 from .settings import settings
@@ -42,5 +43,10 @@ def date(datetime, lang):
     except UnknownLocaleError:
         r = format_date(datetime, locale=settings.LANGUAGE)
     return r
+
+
+def jsq(string):
+    """"""
+    return json.JSONEncoder().encode(unicode(string))[1:-1]
 
 
