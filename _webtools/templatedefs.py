@@ -4,6 +4,8 @@
 import re
 import urllib
 from .settings import settings
+from babel.dates import format_date
+from babel import UnknownLocaleError
 
 
 def urlquote(string):
@@ -31,5 +33,14 @@ def repl(base, path="#a#"):
     base = base.replace("#a#", path.rstrip("/") + "/")
     base = base.replace("#s#", settings.STATICURL.rstrip("/") + "/")
     return base
+
+
+def date(datetime, lang):
+    """Format a date depending on current locale"""
+    try:
+        r = format_date(datetime, locale=lang)
+    except UnknownLocaleError:
+        r = format_date(datetime, locale=settings.LANGUAGE)
+    return r
 
 
