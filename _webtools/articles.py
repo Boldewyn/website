@@ -299,6 +299,7 @@ class Article(object):
         elif "standalone" in self.headers.status:
             self.content = unicode(self.raw_content)
             return True
+        # Syntax highlighting:
         pres = self.soup.findAll("pre", {"data-lang": re.compile(r".*")})
         for pre in pres:
             ArticleFormatter = HtmlFormatter(encoding='UTF-8', classprefix='s_', hl_lines=pre.get("data-hl", "").split(","))
