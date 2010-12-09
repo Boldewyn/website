@@ -354,5 +354,5 @@ class Article(object):
     def __cmp__(self, other):
         s = self.headers.date.strftime("%Y-%m-%dT%H:%m:%s") + "_" + self.headers.ID
         o = other.headers.date.strftime("%Y-%m-%dT%H:%m:%s") + "_" + other.headers.ID
-        return cmp(s, o)
+        return cmp(o, s)
 
