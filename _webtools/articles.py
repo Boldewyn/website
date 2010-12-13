@@ -13,6 +13,7 @@ from BeautifulSoup import BeautifulSoup
 from .settings import settings
 from datetime import datetime
 from .templates import template_engine
+from .templatedefs import aa
 try:
     from dateutil.parser import parse as date_parse
 except ImportError:
@@ -233,10 +234,10 @@ class Article(object):
 
     def __init__(self, path):
         """Initialize with path to article source"""
+        self.processed = False
         self.path = "/"+path.lstrip("/")
         self.live_path = path
         self.category = os.path.dirname(path).strip("/")
-        self.content = ""
         self.extensions = get_extensions(path)
         if settings.CREATE_NEGOTIABLE_LANGUAGES:
             while self.live_path.split(".")[-1] in self.extensions:
@@ -290,14 +291,14 @@ class Article(object):
             elif "standalone" in self.headers.status:
                 self.headers.description = generate_description(unicode(self.soup.body))
             else:
-                self.headers.description = generate_description(self.content)
+                self.headers.description = generate_description(unicode(self.soup))
 
     def process_content(self):
         """Change the raw content to a renderable state"""
-        if len(self.content):
+        if self.processed:
             return True
         elif "standalone" in self.headers.status:
-            self.content = unicode(self.raw_content)
+            self.processed = True
             return True
         # Syntax highlighting:
         pres = self.soup.findAll("pre", {"data-lang": re.compile(r".*")})
@@ -315,7 +316,7 @@ class Article(object):
             if "class" not in pre:
                 pre["class"] = ""
             pre['class'] += " highlight"
-        self.content = unicode(self.soup)
+        self.processed = True
 
     def save(self, **additions):
         """"""
@@ -327,7 +328,7 @@ class Article(object):
             raise ValueError("Can't save drafts")
         target = settings.get("ARTICLE_PATH", "")
         if "standalone" in self.headers.status:
-            template_engine.write_to(target+"/"+self.path, self.content)
+            template_engine.write_to(target+"/"+self.path, unicode(self.soup))
         else:
             if "language" in self.headers:
                 additions["lang"] = self.headers.language
@@ -339,12 +340,20 @@ class Article(object):
                 additions["sitemap_changefreq"] = self.headers.accrualperiodicity
             if any([ (x in settings.languages) for x in self.extensions]):
                 additions['nolang'] = True
+            if "articles" in additions:
+                ax = self.soup.findAll("a", href=re.compile(r"^id:"))
+                for a in ax:
+                    id = a['href'][3:]
+                    for a2 in additions['articles']:
+                        if a2.headers.ID == id:
+                            a['href'] = aa(a2.live_path)
+                            break
             template_engine.render_template(self.headers.get("template", "article"),
-                                            target+"/"+self.path, content=self.content,
+                                            target+"/"+self.path, content=unicode(self.soup),
                                             article=self, **additions)
 
     def __unicode__(self):
-        return self.content
+        return unicode(self.soup)
 
     def __hash__(self):
         s = hashlib.sha224(self.headers.date.strftime("%Y-%m-%dT%H:%m:%s") +
