@@ -50,3 +50,12 @@ def jsq(string):
     return json.JSONEncoder().encode(unicode(string))[1:-1]
 
 
+def get_cat_title(_, category):
+    """Get the 'true' title of a category"""
+    try:
+      title = _(settings.CATEGORY[category]["title"])
+    except:
+      title = category
+    return title
+
+
