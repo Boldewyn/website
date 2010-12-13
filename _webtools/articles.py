@@ -26,7 +26,9 @@ _now = datetime.now()
 
 
 def get_articles(dir=""):
-    """Recursively fetch articles"""
+    """Recursively fetch articles from the _articles directory
+
+    If non-articles are found, they are copied to the BUILD_TARGET."""
     dir = dir.strip("/") + "/"
     articles = []
     for a in os.listdir("_articles/" + dir):
@@ -64,7 +66,7 @@ def get_extensions(path):
 
 
 def generate_description(markup, length=200, append=u"\u2026"):
-    """If the description is missing, generate it"""
+    """If the description is missing, generate it from the article markup"""
     plain = re.sub(r"<[^>]+>", "", markup)
     plain = re.sub(r"\s+", " ", plain).strip()
     if len(plain) < length:
@@ -91,7 +93,14 @@ def generate_description(markup, length=200, append=u"\u2026"):
 
 
 class ArticleHeaders(object):
-    """Store article headers in a highly accessible key:value db"""
+    """Store article headers in a highly accessible key:value db
+
+    With highly accessible we mean, that the items can be accessed in this way:
+    * case insensitive with regard to the key
+    * via dict methods (e.g., get())
+    * via class methods (e.g., foo.bar)
+    The rationale is, that the original keys are case-insensitive, too (modeled
+    after HTTP headers), and template authors will use an instance of this."""
 
     DC_TERMS = ("abstract", "accessRights", "accrualMethod",
                 "accrualPeriodicity", "accrualPolicy", "alternative", "audience",
@@ -175,7 +184,7 @@ class ArticleHeaders(object):
         return dc
 
     def value_to_string(self, value):
-        """"""
+        """Change a header value to a printable string"""
         if isinstance(value, datetime):
             return value.isoformat("T")
         elif isinstance(value, list):
@@ -254,7 +263,7 @@ class Article(object):
         self.process_content()
 
     def is_live(self):
-        """Check meta info, to see if this article is live"""
+        """Check meta info to see, if this article is live"""
         if self.headers.available and self.headers.available < _now:
             return False
         if self.headers.issued and self.headers.issued > _now:
@@ -294,7 +303,11 @@ class Article(object):
                 self.headers.description = generate_description(unicode(self.soup))
 
     def process_content(self):
-        """Change the raw content to a renderable state"""
+        """Change the raw content to a renderable state
+
+        This contains syntax highlighting but not URI scheme resolving.
+        The latter is done in self.save(). This function works exclusively
+        upon self.soup."""
         if self.processed:
             return True
         elif "standalone" in self.headers.status:
@@ -319,7 +332,13 @@ class Article(object):
         self.processed = True
 
     def save(self, **additions):
-        """"""
+        """Save the article to a file
+
+        If it's a standalone, save it directly. Else send the
+        context to the corresponding template. In order to recognize
+        the "id:" URI scheme, the parameter **additions must contain
+        the value "articles", against which's content the URI is
+        checked."""
         if settings.DEBUG:
             if "draft" in self.headers.status:
                 print "*DRAFT* ",
@@ -369,6 +388,7 @@ class Article(object):
         return int(s, 16)
 
     def __cmp__(self, other):
+        """Compare articles by date first, ID second"""
         s = self.headers.date.strftime("%Y-%m-%dT%H:%m:%s") + "_" + self.headers.ID
         o = other.headers.date.strftime("%Y-%m-%dT%H:%m:%s") + "_" + other.headers.ID
         return cmp(o, s)
