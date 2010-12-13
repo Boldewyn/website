@@ -17,7 +17,7 @@ class Settings(object):
             "PAGINATE_N": 20,
             "LANGUAGE": "en",
             "PROTOCOLS": {
-                "w": "http://de.wikipedia.org/wiki/%s",
+                "w": "http://en.wikipedia.org/wiki/%s",
                 "g": "http://google.com/search?q=%s",
             },
             "DEFAULTS": {},
