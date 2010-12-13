@@ -110,7 +110,7 @@ def has_index(folder):
         probes = base.split(".")
         while len(probes) > 1 and probes[-1] in settings.known_extensions:
             probes.pop()
-        if len(probes) == 1 and probes[0] == "index":
+        if len(probes) == 1:
             return True
         else:
             continue
