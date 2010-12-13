@@ -348,6 +348,14 @@ class Article(object):
                         if a2.headers.ID == id:
                             a['href'] = aa(a2.live_path)
                             break
+            for protocol, url_scheme in settings.PROTOCOLS.iteritems():
+                ax = self.soup.findAll("a", href=re.compile("^%s:" % protocol))
+                for a in ax:
+                    a['href'] = url_scheme % a['href'][len(protocol)+1:]
+                    if a.get('class', False):
+                        a['class'] += " protocol_%s" % protocol
+                    else:
+                        a['class'] = "protocol_%s" % protocol
             template_engine.render_template(self.headers.get("template", "article"),
                                             target+"/"+self.path, content=unicode(self.soup),
                                             article=self, **additions)
