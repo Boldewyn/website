@@ -131,9 +131,9 @@ class ArticleHeaders(object):
                 continue
             k,v = line.split(":", 1)
             k = k.upper()
-            v = v.strip()
+            v = unicode(v.strip().decode("UTF-8"))
             if k in headers:
-                headers[k] += ", " + v
+                headers[k] += u", " + v
             else:
                 headers[k] = v
         self.set_headers(headers)
@@ -180,7 +180,7 @@ class ArticleHeaders(object):
         elif isinstance(value, list):
             return u", ".join(value)
         else:
-            return unicode(value).replace("\n", " ").strip()
+            return unicode(value).replace(u"\n", u" ").strip()
 
     def __getattr__(self, name, default=None):
         """Get a header, via dict method, too"""
