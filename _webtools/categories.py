@@ -84,7 +84,7 @@ def render_indexes(articles):
 def render_feed(all_articles, category=""):
     """Render the atom newsfeed"""
     articles = all_articles[:settings.get("FEED_LENGTH", len(all_articles))]
-    author = dict(settings.DEFAULTS)['AUTHOR']
+    author = settings.DEFAULTS['AUTHOR']
     updated = datetime.now().isoformat()
     link = (settings.URL+category).rstrip("/") + "/"
     title = settings.get("TITLE", "")

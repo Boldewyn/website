@@ -150,7 +150,7 @@ class ArticleHeaders(object):
         for k, v in d.iteritems():
             if k not in self:
                 self.set(k, v)
-        for k, v in settings.DEFAULTS:
+        for k, v in settings.DEFAULTS.iteritems():
             if k not in self:
                 self.set(k, v)
         for k in self.BOOLS:
