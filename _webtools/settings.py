@@ -1,6 +1,7 @@
 """"""
 
 
+import imp
 import os
 
 
@@ -9,12 +10,12 @@ class Settings(object):
     def __init__(self):
         self.h = {}
         h = {
-            "PAGINATE_N": 20,
             "DATE_FORMAT": "%Y-%m-%dT%H:%M:%S",
             "DEBUG": False,
             "CREATE_NEGOTIABLE_LANGUAGES": True,
             "CATEGORY": [],
             "PAGINATE_N": 20,
+            "URL": "http://localhost/",
             "LANGUAGE": "en",
             "PROTOCOLS": {
                 "w": "http://en.wikipedia.org/wiki/%s",
@@ -24,7 +25,8 @@ class Settings(object):
         }
 
         try:
-            config = __import__("_config", level=1)
+            config = imp.load_source("_config",
+                         os.path.abspath("./_config.py"))
         except ImportError:
             print "No config imported!"
         else:
