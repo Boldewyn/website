@@ -68,13 +68,11 @@ def render_indexes(articles):
             cats[rootcat].append(article)
     for category, a in cats.iteritems():
         if category == "":
-            if not glob.glob(settings.BUILD_TARGET+"/index.html*") and \
-               not glob.glob(settings.BUILD_TARGET+"/index.xhtml*"):
+            if not has_index(settings.BUILD_TARGET):
                 template_engine.render_paginated("index", "index.html",
                                                 a=articles, articles=articles)
             render_feed(articles, category)
-        elif not glob.glob(settings.BUILD_TARGET+"/"+category+"/index.html*") and \
-             not glob.glob(settings.BUILD_TARGET+"/"+category+"/index.xhtml*"):
+        elif not has_index(settings.BUILD_TARGET+"/"+category):
             description = None
             if os.path.exists("_doc/%s.category.html" % category):
                 description = open("_doc/%s.category.html" % category).read()
@@ -98,4 +96,25 @@ def render_feed(all_articles, category=""):
         title = u"Category \u201C%s\u201D \u2014 %s" % (settings.CATEGORY[category]['title'], title)
     id = settings.URL + category
     template_engine.render_template("feed", category+"/feed.xml", **locals())
+
+
+def has_index(folder):
+    """Look, if there is an index file in folder"""
+    if not os.path.isdir(folder):
+        return None
+    candidates = glob.glob(folder+"/index.*")
+    if len(candidates) == 0:
+        return False
+    for c in candidates:
+        base = os.path.basename(c)
+        probes = base.split(".")
+        while len(probes) > 1 and probes[-1] in settings.known_extensions:
+            probes.pop()
+        if len(probes) == 1 and probes[0] == "index":
+            return True
+        else:
+            continue
+    return False
+
+
 
