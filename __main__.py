@@ -62,8 +62,6 @@ def main():
 
 
 if __name__ == "__main__":
-    if settings.BUILD_TARGET is None:
-        settings.BUILD_TARGET = "site"
     settings.ORIG_BUILD_TARGET = settings.BUILD_TARGET.rstrip("/")
     settings.BUILD_TARGET = os.path.abspath(settings.BUILD_TARGET)
     sys.exit(main())

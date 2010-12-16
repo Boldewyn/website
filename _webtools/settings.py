@@ -10,18 +10,19 @@ class Settings(object):
     def __init__(self):
         self.h = {}
         h = {
+            "BUILD_TARGET": "site",
+            "CATEGORY": [],
+            "CREATE_NEGOTIABLE_LANGUAGES": True,
             "DATE_FORMAT": "%Y-%m-%dT%H:%M:%S",
             "DEBUG": False,
-            "CREATE_NEGOTIABLE_LANGUAGES": True,
-            "CATEGORY": [],
-            "PAGINATE_N": 20,
-            "URL": "http://localhost/",
+            "DEFAULTS": {},
             "LANGUAGE": "en",
+            "PAGINATE_N": 20,
             "PROTOCOLS": {
                 "w": "http://en.wikipedia.org/wiki/%s",
                 "g": "http://google.com/search?q=%s",
             },
-            "DEFAULTS": {},
+            "URL": "http://localhost/",
         }
 
         try:
