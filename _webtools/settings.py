@@ -25,6 +25,12 @@ class Settings(object):
             "URL": "http://localhost/",
         }
 
+        if "/" in __file__:
+            codebase = os.path.abspath(os.path.dirname(__file__)+"/..")
+        else:
+            codebase = os.path.abspath("..")
+        self.h["CODEBASE"] = codebase
+
         try:
             config = imp.load_source("_config",
                          os.path.abspath("_config.py"))
@@ -45,7 +51,11 @@ class Settings(object):
             self.h["STATICURL"] = self.h["URL"]
         if "AUTHOR" not in self.h["DEFAULTS"]:
             self.h["DEFAULTS"]["AUTHOR"] = "unknown"
-        self.h['languages'] = [x for x in os.listdir("_locale") if os.path.isdir("_locale/"+x)]
+        self.h['languages'] = [x for x in os.listdir(codebase+"/_locale") \
+                                       if os.path.isdir(codebase+"/_locale/"+x)]
+        if os.path.isdir("_locale") and codebase != os.path.abspath("."):
+            self.h['languages'] += [x for x in os.listdir("_locale") \
+                                            if os.path.isdir("_locale/"+x)]
         l = self.h['LANGUAGE']
         if l not in self.languages:
             self.h['languages'].append(l)

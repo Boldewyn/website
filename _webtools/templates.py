@@ -1,7 +1,6 @@
 """"""
 
 
-import gettext
 import math
 import os
 import re
@@ -11,6 +10,7 @@ from mako import exceptions
 from mako.lookup import TemplateLookup
 from calendar import timegm
 from .settings import settings
+from .i18n import get_gettext
 
 
 # A defined "now". Should be merged with articles._now
@@ -80,9 +80,7 @@ class TemplateEngine(object):
         if not settings.CREATE_NEGOTIABLE_LANGUAGES or ctx.get("nolang", False):
             ctx["_"] = lambda s: unicode(s)
             if "lang" in ctx:
-                t = gettext.translation("website", "_locale",
-                                        languages=[ctx['lang']], fallback=True)
-                ctx["_"] = t.ugettext
+                ctx["_"] = get_gettext(ctx["lang"])
             else:
                 ctx["lang"] = settings.LANGUAGE
             try:
@@ -92,9 +90,7 @@ class TemplateEngine(object):
                 exit()
         else:
             for lang in settings.languages:
-                t = gettext.translation("website", "_locale",
-                                        languages=[lang], fallback=True)
-                ctx["_"] = t.ugettext
+                ctx["_"] = get_gettext(lang)
                 ctx["lang"] = lang
                 try:
                     self.write_to(path+"."+lang, tpl.render_unicode(**ctx), ctx.get("date", _now))
