@@ -1,7 +1,10 @@
 """"""
 
 
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json
 import re
 import urllib
 from .settings import settings
