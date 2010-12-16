@@ -12,12 +12,6 @@ import _webtools.categories
 from _webtools.templates import template_engine
 
 
-if "/" in __file__:
-    settings.CODEBASE = os.path.abspath(__file__)
-else:
-    settings.CODEBASE = os.path.abspath(".")
-
-
 def init():
     """"""
     shutil.rmtree(settings.BUILD_TARGET, True)
