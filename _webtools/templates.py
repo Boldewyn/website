@@ -23,8 +23,8 @@ class TemplateEngine(object):
     def __init__(self):
         self.ctx = {}
         self.sitemap = []
-        self.lookup = TemplateLookup(directories=["."], default_filters=["x"],
-                                     module_directory="_webtools/mod")
+        self.lookup = TemplateLookup(directories=[".", settings.CODEBASE], default_filters=["x"])
+                                     #module_directory="_webtools/mod")
         self.ctx['all_languages'] = settings.languages
 
     def set(self, name, value):
@@ -76,9 +76,7 @@ class TemplateEngine(object):
         filename = template
         if "full_path" not in ctx or ctx["full_path"] == False:
             filename = "_templates/"+template+".mako"
-        tpl = Template(filename=filename,
-                       module_directory="_webtools/mod",
-                       lookup=self.lookup, default_filters=["x"])
+        tpl = self.lookup.get_template(filename)
         if not settings.CREATE_NEGOTIABLE_LANGUAGES or ctx.get("nolang", False):
             ctx["_"] = lambda s: unicode(s)
             if "lang" in ctx:
@@ -134,9 +132,7 @@ class TemplateEngine(object):
         """Render a sitemap.xml"""
         if not os.path.isfile(settings.BUILD_TARGET+"/sitemap.xml"):
             data = {"sitemap": self.sitemap}
-            tpl = Template(filename="_templates/sitemap.xml.mako",
-                           module_directory='_webtools/mod',
-                           lookup=self.lookup, default_filters=["x"])
+            tpl = self.lookup.get_template("_templates/sitemap.xml.mako")
             data["local_sitemap"] = ""
             if os.path.isfile("_doc/local_sitemap.xml"):
                 data["local_sitemap"] = open("_doc/local_sitemap.xml", "rb").read()
