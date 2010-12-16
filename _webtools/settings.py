@@ -34,7 +34,7 @@ class Settings(object):
         try:
             config = imp.load_source("_config",
                          os.path.abspath("_config.py"))
-        except ImportError:
+        except (ImportError, IOError):
             print "No config imported!"
         else:
             for k,v in config.__dict__.iteritems():
