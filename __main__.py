@@ -10,35 +10,12 @@ from _webtools.settings import settings
 import _webtools.articles
 import _webtools.categories
 from _webtools.templates import template_engine
-
-
-def init():
-    """"""
-    shutil.rmtree(settings.BUILD_TARGET, True)
-    shutil.copytree(".", settings.BUILD_TARGET,
-            ignore=shutil.ignore_patterns("_*", ".*swp", ".git*",
-                                          "*.mako", "Makefile"))
-
-
-def get_templates(dir=""):
-    """Recursively fetch templates that need processing"""
-    dir = dir.strip("/")
-    if dir != "":
-        dir += "/"
-    templates = []
-    for a in os.listdir("./"+dir):
-        if os.path.isdir("./"+dir + a):
-            if a[0] not in ["_", "."] and \
-               not (dir + a).startswith(settings.ORIG_BUILD_TARGET+"/"):
-                templates.extend(get_templates(dir + a))
-        elif a.endswith(".mako"):
-            templates.append(dir + a)
-    return templates
+from _webtools.util import copy_statics, get_templates
 
 
 def main():
     """"""
-    init()
+    copy_statics()
     all_articles = _webtools.articles.get_articles()
     articles = [a for a in all_articles \
                 if "noref" not in a.headers.status]
