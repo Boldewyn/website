@@ -346,6 +346,7 @@ class Article(object):
         elif "draft" in self.headers.status:
             raise ValueError("Can't save drafts")
         target = settings.get("ARTICLE_PATH", "")
+        template_engine.add_to_index(target+"/"+self.path, unicode(self.soup))
         if "standalone" in self.headers.status:
             template_engine.write_to(target+"/"+self.path, unicode(self.soup))
         else:

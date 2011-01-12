@@ -35,6 +35,7 @@ def main():
     if not os.path.isfile(settings.BUILD_TARGET+"/feed.xml"):
         _webtools.categories.render_feed(articles)
     template_engine.render_sitemap()
+    template_engine.make_index()
     return 0
 
 

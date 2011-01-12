@@ -1,6 +1,10 @@
 """"""
 
 
+try:
+    import json
+except ImportError:
+    import simplejson as json
 import math
 import os
 import re
@@ -21,6 +25,7 @@ class TemplateEngine(object):
     """"""
 
     def __init__(self):
+        self.indexdata = {}
         self.ctx = {}
         self.sitemap = []
         self.lookup = TemplateLookup(directories=[".", settings.CODEBASE], default_filters=["x"])
@@ -141,6 +146,20 @@ class TemplateEngine(object):
             to.close()
         else:
             print "Sitemap already exists."
+
+    def add_to_index(self, path, content):
+        """Add content to the search index"""
+        self.indexdata[path.lstrip("/")] = content
+
+    def make_index(self):
+        """Generate an index of all files' contents"""
+        index = open(os.path.join(settings.BUILD_TARGET, "index.json"), "wb")
+        data = self.indexdata.copy()
+        W = re.compile(r'\W+', re.U)
+        for k in data:
+            data[k] = list(set(W.split(re.sub(r'<.+?>', '', data[k]))))
+        index.write(json.dumps(data))
+        index.close()
 
 
 template_engine = TemplateEngine()
