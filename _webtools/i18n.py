@@ -22,6 +22,10 @@ def get_gettext(lang):
         u = gettext.translation("website", localedir="_locale", languages=[lang],
                                 class_=WebtoolsTranslations, fallback=True)
         t.update(u)
-    c_ = t.ugettext
+    def c_(s):
+        if s == "":
+            return u""
+        else:
+            return t.ugettext(s)
     return c_
 
