@@ -5,6 +5,9 @@ import imp
 import os
 
 
+_ = lambda s: s
+
+
 class Settings(object):
 
     def __init__(self):
@@ -50,7 +53,7 @@ class Settings(object):
         if "STATICURL" not in self.h:
             self.h["STATICURL"] = self.h["URL"]
         if "AUTHOR" not in self.h["DEFAULTS"]:
-            self.h["DEFAULTS"]["AUTHOR"] = "unknown"
+            self.h["DEFAULTS"]["AUTHOR"] = _(u"unknown")
         self.h['languages'] = [x for x in os.listdir(codebase+"/_locale") \
                                        if os.path.isdir(codebase+"/_locale/"+x)]
         if os.path.isdir("_locale") and codebase != os.path.abspath("."):
