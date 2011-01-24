@@ -2,3 +2,4 @@
 /site/
 /_webtools/mod/
 /_config.py
+/_articles/**/dummy*.html
