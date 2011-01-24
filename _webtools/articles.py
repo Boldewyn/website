@@ -25,6 +25,34 @@ except ImportError:
 _now = datetime.now()
 
 
+def _unescape(text):
+    """Removes HTML or XML character references and entities from a text string.
+
+    @author Fredrik Lundh - http://effbot.org/zone/re-sub.htm
+    @param text The HTML (or XML) source text.
+    @return The plain text, as a Unicode string, if necessary.
+    """
+    def fixup(m):
+        text = m.group(0)
+        if text[:2] == "&#":
+            # character reference
+            try:
+                if text[:3] == "&#x":
+                    return unichr(int(text[3:-1], 16))
+                else:
+                    return unichr(int(text[2:-1]))
+            except ValueError:
+                pass
+        else:
+            # named entity
+            try:
+                text = unichr(name2codepoint[text[1:-1]])
+            except KeyError:
+                pass
+        return text # leave as is
+    return re.sub("&#?\w+;", fixup, text)
+
+
 def get_articles(dir=""):
     """Recursively fetch articles from the _articles directory
 
@@ -257,7 +285,7 @@ class Article(object):
         f.close()
         self.headers = ArticleHeaders(head)
         self.raw_content = unicode(content.decode("utf-8"))
-        self.soup = BeautifulSoup(self.raw_content, convertEntities=BeautifulSoup.HTML_ENTITIES)
+        self.soup = BeautifulSoup(self.raw_content)
 
         self.complete_headers()
         self.process_content()
@@ -318,13 +346,14 @@ class Article(object):
         for pre in pres:
             ArticleFormatter = HtmlFormatter(encoding='UTF-8', classprefix='s_', hl_lines=pre.get("data-hl", "").split(","))
             lang = pre["data-lang"]
+            text = _unescape(pre.renderContents())
             try:
                 lexer = get_lexer_by_name(lang)
             except pygments.util.ClassNotFound:
                 if settings.DEBUG:
                     print "Couldn't find lexer for %s" % lang
-                lexer = guess_lexer(pre.renderContents())
-            result = pygments.highlight(pre.renderContents(), lexer, ArticleFormatter)
+                lexer = guess_lexer(text)
+            result = pygments.highlight(text, lexer, ArticleFormatter)
             pre.contents = BeautifulSoup(result).pre.contents
             if "class" not in pre:
                 pre["class"] = ""
