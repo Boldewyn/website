@@ -62,3 +62,8 @@ def get_cat_title(_, category):
     return title
 
 
+def strip_tags(s):
+    """Strip HTML tags"""
+    return re.sub(ur"<.+?>", ur"", s)
+
+
