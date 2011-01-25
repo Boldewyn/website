@@ -213,7 +213,9 @@ class ArticleHeaders(object):
 
     def value_to_string(self, value):
         """Change a header value to a printable string"""
-        if isinstance(value, datetime):
+        if isinstance(value, Article):
+            return value.live_path
+        elif isinstance(value, datetime):
             return value.isoformat("T")
         elif isinstance(value, list):
             return u", ".join(value)
@@ -273,7 +275,7 @@ class Article(object):
         """Initialize with path to article source"""
         self.processed = False
         self.path = "/"+path.lstrip("/")
-        self.live_path = path
+        self.live_path = settings.URL.rstrip("/") + settings.get("ARTICLE_PATH", "") + "/" +path
         self.category = os.path.dirname(path).strip("/")
         self.extensions = get_extensions(path)
         if settings.CREATE_NEGOTIABLE_LANGUAGES:
@@ -307,7 +309,7 @@ class Article(object):
     def complete_headers(self):
         """Set default headers, that are missing"""
         defaults = {
-            "ID": settings.URL+self.path.lstrip("/"),
+            "ID": self.live_path,
             "date": _now,
             "type": "Text",
             "format": "application/xhtml+xml",
@@ -409,6 +411,7 @@ class Article(object):
             if any([ (x in settings.languages) for x in self.extensions]):
                 additions['nolang'] = True
             if "articles" in additions:
+                # resolve the "id:" pseudo-scheme
                 ax = self.soup.findAll("a", href=re.compile(r"^id:"))
                 for a in ax:
                     id = a['href'][3:]
@@ -416,7 +419,18 @@ class Article(object):
                         if a2.headers.ID == id:
                             a['href'] = aa(a2.live_path)
                             break
+                # resolve links to Requires and isRequiredBy
+                # TODO: Do we need multiple Requires?
+                if 'Requires' in self.headers:
+                    for a in additions['articles']:
+                        if a.headers.ID == self.headers.Requires:
+                            self.headers.Requires = a
+                if 'IsRequiredBy' in self.headers:
+                    for a in additions['articles']:
+                        if a.headers.ID == self.headers.IsRequiredBy:
+                            self.headers.IsRequiredBy = a
             for protocol, url_scheme in settings.PROTOCOLS.iteritems():
+                # resolve all pseudo-schemes
                 ax = self.soup.findAll(href=re.compile("^%s:" % protocol))
                 ix = self.soup.findAll(src=re.compile("^%s:" % protocol))
                 for a in ax:
@@ -446,6 +460,9 @@ class Article(object):
     def __cmp__(self, other):
         """Compare articles by date first, ID second"""
         s = self.headers.date.strftime("%Y-%m-%dT%H:%m:%s") + "_" + self.headers.ID
-        o = other.headers.date.strftime("%Y-%m-%dT%H:%m:%s") + "_" + other.headers.ID
+        if isinstance(other, basestring):
+            o = other
+        else:
+            o = other.headers.date.strftime("%Y-%m-%dT%H:%m:%s") + "_" + other.headers.ID
         return cmp(o, s)
 
