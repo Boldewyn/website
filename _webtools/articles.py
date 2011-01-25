@@ -330,6 +330,25 @@ class Article(object):
             else:
                 self.headers.description = generate_description(unicode(self.soup))
 
+    class MyHtmlFormatter(HtmlFormatter):
+        def __init__(self, hl_lines=None):
+            super(Article.MyHtmlFormatter, self).__init__(encoding='UTF-8', classprefix="s_", hl_lines=hl_lines)
+
+        def wrap(self, inner, outfile):
+            yield (0, '<ol class="highlight">')
+            for i, (c, l) in enumerate(inner):
+                if c != 1:
+                    yield t, value
+                if i+1 in self.hl_lines:
+                    yield (c, '<li class="hll"><code>'+l+'</code></li>')
+                else:
+                    yield (c, '<li><code>'+l+'</code></li>')
+            yield (0, '</ol>')
+
+        def _highlight_lines(self, tokensource):
+            for tup in tokensource:
+                yield tup
+
     def process_content(self):
         """Change the raw content to a renderable state
 
@@ -344,7 +363,7 @@ class Article(object):
         # Syntax highlighting:
         pres = self.soup.findAll("pre", {"data-lang": re.compile(r".*")})
         for pre in pres:
-            ArticleFormatter = HtmlFormatter(encoding='UTF-8', classprefix='s_', hl_lines=pre.get("data-hl", "").split(","))
+            ArticleFormatter = Article.MyHtmlFormatter(hl_lines=pre.get("data-hl", "").split(","))
             lang = pre["data-lang"]
             text = _unescape(pre.renderContents())
             try:
@@ -354,10 +373,10 @@ class Article(object):
                     print "Couldn't find lexer for %s" % lang
                 lexer = guess_lexer(text)
             result = pygments.highlight(text, lexer, ArticleFormatter)
-            pre.contents = BeautifulSoup(result).pre.contents
-            if "class" not in pre:
-                pre["class"] = ""
-            pre['class'] += " highlight"
+            highlighted = BeautifulSoup(result)
+            for at, val in pre.attrs:
+                highlighted.ol[at] = val
+            pre.replaceWith(highlighted)
         self.processed = True
 
     def save(self, **additions):
