@@ -438,13 +438,19 @@ class Article(object):
                 ax = self.soup.findAll(href=re.compile("^%s:" % protocol))
                 ix = self.soup.findAll(src=re.compile("^%s:" % protocol))
                 for a in ax:
-                    a['href'] = url_scheme % a['href'][len(protocol)+1:]
+                    if callable(url_scheme):
+                        a['href'] = url_scheme(a['href'][len(protocol)+1:])
+                    else:
+                        a['href'] = url_scheme % a['href'][len(protocol)+1:]
                     if a.get('class', False):
                         a['class'] += " protocol_%s" % protocol
                     else:
                         a['class'] = "protocol_%s" % protocol
                 for a in ix:
-                    a['src'] = url_scheme % a['src'][len(protocol)+1:]
+                    if callable(url_scheme):
+                        a['src'] = url_scheme(a['src'][len(protocol)+1:])
+                    else:
+                        a['src'] = url_scheme % a['src'][len(protocol)+1:]
                     if a.get('class', False):
                         a['class'] += " protocol_%s" % protocol
                     else:
