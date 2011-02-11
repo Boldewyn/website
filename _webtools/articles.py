@@ -278,6 +278,10 @@ class Article(object):
         self.live_path = settings.URL.rstrip("/") + settings.get("ARTICLE_PATH", "") + "/" +path
         self.category = os.path.dirname(path).strip("/")
         self.extensions = get_extensions(path)
+        l = filter(lambda s: s in settings.languages, self.extensions)
+        self.hard_language = None
+        if len(l) == 1:
+            self.hard_language = l[0]
         if settings.CREATE_NEGOTIABLE_LANGUAGES:
             while self.live_path.split(".")[-1] in self.extensions:
                 self.live_path = ".".join(self.live_path.split(".")[:-1])

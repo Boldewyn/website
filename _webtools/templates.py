@@ -49,7 +49,11 @@ class TemplateEngine(object):
         self.ctx['settings'] = settings
 
     def render_paginated(self, template, path, **ctx):
-        """Render a template, but break the content into multiple pages"""
+        """Render a template, but break the content into multiple pages
+
+        TODO: The below stripping of articles with hard_language set will
+        make this approach imprecise.
+        """
         pl = settings.PAGINATE_N
         articles = ctx["a"][:]
         if len(articles) > pl:
@@ -94,9 +98,14 @@ class TemplateEngine(object):
                 print exceptions.text_error_template().render()
                 exit()
         else:
+            articles = ctx.get('articles')[:]
+            a = ctx.get('a', [])[:]
             for lang in settings.languages:
                 ctx["_"] = get_gettext(lang)
                 ctx["lang"] = lang
+                ctx["articles"] = filter(lambda a: a.hard_language in [lang, None], articles)
+                if len(a):
+                    ctx["a"] = filter(lambda a: a.hard_language in [lang, None], a)
                 try:
                     self.write_to(path+"."+lang, tpl.render_unicode(**ctx), ctx.get("date", _now))
                 except:
