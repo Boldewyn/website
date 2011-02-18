@@ -21,10 +21,6 @@ except ImportError:
         return datetime.strptime(str, settings.DATE_FORMAT)
 
 
-# define a determined "now"
-_now = datetime.now()
-
-
 def _unescape(text):
     """Removes HTML or XML character references and entities from a text string.
 
@@ -298,11 +294,11 @@ class Article(object):
 
     def is_live(self):
         """Check meta info to see, if this article is live"""
-        if self.headers.available and self.headers.available < _now:
+        if self.headers.available and self.headers.available < settings.now:
             return False
-        if self.headers.issued and self.headers.issued > _now:
+        if self.headers.issued and self.headers.issued > settings.now:
             return False
-        if self.headers.valid and self.headers.valid < _now:
+        if self.headers.valid and self.headers.valid < settings.now:
             return False
         if "exclude" in self.headers.status:
             return False
@@ -314,7 +310,7 @@ class Article(object):
         """Set default headers, that are missing"""
         defaults = {
             "ID": self.live_path,
-            "date": _now,
+            "date": settings.now,
             "type": "Text",
             "format": "application/xhtml+xml",
             "status": [],

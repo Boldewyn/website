@@ -17,10 +17,6 @@ from .settings import settings
 from .i18n import get_gettext
 
 
-# A defined "now". Should be merged with articles._now
-_now = datetime.now()
-
-
 class TemplateEngine(object):
     """"""
 
@@ -93,7 +89,7 @@ class TemplateEngine(object):
             else:
                 ctx["lang"] = settings.LANGUAGE
             try:
-                self.write_to(path, tpl.render_unicode(**ctx), ctx.get("date", _now))
+                self.write_to(path, tpl.render_unicode(**ctx), ctx.get("date", settings.now))
             except:
                 print exceptions.text_error_template().render()
                 exit()
@@ -107,11 +103,11 @@ class TemplateEngine(object):
                 if len(a):
                     ctx["a"] = filter(lambda a: a.hard_language in [lang, None], a)
                 try:
-                    self.write_to(path+"."+lang, tpl.render_unicode(**ctx), ctx.get("date", _now))
+                    self.write_to(path+"."+lang, tpl.render_unicode(**ctx), ctx.get("date", settings.now))
                 except:
                     print exceptions.text_error_template().render()
                     exit()
-        sitemap = [path, ctx.get("date", _now), "yearly", 0.5]
+        sitemap = [path, ctx.get("date", settings.now), "yearly", 0.5]
         if "sitemap_lastmod" in ctx:
             sitemap[1] = ctx["sitemap_lastmod"]
         if "sitemap_changefreq" in ctx:
@@ -120,7 +116,7 @@ class TemplateEngine(object):
             sitemap[3] = ctx["sitemap_priority"]
         self.sitemap.append(sitemap)
 
-    def write_to(self, path, content, mtime=_now):
+    def write_to(self, path, content, mtime=settings.now):
         """Write content to a file"""
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
         if not os.path.isdir(os.path.dirname(save_path)):
@@ -135,7 +131,7 @@ class TemplateEngine(object):
             exit()
         to.close()
         if not isinstance(mtime, datetime):
-            mtime = _now
+            mtime = settings.now
         os.utime(save_path, (timegm(mtime.timetuple()), timegm(mtime.timetuple())))
 
     def render_sitemap(self):

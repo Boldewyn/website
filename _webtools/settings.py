@@ -3,6 +3,7 @@
 
 import imp
 import os
+from datetime import datetime
 
 
 _ = lambda s: s
@@ -65,6 +66,7 @@ class Settings(object):
         self.h['languages'].sort()
         self.h['known_extensions'] = self.h['languages'] + self.h.get('KNOWN_EXTENSIONS', []) + \
                                      ["html", "htm", "xhtml", "xht", "php"]
+        self.h['now'] = datetime.now()
 
     def __str__(self):
         return str(self.h)
