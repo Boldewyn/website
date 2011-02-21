@@ -3,6 +3,7 @@
 
 import imp
 import os
+import sys
 from datetime import datetime
 
 
@@ -31,6 +32,7 @@ class Settings(object):
 
         if "/" in __file__:
             codebase = os.path.abspath(os.path.dirname(__file__)+"/..")
+            sys.path.insert(0, codebase)
         else:
             codebase = os.path.abspath("..")
         self.h["CODEBASE"] = codebase
