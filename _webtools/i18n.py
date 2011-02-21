@@ -10,7 +10,8 @@ class WebtoolsTranslations(gettext.GNUTranslations):
     """A little bit of introspection into GNUTranslations."""
     def update(self, other):
         """Allow to update the catalog with the one of another instance"""
-        self._catalog.update(other._catalog)
+        if hasattr(other, '_catalog'):
+            self._catalog.update(other._catalog)
 
 
 def get_gettext(lang):
@@ -21,7 +22,10 @@ def get_gettext(lang):
     if settings.CODEBASE != os.path.abspath("."):
         u = gettext.translation("website", localedir="_locale", languages=[lang],
                                 class_=WebtoolsTranslations, fallback=True)
-        t.update(u)
+        if isinstance(t, WebtoolsTranslations):
+            t.update(u)
+        else:
+            t = u
     def c_(s):
         if s == "":
             return u""
