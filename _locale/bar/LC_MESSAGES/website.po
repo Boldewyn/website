@@ -3,20 +3,113 @@
 # This file is distributed under the same license as the website package.
 # Manuel Strehl <EMAIL@ADDRESS>, 2011.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-21 07:39+0100\n"
-"PO-Revision-Date: 2011-02-21 07:39+0100\n"
-"Last-Translator: Manuel Strehl\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2011-02-21 21:50+0100\n"
+"PO-Revision-Date: 2011-02-21 21:59+0100\n"
+"Last-Translator: Manuel Strehl <translate@manuel-strehl.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: _webtools/settings.py:57
+#: _webtools/settings.py:59
 msgid "unknown"
 msgstr "wiß’ma ned"
+
+#: _webtools/templatedefs.py:59
+#: _templates/base.mako:42
+msgid "title"
+msgstr "Titl"
+
+#: _templates/archive.mako:8
+#: _templates/archive.mako:19
+#, python-format
+msgid "Archive for %s"
+msgstr "Oids Zeich vom %s"
+
+#: _templates/archive.mako:23
+#, python-format
+msgid "Feed for %s"
+msgstr "Kanal fian %s"
+
+#: _templates/article.mako:24
+msgid "Previous:"
+msgstr "Zruck:"
+
+#: _templates/article.mako:30
+msgid "Next:"
+msgstr "Weida:"
+
+#: _templates/base.mako:53
+msgid "Home"
+msgstr "Hoam"
+
+#: _templates/base.mako:73
+msgid "Tags"
+msgstr "Bapperl"
+
+#: _templates/base.mako:83
+msgid "Archive"
+msgstr "Oide Sachn"
+
+#: _templates/base.mako:93
+msgid "Latest Articles"
+msgstr "Neiasde Artikln"
+
+#: _templates/category.mako:25
+#, python-format
+msgid "Category “%s”"
+msgstr "Schubladn „%s“"
+
+#: _templates/category.mako:29
+#, python-format
+msgid "Feed for category %s"
+msgstr "Kanal fiad Schubladn „%s“"
+
+#: _templates/index.mako:5
+msgid "Another Blog Around"
+msgstr "No a Blog"
+
+#: _templates/index.mako:7
+msgid "Latest Articles:"
+msgstr "Neiasde Artikln:"
+
+#: _templates/paginate.mako:22
+#: _templates/paginate.mako:24
+msgid "Start"
+msgstr "Ofang"
+
+#: _templates/paginate.mako:48
+#: _templates/paginate.mako:50
+msgid "End"
+msgstr "End"
+
+#: _templates/tag.mako:8
+#: _templates/tag.mako:25
+#, python-format
+msgid "Tag “%s”"
+msgstr "Bapperl „%s“"
+
+#: _templates/tag.mako:29
+#, python-format
+msgid "Feed for tag %s"
+msgstr "Kanal fias Bapperl %s"
+
+#: _templates/article/head.mako:22
+#, python-format
+msgid "by %s"
+msgstr "vom %s"
+
+#: _templates/article/head.mako:24
+#, python-format
+msgid "Filed under %s"
+msgstr "Gspeichad ois %s"
+
+#: _templates/article/head.mako:27
+msgid "Keywords:"
+msgstr "Bapperls:"
+

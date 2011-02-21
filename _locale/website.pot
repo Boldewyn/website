@@ -1,22 +1,111 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Translations template for PROJECT.
+# Copyright (C) 2011 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-21 07:39+0100\n"
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2011-02-21 21:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.4\n"
 
-#: _webtools/settings.py:57
+#: _webtools/settings.py:59
 msgid "unknown"
 msgstr ""
+
+#: _webtools/templatedefs.py:59 _templates/base.mako:42
+msgid "title"
+msgstr ""
+
+#: _templates/archive.mako:8 _templates/archive.mako:19
+#, python-format
+msgid "Archive for %s"
+msgstr ""
+
+#: _templates/archive.mako:23
+#, python-format
+msgid "Feed for %s"
+msgstr ""
+
+#: _templates/article.mako:24
+msgid "Previous:"
+msgstr ""
+
+#: _templates/article.mako:30
+msgid "Next:"
+msgstr ""
+
+#: _templates/base.mako:53
+msgid "Home"
+msgstr ""
+
+#: _templates/base.mako:73
+msgid "Tags"
+msgstr ""
+
+#: _templates/base.mako:83
+msgid "Archive"
+msgstr ""
+
+#: _templates/base.mako:93
+msgid "Latest Articles"
+msgstr ""
+
+#: _templates/category.mako:25
+#, python-format
+msgid "Category “%s”"
+msgstr ""
+
+#: _templates/category.mako:29
+#, python-format
+msgid "Feed for category %s"
+msgstr ""
+
+#: _templates/index.mako:5
+msgid "Another Blog Around"
+msgstr ""
+
+#: _templates/index.mako:7
+msgid "Latest Articles:"
+msgstr ""
+
+#: _templates/paginate.mako:22 _templates/paginate.mako:24
+msgid "Start"
+msgstr ""
+
+#: _templates/paginate.mako:48 _templates/paginate.mako:50
+msgid "End"
+msgstr ""
+
+#: _templates/tag.mako:8 _templates/tag.mako:25
+#, python-format
+msgid "Tag “%s”"
+msgstr ""
+
+#: _templates/tag.mako:29
+#, python-format
+msgid "Feed for tag %s"
+msgstr ""
+
+#: _templates/article/head.mako:22
+#, python-format
+msgid "by %s"
+msgstr ""
+
+#: _templates/article/head.mako:24
+#, python-format
+msgid "Filed under %s"
+msgstr ""
+
+#: _templates/article/head.mako:27
+msgid "Keywords:"
+msgstr ""
+
