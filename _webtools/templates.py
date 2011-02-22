@@ -57,16 +57,16 @@ class TemplateEngine(object):
             if "pag" not in ctx:
                 ctx["pag"] = {}
             if "base" not in ctx["pag"]:
-                ctx["pag"]["base"] = "page_%s.html"
+                ctx["pag"]["base"] = "/".join(path.split("/")[:-1])+\
+                                     "/page_%s"
             pages = (len(articles)-1) // pl + 1
-            ctx["pag"]["first"] =  path.split("/")[-1]
+            ctx["pag"]["first"] =  path
             ctx["pag"]["pages"] = pages
             for p in range(1, pages):
                 ctx["pag"]["cur"] = p+1
                 ctx["a"] = articles[p*pl:(p+1)*pl]
                 self.render_template(template,
-                        "/".join(path.split("/")[:-1]) +
-                        "/" + ctx["pag"]["base"]%(p+1), **ctx)
+                            ctx["pag"]["base"]%(p+1)+".html", **ctx)
             ctx["pag"]["cur"] = 1
             ctx["a"] = articles[:pl]
         self.render_template(template, path, **ctx)
