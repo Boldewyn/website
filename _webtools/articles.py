@@ -14,6 +14,7 @@ from .settings import settings
 from datetime import datetime
 from .templates import template_engine
 from .templatedefs import aa
+from .util import get_extensions
 try:
     from dateutil.parser import parse as date_parse
 except ImportError:
@@ -60,7 +61,7 @@ def get_articles(dir=""):
             r = get_articles(dir + a)
             if r:
                 articles.extend(r)
-        elif not set(get_extensions(a)) & set(["html","xhtml","htm","xht"]):
+        elif not set(get_extensions(a)[1]) & set(["html","xhtml","htm","xht"]):
             if not os.path.isdir(settings.BUILD_TARGET + "/" + dir):
                 os.makedirs(settings.BUILD_TARGET + "/" + dir)
             shutil.copy("_articles/" + dir + a,
@@ -77,16 +78,6 @@ def get_articles(dir=""):
         articles.sort()
         return tuple(articles)
     return articles
-
-
-def get_extensions(path):
-    """Get the list of known extensions of a path"""
-    base = os.path.basename(path)
-    extensions = []
-    probes = base.split(".")
-    while len(probes) > 1 and probes[-1] in settings.known_extensions:
-        extensions.append(probes.pop())
-    return extensions
 
 
 def generate_description(markup, length=200, append=u"\u2026"):
@@ -273,7 +264,7 @@ class Article(object):
         self.path = "/"+path.lstrip("/")
         self.live_path = settings.URL.rstrip("/") + settings.get("ARTICLE_PATH", "") + "/" +path
         self.category = os.path.dirname(path).strip("/")
-        self.extensions = get_extensions(path)
+        self.extensions = get_extensions(path)[1]
         l = filter(lambda s: s in settings.languages, self.extensions)
         self.hard_language = None
         if len(l) == 1:

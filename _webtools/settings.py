@@ -63,7 +63,7 @@ class Settings(object):
             self.h['languages'] += [x for x in os.listdir("_locale") \
                                             if os.path.isdir("_locale/"+x)]
         l = self.h['LANGUAGE']
-        if l not in self.languages:
+        if l is not None and l not in self.languages:
             self.h['languages'].append(l)
         self.h['languages'].sort()
         self.h['known_extensions'] = self.h['languages'] + self.h.get('KNOWN_EXTENSIONS', []) + \

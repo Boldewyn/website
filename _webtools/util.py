@@ -76,3 +76,14 @@ def get_templates(dir=""):
         elif a.endswith(".mako"):
             templates.append(dir + a)
     return templates
+
+
+def get_extensions(path):
+    """Get the list of known extensions of a path"""
+    base = os.path.basename(path)
+    extensions = []
+    probes = base.split(".")
+    while len(probes) > 1 and probes[-1] in settings.known_extensions:
+        extensions.append(probes.pop())
+    return ".".join(probes), extensions
+

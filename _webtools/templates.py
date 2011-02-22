@@ -15,6 +15,7 @@ from mako.lookup import TemplateLookup
 from calendar import timegm
 from .settings import settings
 from .i18n import get_gettext
+from .util import get_extensions
 
 
 class TemplateEngine(object):
@@ -116,8 +117,24 @@ class TemplateEngine(object):
             sitemap[3] = ctx["sitemap_priority"]
         self.sitemap.append(sitemap)
 
-    def write_to(self, path, content, mtime=settings.now):
+    def write_to(self, path, content, mtime=settings.now, sort_extensions=True):
         """Write content to a file"""
+        if sort_extensions:
+            dirname = os.path.dirname(path)
+            basename, extensions = get_extensions(path)
+            def extcmp(a, b):
+                if a == "php":
+                    return -1
+                elif b == "php":
+                    return 1
+                elif a in settings.languages and b not in settings.languages:
+                    return -1
+                elif a not in settings.languages and b in settings.languages:
+                    return 1
+                else:
+                    return cmp(a, b)
+            extensions.sort(extcmp)
+            path = "%s/%s.%s" % (dirname, basename, ".".join(extensions))
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
         if not os.path.isdir(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
