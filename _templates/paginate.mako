@@ -12,8 +12,11 @@ from _webtools.templatedefs import aa
       def phref(p):
           if p == 1:
               if "%s" in ctx["first"]:
-                  return ctx["first"] % 1
-              return ctx["first"]
+                  r = ctx["first"] % 1
+              r = ctx["first"]
+              if r.endswith(".html"):
+                r = r[:-5]
+              return r
           else:
               return ctx["base"] % p
     %>
