@@ -3,10 +3,11 @@
 from _webtools.templatedefs import aa
 %>\
 <%def name="list(articles, cls=None)">
-  <ul\
+  <ul class="article-list \
     % if cls is not None:
-      class="${cls}"\
+     ${cls}\
     % endif
+    "
   >
     % for article in articles:
       <li>
