@@ -237,7 +237,7 @@ def get_tagcloud(articles, offset=1):
         while th[normed_n] < float(n):
             normed_n += 1
         rtags.append((tag, normed_n+1, n))
-    rtags.sort()
+    rtags.sort(key=lambda s: s[0].lower())
     return rtags
 
 
