@@ -5,6 +5,7 @@ try:
     import json
 except ImportError:
     import simplejson as json
+import sqlite3
 import math
 import os
 import re
@@ -175,13 +176,29 @@ class TemplateEngine(object):
 
     def make_index(self):
         """Generate an index of all files' contents"""
-        index = open(os.path.join(settings.BUILD_TARGET, "index.json"), "wb")
-        data = self.indexdata.copy()
-        W = re.compile(r'\W+', re.U)
-        for k in data:
-            data[k] = list(set(W.split(re.sub(r'<.+?>', '', data[k]))))
-        index.write(json.dumps(data))
-        index.close()
+        type = settings.get("INDEX", "")
+        if type:
+            data = self.indexdata.copy()
+            W = re.compile(r'\W+', re.U)
+            for k in data:
+                data[k] = list(set(W.split(re.sub(r'<.+?>', '', data[k].lower()))))
+                data[k] = filter(lambda s: s and len(s) > 1, data[k])
+            if type in ("ALL", "JSON"):
+                index = open(os.path.join(settings.BUILD_TARGET, "index.json"), "wb")
+                index.write(json.dumps(data))
+                index.close()
+            if type in ("ALL", "SQLITE"):
+                sqlite3.enable_callback_tracebacks(settings.DEBUG)
+                db = sqlite3.connect(os.path.join(settings.BUILD_TARGET, "index.sqlite"))
+                cur = db.cursor()
+                cur.execute('CREATE TABLE terms ( p, t )')
+                for k in data:
+                    for i in data[k]:
+                        cur.execute('INSERT INTO terms (p, t) VALUES (?, ?)', (unicode(k), unicode(i)))
+                cur.close()
+                db.commit()
+                db.close()
+        return bool(type)
 
 
 template_engine = TemplateEngine()
