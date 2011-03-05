@@ -24,7 +24,7 @@ from _webtools.templatedefs import aa
       % if ctx["cur"] == 1:
         <li class="current start"><span>${_(u"Start")}</span></li>
       % else:
-        <li class="start"><a href="${ctx["first"] | aa}">${_(u"Start")}</a></li>
+        <li class="start"><a href="${phref(1) | aa}">${_(u"Start")}</a></li>
       % endif
       % for p in range(1, ctx["pages"]+1):
         % if p > 1+plen and p < ctx['pages']-plen and p not in range(ctx['cur']-plen, ctx['cur']+1+plen):
