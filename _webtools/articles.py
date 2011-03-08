@@ -19,7 +19,7 @@ try:
     from dateutil.parser import parse as date_parse
 except ImportError:
     def date_parse(str):
-        return datetime.strptime(re.sub(r'[+-]\d{2}:\d{2}$', '', str), settings.DATE_FORMAT)
+        return datetime.strptime(re.sub(r'[+-]\d{4}$', '', str), settings.DATE_FORMAT)
 
 
 def _unescape(text):
