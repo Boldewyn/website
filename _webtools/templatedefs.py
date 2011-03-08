@@ -67,3 +67,9 @@ def strip_tags(s):
     return re.sub(ur"<.+?>", ur"", s)
 
 
+def month(_2, i):
+    """Return the textual representation of a month"""
+    _ = lambda s: s
+    months = [_('Jan.'), _('Feb.'), _('Mar.'), _('Apr.'), _('May'), _('June'), _('July'), _('Aug.'), _('Sep.'), _('Oct.'), _('Nov.'), _('Dec.')]
+    return _2(months[i-1])
+
