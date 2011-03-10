@@ -6,6 +6,7 @@ import glob
 import os
 import sys
 import shutil
+import traceback
 from _webtools.settings import settings
 import _webtools.articles
 import _webtools.categories
@@ -42,5 +43,9 @@ def main():
 if __name__ == "__main__":
     settings.ORIG_BUILD_TARGET = settings.BUILD_TARGET.rstrip("/")
     settings.BUILD_TARGET = os.path.abspath(settings.BUILD_TARGET)
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Exception:
+        traceback.print_exc()
+        sys.exit(1)
 
