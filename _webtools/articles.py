@@ -319,9 +319,9 @@ class Article(object):
             if "abstract" in self.headers:
                 self.headers.description = self.headers.abstract
             elif "standalone" in self.headers.status:
-                self.headers.description = generate_description(unicode(self.soup.body))
+                self.headers.description = generate_description(unicode(self.soup.body).replace(u'<!--<!--', u'<!--').replace(u'-->-->', u'-->'))
             else:
-                self.headers.description = generate_description(unicode(self.soup))
+                self.headers.description = generate_description(self.__unicode__())
 
     class MyHtmlFormatter(HtmlFormatter):
         def __init__(self, hl_lines=None):
@@ -353,6 +353,12 @@ class Article(object):
         elif "standalone" in self.headers.status:
             self.processed = True
             return True
+        # Markup cleaning
+        # see http://code.davidjanes.com/blog/2009/02/05/turning-garbage-html-into-xml-parsable-xhtml-using-beautiful-soup/
+        for item in self.soup.findAll():
+            for index, ( name, value ) in enumerate(item.attrs):
+                if value == None:
+                    item.attrs[index] = ( name, name )
         # Syntax highlighting:
         pres = self.soup.findAll("pre", {"data-lang": re.compile(r".*")})
         for pre in pres:
@@ -387,9 +393,9 @@ class Article(object):
         elif "draft" in self.headers.status:
             raise ValueError("Can't save drafts")
         target = settings.get("ARTICLE_PATH", "")
-        template_engine.add_to_index(target+"/"+self.path, unicode(self.soup))
+        template_engine.add_to_index(target+"/"+self.path, self.__unicode__())
         if "standalone" in self.headers.status:
-            template_engine.write_to(target+"/"+self.path, unicode(self.soup))
+            template_engine.write_to(target+"/"+self.path, self.__unicode__())
         else:
             if "language" in self.headers:
                 additions["lang"] = self.headers.language
@@ -443,11 +449,12 @@ class Article(object):
                     else:
                         a['class'] = "protocol_%s" % protocol
             template_engine.render_template(self.headers.get("template", "article"),
-                                            target+"/"+self.path, content=unicode(self.soup),
+                                            target+"/"+self.path, content=self.__unicode__(),
                                             article=self, **additions)
 
     def __unicode__(self):
-        return unicode(self.soup)
+        # work around bug in BeautifulSoup
+        return unicode(self.soup).replace(u'<!--<!--', u'<!--').replace(u'-->-->', u'-->')
 
     def __hash__(self):
         s = hashlib.sha224(self.headers.date.strftime("%Y-%m-%dT%H:%m:%s") +
