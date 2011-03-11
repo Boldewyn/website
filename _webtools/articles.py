@@ -9,6 +9,7 @@ import shutil
 from htmlentitydefs import name2codepoint
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name, guess_lexer
+from pygments.lexer import Lexer
 from BeautifulSoup import BeautifulSoup
 from .settings import settings
 from datetime import datetime
@@ -258,8 +259,14 @@ class ArticleHeaders(object):
 class Article(object):
     """A single article or blog post"""
 
+    # Lexer aliases
+    lexers = {
+        'php-inline' : ['php', {"startinline": True}],
+    }
+
     def __init__(self, path):
         """Initialize with path to article source"""
+        self.lexers.update(settings.get('LEXERS', {}))
         self.processed = False
         self.path = "/"+path.lstrip("/")
         self.live_path = settings.URL.rstrip("/") + settings.get("ARTICLE_PATH", "") + "/" +path
@@ -366,7 +373,13 @@ class Article(object):
             lang = pre["data-lang"]
             text = _unescape(pre.renderContents())
             try:
-                lexer = get_lexer_by_name(lang)
+                if lang in self.lexers:
+                    if isinstance(self.lexers[lang], Lexer):
+                        lexer = self.lexers[lang]
+                    else:
+                        lexer = get_lexer_by_name(self.lexers[lang][0], **self.lexers[lang][1])
+                else:
+                    lexer = get_lexer_by_name(lang)
             except pygments.util.ClassNotFound:
                 if settings.DEBUG:
                     print "Couldn't find lexer for %s" % lang
