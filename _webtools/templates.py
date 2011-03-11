@@ -74,6 +74,7 @@ class TemplateEngine(object):
 
     def render_template(self, template, path, **ctx):
         """Render a template within the given context ctx"""
+        path = path.lstrip("/")
         self.collect_page_requisites()
         nctx = self.ctx.copy()
         nctx.update(ctx)
