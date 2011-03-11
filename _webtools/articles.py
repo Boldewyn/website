@@ -23,6 +23,9 @@ except ImportError:
         return datetime.strptime(re.sub(r'[+-]\d{2}:?\d{2}$', '', str), settings.DATE_FORMAT)
 
 
+BeautifulSoup.PRESERVE_WHITESPACE_TAGS |= set(["code"])
+
+
 def _unescape(text):
     """Removes HTML or XML character references and entities from a text string.
 
@@ -377,9 +380,9 @@ class Article(object):
                     if isinstance(self.lexers[lang], Lexer):
                         lexer = self.lexers[lang]
                     else:
-                        lexer = get_lexer_by_name(self.lexers[lang][0], **self.lexers[lang][1])
+                        lexer = get_lexer_by_name(self.lexers[lang][0], stripnl=False, **self.lexers[lang][1])
                 else:
-                    lexer = get_lexer_by_name(lang)
+                    lexer = get_lexer_by_name(lang, stripnl=False)
             except pygments.util.ClassNotFound:
                 if settings.DEBUG:
                     print "Couldn't find lexer for %s" % lang
@@ -467,7 +470,7 @@ class Article(object):
 
     def __unicode__(self):
         # work around bug in BeautifulSoup
-        return unicode(self.soup).replace(u'<!--<!--', u'<!--').replace(u'-->-->', u'-->')
+        return unicode(str(self.soup).decode('UTF-8'))
 
     def __hash__(self):
         s = hashlib.sha224(self.headers.date.strftime("%Y-%m-%dT%H:%m:%s") +
