@@ -85,6 +85,13 @@ class TemplateEngine(object):
         if "full_path" not in ctx or ctx["full_path"] == False:
             filename = "_templates/"+template+".mako"
         tpl = self.lookup.get_template(filename)
+        sitemap = [path, ctx.get("date", settings.now), "yearly", 0.5]
+        if "sitemap_lastmod" in ctx:
+            sitemap[1] = ctx["sitemap_lastmod"]
+        if "sitemap_changefreq" in ctx:
+            sitemap[2] = ctx["sitemap_changefreq"]
+        if "sitemap_priority" in ctx:
+            sitemap[3] = ctx["sitemap_priority"]
         if not settings.CREATE_NEGOTIABLE_LANGUAGES or ctx.get("nolang", False):
             ctx["_"] = lambda s: unicode(s)
             if "lang" in ctx:
@@ -96,6 +103,7 @@ class TemplateEngine(object):
             except:
                 print exceptions.text_error_template().render()
                 exit()
+            self.sitemap.append(sitemap)
         else:
             articles = ctx.get('articles')[:]
             a = ctx.get('a', [])[:]
@@ -110,33 +118,13 @@ class TemplateEngine(object):
                 except:
                     print exceptions.text_error_template().render()
                     exit()
-        sitemap = [path, ctx.get("date", settings.now), "yearly", 0.5]
-        if "sitemap_lastmod" in ctx:
-            sitemap[1] = ctx["sitemap_lastmod"]
-        if "sitemap_changefreq" in ctx:
-            sitemap[2] = ctx["sitemap_changefreq"]
-        if "sitemap_priority" in ctx:
-            sitemap[3] = ctx["sitemap_priority"]
-        self.sitemap.append(sitemap)
+                sitemap[0] = self.sort_extensions(path+"."+lang)
+                self.sitemap.append(sitemap[:])
 
     def write_to(self, path, content, mtime=settings.now, sort_extensions=True):
         """Write content to a file"""
         if sort_extensions:
-            dirname = os.path.dirname(path)
-            basename, extensions = get_extensions(path)
-            def extcmp(a, b):
-                if a == "php":
-                    return -1
-                elif b == "php":
-                    return 1
-                elif a in settings.languages and b not in settings.languages:
-                    return -1
-                elif a not in settings.languages and b in settings.languages:
-                    return 1
-                else:
-                    return cmp(a, b)
-            extensions.sort(extcmp)
-            path = "%s/%s.%s" % (dirname, basename, ".".join(extensions))
+            path = self.sort_extensions(path)
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
         if not os.path.isdir(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
@@ -152,6 +140,24 @@ class TemplateEngine(object):
         if not isinstance(mtime, datetime):
             mtime = settings.now
         os.utime(save_path, (timegm(mtime.timetuple()), timegm(mtime.timetuple())))
+
+    def sort_extensions(self, path):
+        """Sort extensions to a useful order"""
+        dirname = os.path.dirname(path)
+        basename, extensions = get_extensions(path)
+        def extcmp(a, b):
+            if a == "php":
+                return -1
+            elif b == "php":
+                return 1
+            elif a in settings.languages and b not in settings.languages:
+                return -1
+            elif a not in settings.languages and b in settings.languages:
+                return 1
+            else:
+                return cmp(a, b)
+        extensions.sort(extcmp)
+        return "%s/%s.%s" % (dirname, basename, ".".join(extensions))
 
     def render_sitemap(self):
         """Render a sitemap.xml"""

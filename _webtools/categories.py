@@ -95,6 +95,7 @@ def render_feed(all_articles, category=""):
     elif category != "" and category in settings.CATEGORY:
         title = u"Category \u201C%s\u201D \u2014 %s" % (settings.CATEGORY[category]['title'], title)
     id = settings.URL + category
+    nolang = True
     template_engine.render_template("feed", category+"/feed.xml", **locals())
 
 

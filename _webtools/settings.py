@@ -67,7 +67,7 @@ class Settings(object):
             self.h['languages'].append(l)
         self.h['languages'].sort()
         self.h['known_extensions'] = self.h['languages'] + self.h.get('KNOWN_EXTENSIONS', []) + \
-                                     ["html", "htm", "xhtml", "xht", "php"]
+                                     ["html", "htm", "xhtml", "xml", "xht", "php", "atom", "rdf", "rss", "py"]
         self.h['now'] = datetime.now()
 
     def __str__(self):
