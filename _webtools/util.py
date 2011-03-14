@@ -89,7 +89,7 @@ def get_extensions(path):
 
 
 def sort_extensions(path):
-    """Sort extensions to a useful order"""
+    """Sort extensions to a useful order, remove duplicates"""
     dirname = os.path.dirname(path)
     basename, extensions = get_extensions(path)
     def extcmp(a, b):
@@ -104,5 +104,6 @@ def sort_extensions(path):
         else:
             return cmp(a, b)
     extensions.sort(extcmp)
+    exteinsions = list(set(extensions))
     return "%s/%s.%s" % (dirname, basename, ".".join(extensions))
 
