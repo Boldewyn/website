@@ -87,3 +87,22 @@ def get_extensions(path):
         extensions.append(probes.pop())
     return ".".join(probes), extensions
 
+
+def sort_extensions(path):
+    """Sort extensions to a useful order"""
+    dirname = os.path.dirname(path)
+    basename, extensions = get_extensions(path)
+    def extcmp(a, b):
+        if a == "php":
+            return -1
+        elif b == "php":
+            return 1
+        elif a in settings.languages and b not in settings.languages:
+            return -1
+        elif a not in settings.languages and b in settings.languages:
+            return 1
+        else:
+            return cmp(a, b)
+    extensions.sort(extcmp)
+    return "%s/%s.%s" % (dirname, basename, ".".join(extensions))
+

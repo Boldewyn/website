@@ -16,7 +16,7 @@ from mako.lookup import TemplateLookup
 from calendar import timegm
 from .settings import settings
 from .i18n import get_gettext
-from .util import get_extensions
+from .util import sort_extensions
 
 
 class TemplateEngine(object):
@@ -118,18 +118,25 @@ class TemplateEngine(object):
                 except:
                     print exceptions.text_error_template().render()
                     exit()
-                sitemap[0] = self.sort_extensions(path+"."+lang)
+                sitemap[0] = sort_extensions(path+"."+lang)
                 self.sitemap.append(sitemap[:])
 
-    def write_to(self, path, content, mtime=settings.now, sort_extensions=True):
-        """Write content to a file"""
-        if sort_extensions:
-            path = self.sort_extensions(path)
+    def write_to(self, path, content, mtime=settings.now, sort_ext=True):
+        """Write content to a file
+
+        The file will be written to a subfolder of
+        settings.BUILD_TARGET.
+
+        The modification time will be set to mtime. If
+        sort_ext is True, the extensions will be
+        sorted in a way to be useful for Apache's mod_
+        negotiation.
+        """
+        if sort_ext:
+            path = sort_extensions(path)
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
         if not os.path.isdir(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
-        if ".php." in os.path.basename(path):
-            save_path = re.sub(r"^(.+)\.php\.(.+)$", r"\1.\2.php", save_path)
         to = open(save_path, 'w')
         try:
             to.write(content.encode("UTF-8"))
@@ -140,24 +147,7 @@ class TemplateEngine(object):
         if not isinstance(mtime, datetime):
             mtime = settings.now
         os.utime(save_path, (timegm(mtime.timetuple()), timegm(mtime.timetuple())))
-
-    def sort_extensions(self, path):
-        """Sort extensions to a useful order"""
-        dirname = os.path.dirname(path)
-        basename, extensions = get_extensions(path)
-        def extcmp(a, b):
-            if a == "php":
-                return -1
-            elif b == "php":
-                return 1
-            elif a in settings.languages and b not in settings.languages:
-                return -1
-            elif a not in settings.languages and b in settings.languages:
-                return 1
-            else:
-                return cmp(a, b)
-        extensions.sort(extcmp)
-        return "%s/%s.%s" % (dirname, basename, ".".join(extensions))
+        return save_path
 
     def render_sitemap(self):
         """Render a sitemap.xml"""
@@ -183,7 +173,7 @@ class TemplateEngine(object):
 
     def make_index(self):
         """Generate an index of all files' contents"""
-        type = settings.get("INDEX", "")
+        type = settings.get("INDEX", False)
         if type:
             data = self.indexdata.copy()
             W = re.compile(r'\W+', re.U)
