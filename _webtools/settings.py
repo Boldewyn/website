@@ -66,6 +66,8 @@ class Settings(object):
         if l is not None and l not in self.languages:
             self.h['languages'].append(l)
         self.h['languages'].sort()
+        # make lang entries unique
+        self.h['languages'] = list(set(self.h['languages']))
         self.h['known_extensions'] = self.h['languages'] + self.h.get('KNOWN_EXTENSIONS', []) + \
                                      ["html", "htm", "xhtml", "xml", "xht", "php", "atom", "rdf", "rss", "py"]
         self.h['now'] = datetime.now()
