@@ -21,7 +21,7 @@ from _webtools.templatedefs import aa, date, get_cat_title
         % endif
       ">${_("by %s") % _(article.headers.author)}</address>
       % if article.category:
-        <p class="info-category"><a href="${article.category | aa}">${_("Filed under %s") % get_cat_title(_, article.category)}</a></p>
+        <p class="info-category">${_("Filed under %s") % '<a href="%s/">%s</a>' % (aa(article.category), get_cat_title(_, article.category)) | n}</p>
       % endif
       % if len(article.headers.subject) > 0:
         <p class="info-subject">${_("Keywords:")}
