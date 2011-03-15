@@ -84,7 +84,7 @@ class TemplateEngine(object):
         if "full_path" not in ctx or ctx["full_path"] == False:
             filename = "_templates/"+template+".mako"
         tpl = self.lookup.get_template(filename)
-        sitemap = [path, ctx.get("date", settings.now), "yearly", 0.5]
+        sitemap = [None, ctx.get("date", settings.now), "yearly", 0.5]
         if "sitemap_lastmod" in ctx:
             sitemap[1] = ctx["sitemap_lastmod"]
         if "sitemap_changefreq" in ctx:
@@ -102,6 +102,7 @@ class TemplateEngine(object):
             except:
                 print exceptions.text_error_template().render()
                 exit()
+            sitemap[0] = sort_extensions(path)
             self.sitemap.append(sitemap)
         else:
             articles = ctx.get('articles')[:]
