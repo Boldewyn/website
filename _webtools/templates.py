@@ -27,13 +27,12 @@ class TemplateEngine(object):
         self.ctx = {}
         self.sitemap = []
         self.lookup = TemplateLookup(directories=[".", settings.CODEBASE], default_filters=["x"])
-                                     #module_directory="_webtools/mod")
-        self.ctx['all_languages'] = settings.languages
 
     def set(self, name, value):
         self.ctx[name] = value
 
     def collect_page_requisites(self):
+        """generate page items out of the general context"""
         if "articles" in self.ctx:
             if "categories" not in self.ctx:
                 self.ctx["categories"] = get_categories(self.ctx["articles"])
@@ -202,7 +201,7 @@ template_engine = TemplateEngine()
 
 
 def get_tagcloud(articles, offset=1):
-    """Get all tags from the categories"""
+    """Get all tags from a set of articles"""
     def thresholds(mn, mx, steps=5):
         mn = float(mn)
         mx = float(mx)
@@ -239,7 +238,7 @@ def get_tagcloud(articles, offset=1):
 
 
 def get_categories(articles):
-    """Get all categories from the articles"""
+    """Get all categories from a set of articles"""
     categories = []
     for article in articles:
         if article.category not in categories:
