@@ -94,9 +94,9 @@ def sort_extensions(path):
     basename, extensions = get_extensions(path)
     def extcmp(a, b):
         if a == "php":
-            return -1
-        elif b == "php":
             return 1
+        elif b == "php":
+            return -1
         elif a in settings.languages and b not in settings.languages:
             return -1
         elif a not in settings.languages and b in settings.languages:
