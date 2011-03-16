@@ -46,6 +46,9 @@ ${article.headers.title | n,strip_tags} — \
   <link rel="canonical" href="${article.live_path | aa}" />
   <link rel="dc.isPartOf" href="${article.category | aa}" />
   <link rel="dc.tableOfContents" href="${article.category | aa}" />
+  % if article.headers.robots:
+    <meta name="robots" content="${article.headers.robots}" />
+  % endif
   % for k, v in article.headers.get_dc().iteritems():
     % if v.startswith("http"):
       <link rel="dc.${k}" href="${v | repl}" />
