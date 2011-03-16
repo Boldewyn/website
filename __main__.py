@@ -3,6 +3,7 @@
 
 
 import glob
+import logging
 import os
 import sys
 import shutil
@@ -43,9 +44,11 @@ def main():
 if __name__ == "__main__":
     settings.ORIG_BUILD_TARGET = settings.BUILD_TARGET.rstrip("/")
     settings.BUILD_TARGET = os.path.abspath(settings.BUILD_TARGET)
+    if settings.DEBUG:
+        logging.basicConfig(level=logging.DEBUG)
     try:
         sys.exit(main())
     except Exception:
-        traceback.print_exc()
+        logging.critical(traceback.format_exc())
         sys.exit(1)
 

@@ -2,6 +2,7 @@
 
 
 import hashlib
+import logging
 import re
 import os
 import pygments
@@ -74,7 +75,7 @@ def get_articles(dir=""):
             try:
                 candidate = Article(dir + a)
             except ValueError, e:
-                print "*Error* Couldn't process _articles/" + dir + a + ": " + str(e)
+                logging.warning("Couldn't process _articles/" + dir + a + ": " + str(e))
             else:
                 if candidate.is_live():
                     articles.append(candidate)
@@ -384,8 +385,7 @@ class Article(object):
                 else:
                     lexer = get_lexer_by_name(lang, stripnl=False)
             except pygments.util.ClassNotFound:
-                if settings.DEBUG:
-                    print "Couldn't find lexer for %s" % lang
+                logging.warning("Couldn't find lexer for %s" % lang)
                 lexer = guess_lexer(text)
             result = pygments.highlight(text, lexer, ArticleFormatter)
             highlighted = BeautifulSoup(result)
@@ -402,11 +402,11 @@ class Article(object):
         the "id:" URI scheme, the parameter **additions must contain
         the value "articles", against which's content the URI is
         checked."""
-        if settings.DEBUG:
-            if "draft" in self.headers.status:
-                print "*DRAFT* ",
-            print self.path
-        elif "draft" in self.headers.status:
+        dr = ""
+        if "draft" in self.headers.status:
+            dr = "*DRAFT* "
+        logging.debug(dr + self.path)
+        if "draft" in self.headers.status and not settings.DEBUG:
             raise ValueError("Can't save drafts")
         target = settings.get("ARTICLE_PATH", "")
         template_engine.add_to_index(target+"/"+self.path, self.__unicode__())

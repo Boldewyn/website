@@ -5,6 +5,7 @@ try:
     import json
 except ImportError:
     import simplejson as json
+import logging
 import sqlite3
 import math
 import os
@@ -100,7 +101,7 @@ class TemplateEngine(object):
             try:
                 self.write_to(path, tpl.render_unicode(**ctx), ctx.get("date", settings.now))
             except:
-                print exceptions.text_error_template().render()
+                logging.critical(exceptions.text_error_template().render())
                 exit()
             sitemap[0] = sort_extensions(path)
             self.sitemap.append(sitemap)
@@ -116,7 +117,7 @@ class TemplateEngine(object):
                 try:
                     self.write_to(path+"."+lang, tpl.render_unicode(**ctx), ctx.get("date", settings.now))
                 except:
-                    print exceptions.text_error_template().render()
+                    logging.critical(exceptions.text_error_template().render())
                     exit()
                 sitemap[0] = sort_extensions(path+"."+lang)
                 self.sitemap.append(sitemap[:])
@@ -141,7 +142,7 @@ class TemplateEngine(object):
         try:
             to.write(content.encode("UTF-8"))
         except:
-            print exceptions.text_error_template().render()
+            logging.critical(exceptions.text_error_template().render())
             exit()
         to.close()
         if not isinstance(mtime, datetime):
@@ -161,11 +162,11 @@ class TemplateEngine(object):
             try:
                 to.write(tpl.render_unicode(**data).encode("UTF-8"))
             except:
-                print exceptions.text_error_template().render()
+                logging.critical(exceptions.text_error_template().render())
                 exit()
             to.close()
         else:
-            print "Sitemap already exists."
+            logging.info("Sitemap already exists")
 
     def add_to_index(self, path, content):
         """Add content to the search index"""

@@ -2,6 +2,7 @@
 
 
 import imp
+import logging
 import os
 import sys
 from datetime import datetime
@@ -41,7 +42,7 @@ class Settings(object):
             config = imp.load_source("_config",
                          os.path.abspath("_config.py"))
         except (ImportError, IOError):
-            print "No config imported!"
+            logging.warning("No config imported!")
         else:
             for k,v in config.__dict__.iteritems():
                 if k[0] != "_":
