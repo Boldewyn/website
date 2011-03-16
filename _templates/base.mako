@@ -73,7 +73,7 @@ from _webtools.templatedefs import aa, static
         <h2>${_(u"Tags")}</h2>
         <p>
           % for tag, t, n in tagcloud:
-            <a class="tc_${str(t)}" rel="tag" href="${("tag/%s" % tag) | aa}">${tag} <span class="tc_info">${str(n)}</span></a>
+            <a class="tc_${str(t)}" rel="tag" href="${("tag/%s" % tag) | aa}">${tag} <span class="tc_info">${str(n)}</span></a>
           % endfor
         </p>
       </div>
