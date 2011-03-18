@@ -7,6 +7,7 @@ import re
 import os
 import pygments
 import shutil
+import traceback
 from htmlentitydefs import name2codepoint
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name, guess_lexer
@@ -52,7 +53,7 @@ def _unescape(text):
             except KeyError:
                 pass
         return text # leave as is
-    return re.sub("&#?\w+;", fixup, text)
+    return re.sub(r"&#?\w+;", fixup, unicode(text.decode("UTF-8")), re.U)
 
 
 def get_articles(dir=""):
@@ -76,6 +77,8 @@ def get_articles(dir=""):
                 candidate = Article(dir + a)
             except ValueError, e:
                 logging.warning("Couldn't process _articles/" + dir + a + ": " + str(e))
+                if settings.DEBUG:
+                    logging.warning(traceback.format_exc())
             else:
                 if candidate.is_live():
                     articles.append(candidate)
@@ -371,7 +374,7 @@ class Article(object):
                 if value == None:
                     item.attrs[index] = ( name, name )
         # Syntax highlighting:
-        pres = self.soup.findAll("pre", {"data-lang": re.compile(r".*")})
+        pres = self.soup.findAll("pre", {"data-lang": re.compile(r".+")})
         for pre in pres:
             ArticleFormatter = Article.MyHtmlFormatter(hl_lines=pre.get("data-hl", "").split(","))
             lang = pre["data-lang"]
@@ -390,8 +393,11 @@ class Article(object):
             result = pygments.highlight(text, lexer, ArticleFormatter)
             highlighted = BeautifulSoup(result)
             for at, val in pre.attrs:
-                highlighted.ol[at] = val
-            pre.replaceWith(highlighted)
+                if at == "class":
+                    highlighted.ol[at] += u" "+val
+                else:
+                    highlighted.ol[at] = val
+            pre.replaceWith(highlighted.ol)
         self.processed = True
 
     def save(self, **additions):
@@ -444,8 +450,8 @@ class Article(object):
                             self.headers.IsRequiredBy = a
             for protocol, url_scheme in settings.PROTOCOLS.iteritems():
                 # resolve all pseudo-schemes
-                ax = self.soup.findAll(href=re.compile("^%s:" % protocol))
-                ix = self.soup.findAll(src=re.compile("^%s:" % protocol))
+                ax = self.soup.findAll(href=re.compile(u"^%s:" % protocol))
+                ix = self.soup.findAll(src=re.compile(u"^%s:" % protocol))
                 for a in ax:
                     if callable(url_scheme):
                         a['href'] = url_scheme(a['href'][len(protocol)+1:])
