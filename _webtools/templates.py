@@ -17,7 +17,7 @@ from mako.lookup import TemplateLookup
 from calendar import timegm
 from .settings import settings
 from .i18n import get_gettext
-from .util import sort_extensions
+from .util import sort_extensions, get_extensions
 
 
 class TemplateEngine(object):
@@ -170,7 +170,17 @@ class TemplateEngine(object):
 
     def add_to_index(self, path, content):
         """Add content to the search index"""
-        self.indexdata[path.lstrip("/")] = content
+        path = path.lstrip("/")
+        if settings.CREATE_NEGOTIABLE_LANGUAGES:
+            probe = get_extensions(path)
+            if set(settings.languages) & set(probe[1]):
+                # hardcoded language
+                self.indexdata[path] = content
+            else:
+                probe[1].insert(0, settings.LANGUAGE)
+                self.indexdata[os.path.dirname(path)+"/"+probe[0]+"."+".".join(probe[1])] = content
+        else:
+            self.indexdata[path] = content
 
     def make_index(self):
         """Generate an index of all files' contents"""
