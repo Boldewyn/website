@@ -5,6 +5,7 @@ import imp
 import logging
 import os
 import sys
+import urlparse
 from datetime import datetime
 
 
@@ -56,6 +57,8 @@ class Settings(object):
                 self.h['PROTOCOLS'][k] = v
         if "STATICURL" not in self.h:
             self.h["STATICURL"] = self.h["URL"]
+        if "URLPATH" not in self.h:
+            self.h["URLPATH"] = urlparse.urlsplit(self.h["URL"]).path
         if "AUTHOR" not in self.h["DEFAULTS"]:
             self.h["DEFAULTS"]["AUTHOR"] = _(u"unknown")
         self.h['languages'] = [x for x in os.listdir(codebase+"/_locale") \
