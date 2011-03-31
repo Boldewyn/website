@@ -17,7 +17,9 @@ from mako.lookup import TemplateLookup
 from calendar import timegm
 from .settings import settings
 from .i18n import get_gettext
-from .util import sort_extensions, get_extensions
+from .util import get_extensions
+from .url import Url
+from .templatedefs import aa
 
 
 class TemplateEngine(object):
@@ -80,7 +82,7 @@ class TemplateEngine(object):
         nctx.update(ctx)
         ctx = nctx
         if "url" not in ctx:
-            ctx["url"] = path
+            ctx['url'] = Url(path)
         filename = template
         if "full_path" not in ctx or ctx["full_path"] == False:
             filename = "_templates/"+template+".mako"
@@ -99,30 +101,34 @@ class TemplateEngine(object):
             else:
                 ctx["lang"] = settings.LANGUAGE
             try:
-                self.write_to(path, tpl.render_unicode(**ctx), ctx.get("date", settings.now))
+                self.write_to(ctx["url"].get_path(), tpl.render_unicode(**ctx),
+                              ctx.get("date", settings.now))
             except:
                 logging.critical(exceptions.text_error_template().render())
                 exit()
-            sitemap[0] = sort_extensions(path)
+            sitemap[0] = ctx["url"]
             self.sitemap.append(sitemap)
         else:
             articles = ctx.get('articles')[:]
             a = ctx.get('a', [])[:]
+            url = ctx['url']
             for lang in settings.languages:
                 ctx["_"] = get_gettext(lang)
                 ctx["lang"] = lang
+                ctx["url"] = url.copy().switch_language(lang)
                 ctx["articles"] = filter(lambda a: a.hard_language in [lang, None], articles)
                 if len(a):
                     ctx["a"] = filter(lambda a: a.hard_language in [lang, None], a)
                 try:
-                    self.write_to(path+"."+lang, tpl.render_unicode(**ctx), ctx.get("date", settings.now))
+                    self.write_to(ctx["url"].get_path(), tpl.render_unicode(**ctx),
+                                  ctx.get("date", settings.now))
                 except:
                     logging.critical(exceptions.text_error_template().render())
                     exit()
-                sitemap[0] = sort_extensions(path+"."+lang)
+                sitemap[0] = ctx['url']
                 self.sitemap.append(sitemap[:])
 
-    def write_to(self, path, content, mtime=settings.now, sort_ext=True):
+    def write_to(self, path, content, mtime=settings.now):
         """Write content to a file
 
         The file will be written to a subfolder of
@@ -133,8 +139,6 @@ class TemplateEngine(object):
         sorted in a way to be useful for Apache's mod_
         negotiation.
         """
-        if sort_ext:
-            path = sort_extensions(path)
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
         if not os.path.isdir(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))

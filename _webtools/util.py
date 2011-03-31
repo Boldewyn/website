@@ -85,25 +85,8 @@ def get_extensions(path):
     probes = base.split(".")
     while len(probes) > 1 and probes[-1] in settings.known_extensions:
         extensions.append(probes.pop())
+    if not len(probes):
+        probes.append('index')
     return ".".join(probes), extensions
 
-
-def sort_extensions(path):
-    """Sort extensions to a useful order, remove duplicates"""
-    dirname = os.path.dirname(path)
-    basename, extensions = get_extensions(path)
-    def extcmp(a, b):
-        if a == "php":
-            return 1
-        elif b == "php":
-            return -1
-        elif a in settings.languages and b not in settings.languages:
-            return -1
-        elif a not in settings.languages and b in settings.languages:
-            return 1
-        else:
-            return cmp(a, b)
-    extensions.sort(extcmp)
-    exteinsions = list(set(extensions))
-    return "%s/%s.%s" % (dirname, basename, ".".join(extensions))
 

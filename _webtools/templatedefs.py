@@ -6,8 +6,10 @@ try:
 except ImportError:
     import simplejson as json
 import re
+import os
 import urllib
 from .settings import settings
+from .url import Url
 from babel.dates import format_date
 from babel import UnknownLocaleError
 
@@ -20,9 +22,27 @@ def urlquote(string):
 
 def aa(path):
     """Make a path absolute"""
-    if re.match(r"[a-z0-9\-]+:", path) or path.startswith("//"):
+    if isinstance(path, Url):
+        return path.get()
+    elif re.match(r"[a-z0-9\-]+:", path) or path.startswith("//"):
         return path
-    return settings.URL + urlquote(path.lstrip("/"))
+    return Url(path).get()
+    #return settings.URLPATH + urlquote(path.lstrip("/"))
+
+
+def laa(lang=None, url=None):
+    """Make a path absolute, add language"""
+    if lang is None:
+        lang = settings.LANGUAGE
+    def _laa(path):
+        if isinstance(path, Url):
+            return path.get_head() + "." + lang
+        else:
+            return Url(path).get_head() + "." + lang
+    if url is None:
+        return _laa
+    else:
+        return _laa(url)
 
 
 def static(path):
