@@ -58,8 +58,9 @@ class Settings(object):
             self.h["STATICURL"] = self.h["URL"]
         if "AUTHOR" not in self.h["DEFAULTS"]:
             self.h["DEFAULTS"]["AUTHOR"] = _(u"unknown")
-        self.h['languages'] = [x for x in os.listdir(codebase+"/_locale") \
-                                       if os.path.isdir(codebase+"/_locale/"+x)]
+        #self.h['languages'] = [x for x in os.listdir(codebase+"/_locale") \
+        #                               if os.path.isdir(codebase+"/_locale/"+x)]
+        self.h['languages'] = []
         if os.path.isdir("_locale") and codebase != os.path.abspath("."):
             self.h['languages'] += [x for x in os.listdir("_locale") \
                                             if os.path.isdir("_locale/"+x)]
