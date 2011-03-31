@@ -1,0 +1,93 @@
+
+                                 import website
+
+              A website compiler, that creates websites from HTML
+
+                                       ~
+
+Oh great! Now, of what use is this?
+===================================
+
+Have you ever struggled with WYSIWYG editors or substitute markup, that just
+doesn't do what you want? Do you wish you could just use plain old HTML, when
+you look up, how a table is marked up in MediaWiki syntax?
+
+This was my line of thought, when I wanted to start a blog. I know HTML, so why
+use another markup language? I want all the freedom of direct source code
+editing without the hassle of managing manually a dozen headers and footers. I
+don't need a shiny database just to display a tagcloud of my articles. And I
+want a simple way to embed metadata.
+
+Therefore I wrote this Python framework, that takes a bunch of HTML stubs and
+converts it to a fully functional website. Take a look at this file:
+
+    Title: My First Post
+    Date: 2011-01-01
+    Subject: blog, Python, simple, usable
+
+    <p>This is my first post.</p>
+    <ul>
+      <li>Look! A list!</li>
+    </ul>
+
+The format is oriented towards HTTP. First there are header lines, that
+describe metadata. Then a blank line. And then full-power awesome HTML markup
+with all the shiny HTML5 features ready to be used inline. What could be
+simpler than that?
+
+You can also define shortcuts to be used in your markup! No, that's not another
+micro-markup invented. It's just an typing easement.
+
+    <a href="g:import+website">Search "import website"
+      with Google</a>
+
+
+How do I use it?
+================
+
+I hope to create a deployment script somewhen in the nearer future. Until then,
+you will have to do a little bit work:
+
+    $ git clone http://github.com/Boldewyn/website.git
+    $ mkdir my_website
+    $ cd my_website
+    $ mkdir _articles
+    $ cat <<CONFIG > _config.py
+    > URL = "http://example.com/"
+    > TITLE = "My new blog"
+    > CONFIG
+    $ # create articles as HTML files in _articles:
+    $ vi _articles/first_post.html
+    $ # embed all other content directly:
+    $ touch style.css
+    $ ../website/__main__.py
+    $ ls
+    _articles/
+    _config.py
+    site/
+    style.css
+    $ ls site
+    site/archive/
+    site/feed.xml
+    site/first_post.html
+    site/index.html
+    site/sitemap.xml
+    site/style.css
+    site/tag/
+    $ # The ready compiled site is in my_website/site/
+
+All files in my_website, that start with an underscore "_" will not be copied
+to site/.
+
+If you encounter problems, don't hesitate to file a bug at
+<http://github.com/Boldewyn/website/issues>.
+
+
+That's not my taste. I don't like it.
+=====================================
+
+That's ok! Everyone's taste is different. You might perhaps be interested in
+Blogofile instead:
+                             <http://blogofile.com>
+If you're a Ruby guy, Jeckyll and Toto follow a similar approach.
+
