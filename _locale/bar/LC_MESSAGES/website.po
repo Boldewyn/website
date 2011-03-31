@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-02-21 21:50+0100\n"
-"PO-Revision-Date: 2011-03-17 11:54+0100\n"
+"POT-Creation-Date: 2011-03-31 17:55+0200\n"
+"PO-Revision-Date: 2011-03-31 17:59+0100\n"
 "Last-Translator: Manuel Strehl <translate@manuel-strehl.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: _webtools/settings.py:59
+#: _webtools/settings.py:60
 msgid "unknown"
 msgstr "wiß’ma ned"
 
@@ -24,6 +24,54 @@ msgstr "wiß’ma ned"
 #: _templates/base.mako:42
 msgid "title"
 msgstr "Titl"
+
+#: _webtools/templatedefs.py:73
+msgid "Jan."
+msgstr "Jan."
+
+#: _webtools/templatedefs.py:73
+msgid "Feb."
+msgstr "Feb."
+
+#: _webtools/templatedefs.py:73
+msgid "Mar."
+msgstr "März"
+
+#: _webtools/templatedefs.py:73
+msgid "Apr."
+msgstr "Apr."
+
+#: _webtools/templatedefs.py:73
+msgid "May"
+msgstr "Mai"
+
+#: _webtools/templatedefs.py:73
+msgid "June"
+msgstr "Juni"
+
+#: _webtools/templatedefs.py:73
+msgid "July"
+msgstr "Juli"
+
+#: _webtools/templatedefs.py:73
+msgid "Aug."
+msgstr "Aug."
+
+#: _webtools/templatedefs.py:73
+msgid "Sep."
+msgstr "Sep."
+
+#: _webtools/templatedefs.py:73
+msgid "Oct."
+msgstr "Okt."
+
+#: _webtools/templatedefs.py:73
+msgid "Nov."
+msgstr "Nov."
+
+#: _webtools/templatedefs.py:73
+msgid "Dec."
+msgstr "Dez."
 
 #: _templates/archive.mako:8
 #: _templates/archive.mako:19
@@ -70,6 +118,66 @@ msgstr "Schubladn „%s“"
 msgid "Feed for category %s"
 msgstr "Kanal fiad Schubladn „%s“"
 
+#: _templates/contact.mako:26
+msgid "Sent from the contact form at"
+msgstr ""
+
+#: _templates/contact.mako:31
+msgid "The e-mail was successfully sent."
+msgstr ""
+
+#: _templates/contact.mako:33
+msgid "An unknown error occurred. Please try later."
+msgstr ""
+
+#: _templates/contact.mako:36
+msgid "Please correct the following errors:"
+msgstr ""
+
+#: _templates/contact.mako:37
+msgid "The E-Mail address is wrong."
+msgstr ""
+
+#: _templates/contact.mako:38
+msgid "Please tell me your name."
+msgstr ""
+
+#: _templates/contact.mako:39
+msgid "You haven’t entered a subject."
+msgstr ""
+
+#: _templates/contact.mako:40
+msgid "There is no text."
+msgstr ""
+
+#: _templates/contact.mako:64
+msgid "Contact me"
+msgstr ""
+
+#: _templates/contact.mako:79
+msgid "Name:"
+msgstr ""
+
+#: _templates/contact.mako:83
+msgid "E-Mail:"
+msgstr ""
+
+#: _templates/contact.mako:87
+msgid "Subject:"
+msgstr ""
+
+#: _templates/contact.mako:91
+msgid "Your Message:"
+msgstr ""
+
+#: _templates/contact.mako:95
+msgid "Please leave this field empty!"
+msgstr ""
+
+#: _templates/contact.mako:101
+msgid "Send e-mail"
+msgstr ""
+
 #: _templates/index.mako:5
 msgid "Another Blog Around"
 msgstr "No a Blog"
@@ -78,13 +186,13 @@ msgstr "No a Blog"
 msgid "Latest Articles:"
 msgstr "Neiasde Artikln:"
 
-#: _templates/paginate.mako:22
-#: _templates/paginate.mako:24
+#: _templates/paginate.mako:25
+#: _templates/paginate.mako:27
 msgid "Start"
 msgstr "Ofang"
 
-#: _templates/paginate.mako:48
-#: _templates/paginate.mako:50
+#: _templates/paginate.mako:51
+#: _templates/paginate.mako:53
 msgid "End"
 msgstr "End"
 
@@ -99,6 +207,10 @@ msgstr "Bapperl „%s“"
 msgid "Feed for tag %s"
 msgstr "Kanal fias Bapperl %s"
 
+#: _templates/article/foot.mako:30
+msgid "Discussion disabled due to privacy settings. Click here to re-enable."
+msgstr ""
+
 #: _templates/article/head.mako:22
 #, python-format
 msgid "by %s"
@@ -112,40 +224,4 @@ msgstr "Gspeichad ois %s"
 #: _templates/article/head.mako:27
 msgid "Keywords:"
 msgstr "Bapperln:"
-
-msgid "Jan."
-msgstr "Jan."
-
-msgid "Feb."
-msgstr "Feb."
-
-msgid "Mar."
-msgstr "März"
-
-msgid "Apr."
-msgstr "Apr."
-
-msgid "May"
-msgstr "Mai"
-
-msgid "June"
-msgstr "Juni"
-
-msgid "July"
-msgstr "Juli"
-
-msgid "Aug."
-msgstr "Aug."
-
-msgid "Sep."
-msgstr "Sep."
-
-msgid "Oct."
-msgstr "Okt."
-
-msgid "Nov."
-msgstr "Nov."
-
-msgid "Dec."
-msgstr "Dez."
 
