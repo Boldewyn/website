@@ -18,7 +18,7 @@ class Settings(object):
         h = {
             "BUILD_TARGET": "site",
             "CATEGORY": [],
-            "CREATE_NEGOTIABLE_LANGUAGES": True,
+            "NEGOTIATE_EXTENSIONS": True,
             "DATE_FORMAT": "%Y-%m-%dT%H:%M:%S",
             "DEBUG": False,
             "DEFAULTS": {},

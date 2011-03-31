@@ -92,7 +92,7 @@ class TemplateEngine(object):
             sitemap[2] = ctx["sitemap_changefreq"]
         if "sitemap_priority" in ctx:
             sitemap[3] = ctx["sitemap_priority"]
-        if not settings.CREATE_NEGOTIABLE_LANGUAGES or ctx.get("nolang", False):
+        if not settings.NEGOTIATE_EXTENSIONS or ctx.get("nolang", False):
             ctx["_"] = lambda s: unicode(s)
             if "lang" in ctx:
                 ctx["_"] = get_gettext(ctx["lang"])
@@ -171,7 +171,7 @@ class TemplateEngine(object):
     def add_to_index(self, path, content):
         """Add content to the search index"""
         path = path.lstrip("/")
-        if settings.CREATE_NEGOTIABLE_LANGUAGES:
+        if settings.NEGOTIATE_EXTENSIONS:
             probe = get_extensions(path)
             if set(settings.languages) & set(probe[1]):
                 # hardcoded language

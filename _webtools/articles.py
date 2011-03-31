@@ -283,7 +283,7 @@ class Article(object):
         self.hard_language = None
         if len(l) == 1:
             self.hard_language = l[0]
-        if settings.CREATE_NEGOTIABLE_LANGUAGES:
+        if settings.NEGOTIATE_EXTENSIONS:
             while self.live_path.split(".")[-1] in self.extensions:
                 self.live_path = ".".join(self.live_path.split(".")[:-1])
 
