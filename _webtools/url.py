@@ -83,7 +83,7 @@ class Url(object):
         if not len(self.extensions):
             return self.base
         else:
-            self.extensions.sort(extcmp)
             self.extensions = list(set(self.extensions))
+            self.extensions.sort(extcmp)
             return u"%s.%s" % (self.base, u".".join(self.extensions))
 
