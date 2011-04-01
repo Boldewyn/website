@@ -27,7 +27,6 @@ def aa(path):
     elif re.match(r"[a-z0-9\-]+:", path) or path.startswith("//"):
         return path
     return Url(path).get()
-    #return settings.URLPATH + urlquote(path.lstrip("/"))
 
 
 def laa(lang=None, url=None):
