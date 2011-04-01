@@ -71,7 +71,7 @@ function v($s) {
   <?php echo $msg; ?>
 
   <%text><?php if (! $success): ?></%text>
-  <form method="POST" action="${aa(article.url)}" class="contact">
+  <form method="POST" action="${aa(url)}" class="contact">
   <?php else: ?>
   <section class="contact form">
   <?php endif ?>

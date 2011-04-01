@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import aa, static
+from _webtools.templatedefs import laa, aa, static
 %>\
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang or 'en'}" lang="${lang or 'en'}">
@@ -53,7 +53,7 @@ from _webtools.templatedefs import aa, static
         <li class="home"><a href="${settings.URL}" rel="home">${_(u"Home")}</a></li>
         % if categories:
           % for category in categories:
-            <li><a href="${category | aa}/">${self.category_title(category)}</a></li>
+            <li><a href="${laa(lang, category+"/"}">${self.category_title(category)}</a></li>
           % endfor
         % endif
       </ul>
@@ -73,7 +73,7 @@ from _webtools.templatedefs import aa, static
         <h2>${_(u"Tags")}</h2>
         <p>
           % for tag, t, n in tagcloud:
-            <a class="tc_${str(t)}" rel="tag" href="${("tag/%s" % tag) | aa}">${tag} <span class="tc_info">${str(n)}</span></a>
+            <a class="tc_${str(t)}" rel="tag" href="${laa(lang, "tag/%s" % tag)}">${tag} <span class="tc_info">${str(n)}</span></a>
           % endfor
         </p>
       </div>
@@ -83,7 +83,7 @@ from _webtools.templatedefs import aa, static
         <h2>${_(u"Archive")}</h2>
         <ul>
           % for d in archives:
-            <li><a href="${'/archive/%s' % d | aa}/">${d}</a></li>
+            <li><a href="${laa(lang, '/archive/%s' % d)}/">${d}</a></li>
           % endfor
         </ul>
       </div>
@@ -93,7 +93,7 @@ from _webtools.templatedefs import aa, static
         <h2>${_(u"Latest Articles")}</h2>
         <ul>
           % for art in latest_articles:
-            <li><a href="${aa(art.url)}">${art.headers.title | n}</a></li>
+            <li><a href="${laa(lang, art.url)}">${art.headers.title | n}</a></li>
           % endfor
         </ul>
       </div>

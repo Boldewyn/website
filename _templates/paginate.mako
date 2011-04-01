@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import aa
+from _webtools.templatedefs import laa
 %>\
 <%def name="paginate(ctx)">
   <%
@@ -24,7 +24,7 @@ from _webtools.templatedefs import aa
       % if ctx["cur"] == 1:
         <li class="current start"><span>${_(u"Start")}</span></li>
       % else:
-        <li class="start"><a href="${phref(1) | aa}">${_(u"Start")}</a></li>
+        <li class="start"><a href="${laa(lang, phref(1))}">${_(u"Start")}</a></li>
       % endif
       % for p in range(1, ctx["pages"]+1):
         % if p > 1+plen and p < ctx['pages']-plen and p not in range(ctx['cur']-plen, ctx['cur']+1+plen):
@@ -41,7 +41,7 @@ from _webtools.templatedefs import aa
         % if ctx["cur"] == p:
           <li class="current"><span>${str(p)}</span></li>
         % else:
-          <li><a href="${phref(p) | aa}">${str(p)}</a></li>
+          <li><a href="${laa(lang, phref(p))}">${str(p)}</a></li>
         % endif
         <%
           need_ellipsis = True
@@ -50,7 +50,7 @@ from _webtools.templatedefs import aa
       % if ctx["cur"] == ctx["pages"]:
         <li class="current end"><span>${_(u"End")}</span></li>
       % else:
-        <li class="end"><a href="${ctx["base"] % ctx["pages"] | aa}">${_(u"End")}</a></li>
+        <li class="end"><a href="${laa(lang, ctx["base"] % ctx["pages"])}">${_(u"End")}</a></li>
       % endif
     </ol>
   % endif

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import aa, repl, strip_tags
+from _webtools.templatedefs import laa, aa, repl, strip_tags
 %>\
 <%inherit file="base.mako" />
 
@@ -21,13 +21,13 @@ from _webtools.templatedefs import aa, repl, strip_tags
     <section class="related-links">
       % if "Requires" in article.headers and type(article) == type(article.headers.Requires):
         <p class="requires">
-          <a rel="prev" href="${aa(article.headers.Requires.url)}">${_("Previous:")} ${article.headers.Requires.headers.title | n}</a>
+          <a rel="prev" href="${laa(lang, article.headers.Requires.url)}">${_("Previous:")} ${article.headers.Requires.headers.title | n}</a>
         </p>
       % endif
 
       % if "IsRequiredBy" in article.headers and type(article) == type(article.headers.IsRequiredBy):
         <p class="is-required-by">
-          <a rel="next" href="${aa(article.headers.IsRequiredBy.url)}">${_("Next:")} ${article.headers.IsRequiredBy.headers.title | n}</a>
+          <a rel="next" href="${laa(lang, article.headers.IsRequiredBy.url)}">${_("Next:")} ${article.headers.IsRequiredBy.headers.title | n}</a>
         </p>
       % endif
     </section>
@@ -44,8 +44,8 @@ ${article.headers.title | n,strip_tags} — \
 <%def name="head()">
   ${parent.head()}
   <link rel="canonical" href="${aa(article.url)}" />
-  <link rel="dc.isPartOf" href="${article.category | aa}" />
-  <link rel="dc.tableOfContents" href="${article.category | aa}" />
+  <link rel="dc.isPartOf" href="${laa(lang, article.category+"/")}" />
+  <link rel="dc.tableOfContents" href="${laa(lang, article.category+"/")}" />
   <meta name="description" content="${article.headers.description}" />
   <meta name="keywords" content="${",".join(article.headers.subject)}" />
   % if article.headers.robots:

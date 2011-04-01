@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import aa, date, get_cat_title
+from _webtools.templatedefs import laa, date, get_cat_title
 %>\
 <%page args="_, lang, article, title=True" />\
 
@@ -21,12 +21,12 @@ from _webtools.templatedefs import aa, date, get_cat_title
         % endif
       ">${_("by %s") % _(article.headers.author)}</address>
       % if article.category:
-        <p class="info-category">${_("Filed under %s") % '<a href="%s/">%s</a>' % (aa(article.category), get_cat_title(_, article.category)) | n}</p>
+        <p class="info-category">${_("Filed under %s") % '<a href="%s/">%s</a>' % (laa(lang, article.category+"/"), get_cat_title(_, article.category)) | n}</p>
       % endif
       % if len(article.headers.subject) > 0:
         <p class="info-subject">${_("Keywords:")}
           % for i, tag in enumerate(article.headers.subject):
-            <a href="${("tag/%s" % tag) | aa}" rel="tag">${tag}</a>\
+            <a href="${laa(lang, "tag/%s" % tag)}" rel="tag">${tag}</a>\
             % if i < len(article.headers.subject) - 1:
 , \
             % endif
