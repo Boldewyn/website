@@ -30,6 +30,7 @@ class Settings(object):
                 "g": "http://google.com/search?q=%s",
             },
             "URL": "http://localhost/",
+            "EMAIL": "info@localhost",
         }
 
         if "/" in __file__:
@@ -57,6 +58,8 @@ class Settings(object):
                 self.h['PROTOCOLS'][k] = v
         if "STATICURL" not in self.h:
             self.h["STATICURL"] = self.h["URL"]
+        if "s" not in self.h["PROTOCOLS"]:
+            self.h["PROTOCOLS"]["s"] = self.h["STATICURL"] + "%s"
         if "URLPATH" not in self.h:
             self.h["URLPATH"] = urlparse.urlsplit(self.h["URL"]).path
         if "AUTHOR" not in self.h["DEFAULTS"]:

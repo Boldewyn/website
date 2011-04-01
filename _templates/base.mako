@@ -93,7 +93,7 @@ from _webtools.templatedefs import aa, static
         <h2>${_(u"Latest Articles")}</h2>
         <ul>
           % for art in latest_articles:
-            <li><a href="${art.live_path | aa}">${art.headers.title | n}</a></li>
+            <li><a href="${aa(art.url)}">${art.headers.title | n}</a></li>
           % endfor
         </ul>
       </div>

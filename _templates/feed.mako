@@ -17,7 +17,7 @@ from _webtools.templatedefs import aa, strip_tags
   % for article in articles:
     <entry>
       <title>${article.headers.title | n,strip_tags}</title>
-      <link href="${article.live_path | aa}"/>
+      <link href="${aa(article.url)}"/>
       <id>${article.headers.ID}</id>
       <updated>${article.headers.date.strftime("%Y-%m-%dT%H:%M:%S%z")}</updated>
       <summary>${article.headers.description}</summary>

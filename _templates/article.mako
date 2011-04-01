@@ -21,13 +21,13 @@ from _webtools.templatedefs import aa, repl, strip_tags
     <section class="related-links">
       % if "Requires" in article.headers and type(article) == type(article.headers.Requires):
         <p class="requires">
-          <a rel="prev" href="${article.headers.Requires.live_path}">${_("Previous:")} ${article.headers.Requires.headers.title | n}</a>
+          <a rel="prev" href="${aa(article.headers.Requires.url)}">${_("Previous:")} ${article.headers.Requires.headers.title | n}</a>
         </p>
       % endif
 
       % if "IsRequiredBy" in article.headers and type(article) == type(article.headers.IsRequiredBy):
         <p class="is-required-by">
-          <a rel="next" href="${article.headers.IsRequiredBy.live_path}">${_("Next:")} ${article.headers.IsRequiredBy.headers.title | n}</a>
+          <a rel="next" href="${aa(article.headers.IsRequiredBy.url)}">${_("Next:")} ${article.headers.IsRequiredBy.headers.title | n}</a>
         </p>
       % endif
     </section>
@@ -43,7 +43,7 @@ ${article.headers.title | n,strip_tags} — \
 
 <%def name="head()">
   ${parent.head()}
-  <link rel="canonical" href="${article.live_path | aa}" />
+  <link rel="canonical" href="${aa(article.url)}" />
   <link rel="dc.isPartOf" href="${article.category | aa}" />
   <link rel="dc.tableOfContents" href="${article.category | aa}" />
   <meta name="description" content="${article.headers.description}" />

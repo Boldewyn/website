@@ -18,6 +18,7 @@ from datetime import datetime
 from .templates import template_engine
 from .templatedefs import aa
 from .util import get_extensions
+from .url import Url
 try:
     from dateutil.parser import parse as date_parse
 except ImportError:
@@ -209,7 +210,7 @@ class ArticleHeaders(object):
     def value_to_string(self, value):
         """Change a header value to a printable string"""
         if isinstance(value, Article):
-            return value.live_path
+            return str(value.url)
         elif isinstance(value, datetime):
             return value.isoformat("T")
         elif isinstance(value, list):
@@ -273,21 +274,17 @@ class Article(object):
 
     def __init__(self, path):
         """Initialize with path to article source"""
+        path = path.lstrip("/")
         self.lexers.update(settings.get('LEXERS', {}))
         self.processed = False
-        self.path = "/"+path.lstrip("/")
-        self.live_path = settings.URL.rstrip("/") + settings.get("ARTICLE_PATH", "") + "/" +path
         self.category = os.path.dirname(path).strip("/")
-        self.extensions = get_extensions(path)[1]
-        l = filter(lambda s: s in settings.languages, self.extensions)
+        self.url = Url(settings.get("ARTICLE_PATH", "") + path)
+        l = filter(lambda s: s in settings.languages, self.url.get_extensions())
         self.hard_language = None
         if len(l) == 1:
             self.hard_language = l[0]
-        if settings.NEGOTIATE_EXTENSIONS:
-            while self.live_path.split(".")[-1] in self.extensions:
-                self.live_path = ".".join(self.live_path.split(".")[:-1])
 
-        f = open("_articles" + self.path, 'r')
+        f = open("_articles/%s" % path, 'r')
         head, content = f.read().replace("\r\n", "\n").split("\n\n", 1)
         f.close()
         self.headers = ArticleHeaders(head)
@@ -314,12 +311,12 @@ class Article(object):
     def complete_headers(self):
         """Set default headers, that are missing"""
         defaults = {
-            "ID": self.live_path,
+            "ID": str(self.url),
             "date": settings.now,
             "type": "Text",
             "format": "application/xhtml+xml",
             "status": [],
-            "language": settings.LANGUAGE,
+            "language": self.hard_language or settings.LANGUAGE,
         }
         self.headers.set_defaults(defaults)
         if "title" not in self.headers:
@@ -400,52 +397,53 @@ class Article(object):
             pre.replaceWith(highlighted.ol)
         self.processed = True
 
-    def save(self, **additions):
+    def save(self, **ctx):
         """Save the article to a file
 
         If it's a standalone, save it directly. Else send the
         context to the corresponding template. In order to recognize
-        the "id:" URI scheme, the parameter **additions must contain
+        the "id:" URI scheme, the parameter **ctx must contain
         the value "articles", against which's content the URI is
         checked."""
         dr = ""
         if "draft" in self.headers.status:
             dr = "*DRAFT* "
-        logging.debug(dr + self.path)
+        logging.debug(dr + self.url.get())
         if "draft" in self.headers.status and not settings.DEBUG:
             raise ValueError("Can't save drafts")
-        target = settings.get("ARTICLE_PATH", "")
-        template_engine.add_to_index(target+"/"+self.path, self.__unicode__())
+        if "noindex" not in self.headers.get("robots", ""):
+            template_engine.add_to_index(self.url, self.__unicode__(), self.headers.language)
         if "standalone" in self.headers.status:
-            template_engine.write_to(target+"/"+self.path, self.__unicode__())
+            template_engine.write_to(self.url.get_path(), self.__unicode__())
         else:
-            if "language" in self.headers:
-                additions["lang"] = self.headers.language
+            ctx["lang"] = self.headers.language
+            ctx["url"] = self.url
+            ctx["article"] = self
+            if self.hard_language:
+                ctx['nolang'] = True
             if "modified" in self.headers:
-                additions["sitemap_lastmod"] = self.headers.modified
+                ctx["sitemap_lastmod"] = self.headers.modified
             else:
-                additions["sitemap_lastmod"] = self.headers.date
+                ctx["sitemap_lastmod"] = self.headers.date
             if "accrualperiodicity" in self.headers:
-                additions["sitemap_changefreq"] = self.headers.accrualperiodicity
-            if any([ (x in settings.languages) for x in self.extensions]):
-                additions['nolang'] = True
-            if "articles" in additions:
+                ctx["sitemap_changefreq"] = self.headers.accrualperiodicity
+            if "articles" in ctx:
                 # resolve the "id:" pseudo-scheme
                 ax = self.soup.findAll("a", href=re.compile(r"^id:"))
                 for a in ax:
                     id = a['href'][3:]
-                    for a2 in additions['articles']:
+                    for a2 in ctx['articles']:
                         if a2.headers.ID == id:
-                            a['href'] = aa(a2.live_path)
+                            a['href'] = aa(a2.url)
                             break
                 # resolve links to Requires and isRequiredBy
                 # TODO: Do we need multiple Requires?
                 if 'Requires' in self.headers:
-                    for a in additions['articles']:
+                    for a in ctx['articles']:
                         if a.headers.ID == self.headers.Requires:
                             self.headers.Requires = a
                 if 'IsRequiredBy' in self.headers:
-                    for a in additions['articles']:
+                    for a in ctx['articles']:
                         if a.headers.ID == self.headers.IsRequiredBy:
                             self.headers.IsRequiredBy = a
             for protocol, url_scheme in settings.PROTOCOLS.iteritems():
@@ -471,8 +469,8 @@ class Article(object):
                     else:
                         a['class'] = "protocol_%s" % protocol
             template_engine.render_template(self.headers.get("template", "article"),
-                                            target+"/"+self.path, content=self.__unicode__(),
-                                            article=self, **additions)
+                                            self.url.get_path(), content=self.__unicode__(),
+                                            **ctx)
 
     def __unicode__(self):
         # work around bug in BeautifulSoup

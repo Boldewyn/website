@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import jsq, strip_tags
+from _webtools.templatedefs import aa, jsq, strip_tags
 %>\
 <%page args="_, lang, article" />\
 
@@ -9,7 +9,7 @@ from _webtools.templatedefs import jsq, strip_tags
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = '${settings.DISQUS_NAME}';
-        var disqus_identifier = "${article.path | jsq}";
+        var disqus_identifier = "${aa(article.url) | jsq}";
         var disqus_title = "${article.headers.title | n,strip_tags,jsq}";
         % if settings.DEBUG:
           var disqus_developer = 1;

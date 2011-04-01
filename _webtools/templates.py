@@ -17,7 +17,6 @@ from mako.lookup import TemplateLookup
 from calendar import timegm
 from .settings import settings
 from .i18n import get_gettext
-from .util import get_extensions
 from .url import Url
 from .templatedefs import aa
 
@@ -172,19 +171,17 @@ class TemplateEngine(object):
         else:
             logging.info("Sitemap already exists")
 
-    def add_to_index(self, path, content):
+    def add_to_index(self, url, content, lang=None):
         """Add content to the search index"""
-        path = path.lstrip("/")
         if settings.NEGOTIATE_EXTENSIONS:
-            probe = get_extensions(path)
-            if set(settings.languages) & set(probe[1]):
+            lang = lang or settings.LANGUAGE
+            if set(settings.languages) & set(url.get_extensions()):
                 # hardcoded language
-                self.indexdata[path] = content
+                self.indexdata[url.get()] = content
             else:
-                probe[1].insert(0, settings.LANGUAGE)
-                self.indexdata[os.path.dirname(path)+"/"+probe[0]+"."+".".join(probe[1])] = content
+                self.indexdata[url.copy().switch_language(lang).get()] = content
         else:
-            self.indexdata[path] = content
+            self.indexdata[url.get()] = content
 
     def make_index(self):
         """Generate an index of all files' contents"""

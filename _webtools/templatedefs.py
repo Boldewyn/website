@@ -35,9 +35,9 @@ def laa(lang=None, url=None):
         lang = settings.LANGUAGE
     def _laa(path):
         if isinstance(path, Url):
-            return path.get_head() + "." + lang
+            return path.copy().switch_language(lang).get()
         else:
-            return Url(path).get_head() + "." + lang
+            return Url(path).switch_language(lang).get()
     if url is None:
         return _laa
     else:

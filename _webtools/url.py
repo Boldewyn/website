@@ -9,18 +9,13 @@ from .settings import settings
 class Url(object):
 
     def __init__(self, path):
-        self._original_path = path
         if not isinstance(path, unicode):
             path = path.decode("UTF-8")
         path = path.lstrip(u"/")
         self.dir = u""
         if u"/" in path:
             self.dir = os.path.dirname(path).lstrip(u"/") + u"/"
-        basename = os.path.basename(path)
-        if basename == u"":
-            basename = u"index"
-            if not settings.NEGOTIATE_EXTENSIONS:
-                basename += u".html"
+        basename = os.path.basename(path) or (u"index.%s.html" % settings.LANGUAGE)
         self.base, self.extensions = self._get_base_and_extensions(basename)
         self.basename = self._sort_extensions()
 
@@ -44,12 +39,11 @@ class Url(object):
 
     def copy(self):
         """Create a copy of this instance"""
-        return Url(self._original_path)
+        return Url(self.dir + self.basename)
 
     def switch_language(self, lang):
         """Change the language component of the URI"""
-        if any([ (x in settings.languages) for x in self.extensions ]):
-            self.extensions = filter(lambda s: s not in settings.languages, self.extensions)
+        self.extensions = filter(lambda s: s not in settings.languages, self.extensions)
         self.extensions.insert(0, lang)
         self.basename = self._sort_extensions()
         return self
