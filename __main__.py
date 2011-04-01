@@ -28,8 +28,7 @@ def main():
     _webtools.categories.render(articles)
     for template in get_templates():
         template_engine.render_template(template,
-                template.replace(".mako", ".html"), a=articles, articles=articles,
-                full_path=True)
+                template.replace(".mako", ".html"), a=articles, articles=articles)
     if not glob.glob(settings.BUILD_TARGET+"/index.html*") and \
        not glob.glob(settings.BUILD_TARGET+"/index.xhtml*"):
         template_engine.render_paginated("index", "index.html",

@@ -96,7 +96,8 @@ def render_feed(all_articles, category=""):
         title = u"Category \u201C%s\u201D \u2014 %s" % (settings.CATEGORY[category]['title'], title)
     id = settings.URL + category
     nolang = True
-    template_engine.render_template("feed", category+"/feed.xml", **locals())
+    template_engine.render_template("_templates/feed.mako",
+                                    category+"/feed.xml", **locals())
 
 
 def has_index(folder):

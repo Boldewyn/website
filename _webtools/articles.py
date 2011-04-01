@@ -416,17 +416,6 @@ class Article(object):
         if "standalone" in self.headers.status:
             template_engine.write_to(self.url.get_path(), self.__unicode__())
         else:
-            ctx["lang"] = self.headers.language
-            ctx["url"] = self.url
-            ctx["article"] = self
-            if self.hard_language:
-                ctx['nolang'] = True
-            if "modified" in self.headers:
-                ctx["sitemap_lastmod"] = self.headers.modified
-            else:
-                ctx["sitemap_lastmod"] = self.headers.date
-            if "accrualperiodicity" in self.headers:
-                ctx["sitemap_changefreq"] = self.headers.accrualperiodicity
             if "articles" in ctx:
                 # resolve the "id:" pseudo-scheme
                 ax = self.soup.findAll("a", href=re.compile(r"^id:"))
@@ -442,10 +431,12 @@ class Article(object):
                     for a in ctx['articles']:
                         if a.headers.ID == self.headers.Requires:
                             self.headers.Requires = a
+                            break
                 if 'IsRequiredBy' in self.headers:
                     for a in ctx['articles']:
                         if a.headers.ID == self.headers.IsRequiredBy:
                             self.headers.IsRequiredBy = a
+                            break
             for protocol, url_scheme in settings.PROTOCOLS.iteritems():
                 # resolve all pseudo-schemes
                 ax = self.soup.findAll(href=re.compile(u"^%s:" % protocol))
@@ -468,9 +459,7 @@ class Article(object):
                         a['class'] += " protocol_%s" % protocol
                     else:
                         a['class'] = "protocol_%s" % protocol
-            template_engine.render_template(self.headers.get("template", "article"),
-                                            self.url.get_path(), content=self.__unicode__(),
-                                            **ctx)
+            template_engine.render_article(self, **ctx)
 
     def __unicode__(self):
         # work around bug in BeautifulSoup

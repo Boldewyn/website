@@ -18,7 +18,6 @@ from calendar import timegm
 from .settings import settings
 from .i18n import get_gettext
 from .url import Url
-from .templatedefs import aa
 
 
 class TemplateEngine(object):
@@ -73,6 +72,55 @@ class TemplateEngine(object):
             ctx["a"] = articles[:pl]
         self.render_template(template, path, **ctx)
 
+    def render_article(self, article, **ctx):
+        """Render an article"""
+        self.collect_page_requisites()
+        ctx.update({
+            'url': article.url,
+            'lang': article.headers.language,
+            'article': article,
+            'content': article.__unicode__(),
+        })
+        nctx = self.ctx.copy()
+        nctx.update(ctx)
+        ctx = nctx
+        filename = article.headers.get("template", "article")
+        if not ctx.get("full_path", False):
+            filename = "_templates/"+filename+".mako"
+        tpl = self.lookup.get_template(filename)
+        sitemap = [article.url, article.headers.date, "yearly", 0.5]
+        if "modified" in article.headers:
+            sitemap[1] = article.headers.modified
+        if "accrualperiodicity" in article.headers:
+            sitemap[2] = article.headers.accrualperiodicity
+        if settings.NEGOTIATE_EXTENSIONS and not article.hard_language:
+            articles = ctx.get('articles')[:]
+            url = ctx['url']
+            for lang in settings.languages:
+                ctx["_"] = get_gettext(lang)
+                ctx["lang"] = lang
+                ctx["url"] = url.copy().switch_language(lang)
+                ctx["articles"] = filter(lambda a: a.hard_language in [lang, None], articles)
+                try:
+                    self.write_to(ctx["url"].get_path(), tpl.render_unicode(**ctx),
+                                  sitemap[1])
+                except:
+                    logging.critical(exceptions.text_error_template().render())
+                    exit(1)
+                else:
+                    sitemap[0] = ctx['url']
+                    self.sitemap.append(sitemap[:])
+        else:
+            ctx["_"] = get_gettext(ctx["lang"])
+            try:
+                self.write_to(ctx["url"].get_path(), tpl.render_unicode(**ctx),
+                              sitemap[1])
+            except:
+                logging.critical(exceptions.text_error_template().render())
+                exit(1)
+            else:
+                self.sitemap.append(sitemap)
+
     def render_template(self, template, path, **ctx):
         """Render a template within the given context ctx"""
         path = path.lstrip("/")
@@ -82,10 +130,7 @@ class TemplateEngine(object):
         ctx = nctx
         if "url" not in ctx:
             ctx['url'] = Url(path)
-        filename = template
-        if "full_path" not in ctx or ctx["full_path"] == False:
-            filename = "_templates/"+template+".mako"
-        tpl = self.lookup.get_template(filename)
+        tpl = self.lookup.get_template(template)
         sitemap = [None, ctx.get("date", settings.now), "yearly", 0.5]
         if "sitemap_lastmod" in ctx:
             sitemap[1] = ctx["sitemap_lastmod"]
