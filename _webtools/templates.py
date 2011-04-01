@@ -66,11 +66,11 @@ class TemplateEngine(object):
             for p in range(1, pages):
                 ctx["pag"]["cur"] = p+1
                 ctx["a"] = articles[p*pl:(p+1)*pl]
-                self.render_template(template,
+                self.render_template("_templates/%s.mako" % template,
                             ctx["pag"]["base"]%(p+1)+".html", **ctx)
             ctx["pag"]["cur"] = 1
             ctx["a"] = articles[:pl]
-        self.render_template(template, path, **ctx)
+        self.render_template("_templates/%s.mako" % template, path, **ctx)
 
     def render_article(self, article, **ctx):
         """Render an article"""
