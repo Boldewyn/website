@@ -283,6 +283,7 @@ class Article(object):
         self.hard_language = None
         if len(l) == 1:
             self.hard_language = l[0]
+            self.url.fix_language()
 
         f = open("_articles/%s" % path, 'r')
         head, content = f.read().replace("\r\n", "\n").split("\n\n", 1)

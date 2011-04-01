@@ -8,7 +8,9 @@ from .settings import settings
 
 class Url(object):
 
-    def __init__(self, path):
+    def __init__(self, path, fixed_lang=False):
+        self.fixed_lang = fixed_lang
+        self._original_path = path
         if not isinstance(path, unicode):
             path = path.decode("UTF-8")
         path = path.lstrip(u"/")
@@ -18,6 +20,11 @@ class Url(object):
         basename = os.path.basename(path) or (u"index.%s.html" % settings.LANGUAGE)
         self.base, self.extensions = self._get_base_and_extensions(basename)
         self.basename = self._sort_extensions()
+
+    def fix_language(self, fix=True):
+        """Fix the language part of URL"""
+        self.fixed_lang = fix
+        return self
 
     def get_head(self):
         """Get the head and basename without extensions"""
@@ -43,6 +50,8 @@ class Url(object):
 
     def switch_language(self, lang):
         """Change the language component of the URI"""
+        if self.fixed_lang:
+            return self
         self.extensions = filter(lambda s: s not in settings.languages, self.extensions)
         self.extensions.insert(0, lang)
         self.basename = self._sort_extensions()
