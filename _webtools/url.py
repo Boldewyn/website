@@ -36,7 +36,7 @@ class Url(object):
 
     def get_path(self):
         """Get the relative part of the URL"""
-        return self._q(self.dir + self.basename)
+        return self.dir + self.basename
 
     def get(self):
         """Get the absolute URL of this instance"""

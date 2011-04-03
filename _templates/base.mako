@@ -73,7 +73,7 @@ from _webtools.templatedefs import laa, aa, static
         <h2>${_(u"Tags")}</h2>
         <p>
           % for tag, t, n in tagcloud:
-            <a class="tc_${str(t)}" rel="tag" href="${laa(lang, "tag/%s" % tag)}">${tag} <span class="tc_info">${str(n)}</span></a>
+            <a class="tc_${str(t)}" rel="tag" href="${laa(lang, "tag/%s/" % tag)}">${tag} <span class="tc_info">${str(n)}</span></a>
           % endfor
         </p>
       </div>
@@ -83,7 +83,7 @@ from _webtools.templatedefs import laa, aa, static
         <h2>${_(u"Archive")}</h2>
         <ul>
           % for d in archives:
-            <li><a href="${laa(lang, '/archive/%s' % d)}/">${d}</a></li>
+            <li><a href="${laa(lang, '/archive/%s/' % d)}/">${d}</a></li>
           % endfor
         </ul>
       </div>
