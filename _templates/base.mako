@@ -83,7 +83,7 @@ from _webtools.templatedefs import laa, aa, static
         <h2>${_(u"Archive")}</h2>
         <ul>
           % for d in archives:
-            <li><a href="${laa(lang, '/archive/%s/' % d)}/">${d}</a></li>
+            <li><a href="${laa(lang, '/archive/%s/' % d)}">${d}</a></li>
           % endfor
         </ul>
       </div>
