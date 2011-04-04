@@ -36,11 +36,11 @@ class Url(object):
 
     def get_path(self):
         """Get the relative part of the URL"""
-        return self.dir + self.basename
+        return (self.dir + self.basename).encode("UTF-8")
 
     def get(self):
         """Get the absolute URL of this instance"""
-        return settings.URLPATH + self.get_path()
+        return str(settings.URLPATH) + self._q(self.get_path())
     __str__ = get
     __unicode__ = lambda self: unicode(self.get())
 
