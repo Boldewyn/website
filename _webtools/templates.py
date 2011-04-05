@@ -277,6 +277,8 @@ class LocalizedRenderer(object):
         ctx = nctx
         pl = settings.PAGINATE_N
         articles = ctx["a"][:]
+        if self.lang is not None:
+            articles = filter(lambda a: a.hard_language in (self.lang, None), articles)
         path = path.lstrip("/")
         dirname = os.path.dirname(path)
         baseurl = Url(path).switch_language(self.lang)
@@ -303,6 +305,8 @@ class LocalizedRenderer(object):
         nctx = self.ctx.copy()
         nctx.update(ctx)
         ctx = nctx
+        if self.lang is not None and "a" in ctx:
+            ctx["a"] = filter(lambda a: a.hard_language in (self.lang, None), ctx["a"])
         if not isinstance(path, Url):
             path = Url(path).switch_language(self.lang)
         else:
