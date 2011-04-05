@@ -60,8 +60,8 @@ class Settings(object):
             self.h["STATICURL"] = self.h["URL"]
         if "s" not in self.h["PROTOCOLS"]:
             self.h["PROTOCOLS"]["s"] = self.h["STATICURL"] + "%s"
-        if "URLPATH" not in self.h:
-            self.h["URLPATH"] = urlparse.urlsplit(self.h["URL"]).path
+        if "URL_PARTS" not in self.h:
+            self.h["URL_PARTS"] = urlparse.urlsplit(self.h["URL"])
         if "AUTHOR" not in self.h["DEFAULTS"]:
             self.h["DEFAULTS"]["AUTHOR"] = _(u"unknown")
         #self.h['languages'] = [x for x in os.listdir(codebase+"/_locale") \

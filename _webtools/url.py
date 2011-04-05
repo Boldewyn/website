@@ -28,7 +28,7 @@ class Url(object):
 
     def get_head(self):
         """Get the head and basename without extensions"""
-        return settings.URLPATH + self._q(self.dir + self.base)
+        return str(settings.URL_PARTS[2]) + self._q(self.dir + self.base)
 
     def get_extensions(self):
         """Get the extensions"""
@@ -40,20 +40,21 @@ class Url(object):
 
     def get(self):
         """Get the absolute URL of this instance"""
-        return str(settings.URLPATH) + self._q(self.get_path())
+        return str(settings.URL_PARTS[2]) + self._q(self.get_path())
     __str__ = get
     __unicode__ = lambda self: unicode(self.get())
 
     def copy(self):
         """Create a copy of this instance"""
-        return Url(self.dir + self.basename)
+        return Url(self.dir + self.basename, self.fixed_lang)
 
     def switch_language(self, lang):
         """Change the language component of the URI"""
         if self.fixed_lang:
             return self
         self.extensions = filter(lambda s: s not in settings.languages, self.extensions)
-        self.extensions.insert(0, lang)
+        if lang is not None:
+            self.extensions.insert(0, lang)
         self.basename = self._sort_extensions()
         return self
 

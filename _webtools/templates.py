@@ -28,9 +28,18 @@ class TemplateEngine(object):
         self.ctx = {}
         self.sitemap = []
         self.lookup = TemplateLookup(directories=[".", settings.CODEBASE], default_filters=["x"])
+        self.renderers = []
+        if settings.NEGOTIATE_EXTENSIONS:
+            for lang in settings.languages:
+                self.renderers.append(LocalizedRenderer(lang))
+        else:
+            self.renderers.append(LocalizedRenderer(None))
 
     def set(self, name, value):
         self.ctx[name] = value
+        if name == "articles":
+            for r in self.renderers:
+                r.set_articles(value)
 
     def collect_page_requisites(self):
         """generate page items out of the general context"""
@@ -52,125 +61,18 @@ class TemplateEngine(object):
         TODO: The below stripping of articles with hard_language set will
         make this approach imprecise.
         """
-        pl = settings.PAGINATE_N
-        articles = ctx["a"][:]
-        if len(articles) > pl:
-            if "pag" not in ctx:
-                ctx["pag"] = {}
-            if "base" not in ctx["pag"]:
-                ctx["pag"]["base"] = "/".join(path.split("/")[:-1])+\
-                                     "/page_%s"
-            pages = (len(articles)-1) // pl + 1
-            ctx["pag"]["first"] =  path
-            ctx["pag"]["pages"] = pages
-            for p in range(1, pages):
-                ctx["pag"]["cur"] = p+1
-                ctx["a"] = articles[p*pl:(p+1)*pl]
-                self.render_template("_templates/%s.mako" % template,
-                            ctx["pag"]["base"]%(p+1)+".html", **ctx)
-            ctx["pag"]["cur"] = 1
-            ctx["a"] = articles[:pl]
-        self.render_template("_templates/%s.mako" % template, path, **ctx)
+        for r in self.renderers:
+            r.render_paginated(template, path, **ctx)
 
     def render_article(self, article, **ctx):
         """Render an article"""
-        self.collect_page_requisites()
-        ctx.update({
-            'url': article.url,
-            'lang': article.headers.language,
-            'article': article,
-            'content': article.__unicode__(),
-        })
-        nctx = self.ctx.copy()
-        nctx.update(ctx)
-        ctx = nctx
-        filename = article.headers.get("template", "article")
-        if not ctx.get("full_path", False):
-            filename = "_templates/"+filename+".mako"
-        tpl = self.lookup.get_template(filename)
-        sitemap = [article.url, article.headers.date, "yearly", 0.5]
-        if "modified" in article.headers:
-            sitemap[1] = article.headers.modified
-        if "accrualperiodicity" in article.headers:
-            sitemap[2] = article.headers.accrualperiodicity
-        if settings.NEGOTIATE_EXTENSIONS and not article.hard_language:
-            articles = ctx.get('articles')[:]
-            url = ctx['url']
-            for lang in settings.languages:
-                ctx["_"] = get_gettext(lang)
-                ctx["lang"] = lang
-                ctx["url"] = url.copy().switch_language(lang)
-                ctx["articles"] = filter(lambda a: a.hard_language in [lang, None], articles)
-                try:
-                    self.write_to(ctx["url"].get_path(), tpl.render_unicode(**ctx),
-                                  sitemap[1])
-                except:
-                    logging.critical(exceptions.text_error_template().render())
-                    exit(1)
-                else:
-                    sitemap[0] = ctx['url']
-                    self.sitemap.append(sitemap[:])
-        else:
-            ctx["_"] = get_gettext(ctx["lang"])
-            try:
-                self.write_to(ctx["url"].get_path(), tpl.render_unicode(**ctx),
-                              sitemap[1])
-            except:
-                logging.critical(exceptions.text_error_template().render())
-                exit(1)
-            else:
-                self.sitemap.append(sitemap)
+        for r in self.renderers:
+            r.render_article(article, **ctx)
 
     def render_template(self, template, path, **ctx):
         """Render a template within the given context ctx"""
-        path = path.lstrip("/")
-        self.collect_page_requisites()
-        nctx = self.ctx.copy()
-        nctx.update(ctx)
-        ctx = nctx
-        if "url" not in ctx:
-            ctx['url'] = Url(path)
-        tpl = self.lookup.get_template(template)
-        sitemap = [None, ctx.get("date", settings.now), "yearly", 0.5]
-        if "sitemap_lastmod" in ctx:
-            sitemap[1] = ctx["sitemap_lastmod"]
-        if "sitemap_changefreq" in ctx:
-            sitemap[2] = ctx["sitemap_changefreq"]
-        if "sitemap_priority" in ctx:
-            sitemap[3] = ctx["sitemap_priority"]
-        if not settings.NEGOTIATE_EXTENSIONS or ctx.get("nolang", False):
-            ctx["_"] = lambda s: unicode(s)
-            if "lang" in ctx:
-                ctx["_"] = get_gettext(ctx["lang"])
-            else:
-                ctx["lang"] = settings.LANGUAGE
-            try:
-                self.write_to(ctx["url"].get_path(), tpl.render_unicode(**ctx),
-                              ctx.get("date", settings.now))
-            except:
-                logging.critical(exceptions.text_error_template().render())
-                exit()
-            sitemap[0] = ctx["url"]
-            self.sitemap.append(sitemap)
-        else:
-            articles = ctx.get('articles')[:]
-            a = ctx.get('a', [])[:]
-            url = ctx['url']
-            for lang in settings.languages:
-                ctx["_"] = get_gettext(lang)
-                ctx["lang"] = lang
-                ctx["url"] = url.copy().switch_language(lang)
-                ctx["articles"] = filter(lambda a: a.hard_language in [lang, None], articles)
-                if len(a):
-                    ctx["a"] = filter(lambda a: a.hard_language in [lang, None], a)
-                try:
-                    self.write_to(ctx["url"].get_path(), tpl.render_unicode(**ctx),
-                                  ctx.get("date", settings.now))
-                except:
-                    logging.critical(exceptions.text_error_template().render())
-                    exit()
-                sitemap[0] = ctx['url']
-                self.sitemap.append(sitemap[:])
+        for r in self.renderers:
+            r.render_template(template, path, **ctx)
 
     def write_to(self, path, content, mtime=settings.now):
         """Write content to a file
@@ -201,9 +103,12 @@ class TemplateEngine(object):
     def render_sitemap(self):
         """Render a sitemap.xml"""
         if not os.path.isfile(settings.BUILD_TARGET+"/sitemap.xml"):
+            for r in self.renderers:
+                self.sitemap.extend(r.get_sitemap())
             data = {"sitemap": self.sitemap}
             tpl = self.lookup.get_template("_templates/sitemap.xml.mako")
             data["local_sitemap"] = ""
+            data['settings'] = settings
             if os.path.isfile("_doc/local_sitemap.xml"):
                 data["local_sitemap"] = open("_doc/local_sitemap.xml", "rb").read()
             to = open(os.path.join(settings.BUILD_TARGET, "sitemap.xml"), 'w')
@@ -253,9 +158,6 @@ class TemplateEngine(object):
                 db.commit()
                 db.close()
         return bool(type)
-
-
-template_engine = TemplateEngine()
 
 
 def get_tagcloud(articles, offset=1):
@@ -323,4 +225,128 @@ def get_archives(articles):
         if d not in dates:
             dates.append(d)
     return dates
+
+
+
+
+class LocalizedRenderer(object):
+    """"""
+
+    def __init__(self, lang, ctx=None):
+        self.lang = lang
+        self.ctx = ctx or {}
+        self.ctx["lang"] = self.lang
+        self.ctx["_"] = get_gettext(self.lang)
+        self.sitemap = []
+        self.lookup = TemplateLookup(directories=[".", settings.CODEBASE], default_filters=["x"])
+
+    def set_articles(self, articles):
+        articles = articles[:]
+        for article in articles:
+            article.url.switch_language(self.lang)
+        if self.lang is not None:
+            self.ctx["articles"] = filter(lambda a: a.hard_language in (self.lang, None), articles)
+        self.collect_page_requisites()
+
+    def collect_page_requisites(self):
+        """generate page items out of the general context"""
+        if "articles" not in self.ctx:
+            raise ValueError
+        if "categories" not in self.ctx:
+            self.ctx["categories"] = get_categories(self.ctx["articles"])
+        if "tagcloud" not in self.ctx:
+            self.ctx["tagcloud"] = get_tagcloud(self.ctx["articles"])
+        if "archives" not in self.ctx:
+            self.ctx["archives"] = get_archives(self.ctx["articles"])
+        self.ctx["latest_articles"] = list(self.ctx["articles"])
+        self.ctx["latest_articles"].sort()
+        self.ctx["latest_articles"] = self.ctx["latest_articles"][:5]
+        self.ctx['settings'] = settings
+
+    def render_article(self, article, **ctx):
+        """Render an article"""
+        if article.hard_language not in (self.lang, None):
+            return False
+        url = article.url.copy().switch_language(self.lang)
+        ctx.update({
+            'url': url,
+            'article': article,
+            'content': article.__unicode__(),
+        })
+        nctx = self.ctx.copy()
+        nctx.update(ctx)
+        ctx = nctx
+        filename = article.headers.get("template", "article")
+        if not filename.endswith(".mako"):
+            filename = "_templates/"+filename+".mako"
+        tpl = self.lookup.get_template(filename)
+        sitemap = [url, article.headers.date, "yearly", 0.5]
+        if "modified" in article.headers:
+            sitemap[1] = article.headers.modified
+        if "accrualperiodicity" in article.headers:
+            sitemap[2] = article.headers.accrualperiodicity
+        template_engine.write_to(url.get_path(), tpl.render_unicode(**ctx),
+                                 article.headers.date)
+        self.sitemap.append(sitemap)
+        return True
+
+    def render_paginated(self, template, path, **ctx):
+        """Render a template, but break the content into multiple pages"""
+        nctx = self.ctx.copy()
+        nctx.update(ctx)
+        ctx = nctx
+        pl = settings.PAGINATE_N
+        articles = ctx["a"][:]
+        path = path.lstrip("/")
+        dirname = os.path.dirname(path)
+        baseurl = Url(path).switch_language(self.lang)
+        if len(articles) > pl:
+            if "pag" not in ctx:
+                ctx["pag"] = {}
+            if "base" not in ctx["pag"]:
+                ctx["pag"]["base"] = dirname + "/" + ctx["_"]("page_%s")
+            pages = (len(articles)-1) // pl + 1
+            ctx["pag"]["first"] = baseurl.get_path()
+            ctx["pag"]["pages"] = pages
+            for p in range(1, pages):
+                ctx["pag"]["cur"] = p+1
+                ctx["a"] = articles[p*pl:(p+1)*pl]
+                self.render_template("_templates/%s.mako" % template,
+                            Url(ctx["pag"]["base"]%(p+1) + ".html").switch_language(self.lang),
+                            **ctx)
+            ctx["pag"]["cur"] = 1
+            ctx["a"] = articles[:pl]
+        self.render_template("_templates/%s.mako" % template, baseurl, **ctx)
+
+    def render_template(self, template, path, **ctx):
+        """Render a template within the given context ctx"""
+        nctx = self.ctx.copy()
+        nctx.update(ctx)
+        ctx = nctx
+        if not isinstance(path, Url):
+            path = Url(path).switch_language(self.lang)
+        else:
+            path.switch_language(self.lang)
+        ctx['url'] = path
+        tpl = self.lookup.get_template(template)
+        template_engine.write_to(ctx['url'].get_path(), tpl.render_unicode(**ctx),
+                                 ctx.get("date", settings.now))
+        sitemap = [ctx["url"].copy(), ctx.get("date", settings.now), "monthly", 0.5]
+        self.sitemap.append(sitemap)
+
+    def get_sitemap(self):
+        """Return the current items of the sitemap"""
+        return self.sitemap
+
+
+template_engine = TemplateEngine()
+
+
+
+
+
+
+
+
+
 
