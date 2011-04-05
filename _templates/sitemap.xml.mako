@@ -8,7 +8,7 @@ from _webtools.templatedefs import aa
   ${local_sitemap | n}\
   % for url in sitemap:
     <url>
-      <loc>${settings.URL_PARTS.scheme}://${settings.URL_PARTS.netloc}${aa(url[0])}</loc>
+      <loc>${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(url[0])}</loc>
       <lastmod>${url[1].strftime("%Y-%m-%d")}</lastmod>
       <changefreq>${url[2]}</changefreq>
       <priority>${unicode(url[3])}</priority>
