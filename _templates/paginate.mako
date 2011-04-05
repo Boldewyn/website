@@ -22,7 +22,7 @@ from _webtools.templatedefs import laa
     %>
     <ol class="paginate">
       % if ctx["cur"] == 1:
-        <li class="current start"><span>${_(u"Start")}</span></li>
+        <li class="current start"><span data-href="${laa(lang, phref(1))}">${_(u"Start")}</span></li>
       % else:
         <li class="start"><a href="${laa(lang, phref(1))}">${_(u"Start")}</a></li>
       % endif
@@ -39,7 +39,7 @@ from _webtools.templatedefs import laa
           %>
         % endif
         % if ctx["cur"] == p:
-          <li class="current"><span>${str(p)}</span></li>
+          <li class="current"><span data-href="${laa(lang, phref(p))}">${str(p)}</span></li>
         % else:
           <li><a href="${laa(lang, phref(p))}">${str(p)}</a></li>
         % endif
@@ -48,7 +48,7 @@ from _webtools.templatedefs import laa
         %>
       % endfor
       % if ctx["cur"] == ctx["pages"]:
-        <li class="current end"><span>${_(u"End")}</span></li>
+        <li class="current end"><span data-href="${laa(lang, ctx["base"] % ctx["pages"])}">${_(u"End")}</span></li>
       % else:
         <li class="end"><a href="${laa(lang, ctx["base"] % ctx["pages"])}">${_(u"End")}</a></li>
       % endif
