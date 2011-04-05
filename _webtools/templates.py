@@ -25,7 +25,6 @@ class TemplateEngine(object):
 
     def __init__(self):
         self.indexdata = {}
-        self.ctx = {}
         self.sitemap = []
         self.lookup = TemplateLookup(directories=[".", settings.CODEBASE], default_filters=["x"])
         self.renderers = []
@@ -35,32 +34,12 @@ class TemplateEngine(object):
         else:
             self.renderers.append(LocalizedRenderer(None))
 
-    def set(self, name, value):
-        self.ctx[name] = value
-        if name == "articles":
-            for r in self.renderers:
-                r.set_articles(value)
-
-    def collect_page_requisites(self):
-        """generate page items out of the general context"""
-        if "articles" in self.ctx:
-            if "categories" not in self.ctx:
-                self.ctx["categories"] = get_categories(self.ctx["articles"])
-            if "tagcloud" not in self.ctx:
-                self.ctx["tagcloud"] = get_tagcloud(self.ctx["articles"])
-            if "archives" not in self.ctx:
-                self.ctx["archives"] = get_archives(self.ctx["articles"])
-            self.ctx["latest_articles"] = list(self.ctx["articles"])
-            self.ctx["latest_articles"].sort()
-            self.ctx["latest_articles"] = self.ctx["latest_articles"][:5]
-        self.ctx['settings'] = settings
+    def set_articles(self, articles):
+        for r in self.renderers:
+            r.set_articles(articles)
 
     def render_paginated(self, template, path, **ctx):
-        """Render a template, but break the content into multiple pages
-
-        TODO: The below stripping of articles with hard_language set will
-        make this approach imprecise.
-        """
+        """Render a template, but break the content into multiple pages"""
         for r in self.renderers:
             r.render_paginated(template, path, **ctx)
 
@@ -230,7 +209,7 @@ def get_archives(articles):
 
 
 class LocalizedRenderer(object):
-    """"""
+    """Handle the rendering of stuff, one language at a time"""
 
     def __init__(self, lang, ctx=None):
         self.lang = lang
@@ -241,6 +220,7 @@ class LocalizedRenderer(object):
         self.lookup = TemplateLookup(directories=[".", settings.CODEBASE], default_filters=["x"])
 
     def set_articles(self, articles):
+        """Set articles, that are needed to get tagcloud et al."""
         articles = articles[:]
         for article in articles:
             article.url.switch_language(self.lang)
