@@ -4,7 +4,7 @@ from _webtools.templatedefs import laa, aa, repl, strip_tags
 %>\
 <%inherit file="base.mako" />
 
-<article id="content" \
+<article id="content" class="hentry" \
   % if lang != article.headers.language:
     xml:lang="${article.headers.language}"\
   % endif
@@ -12,7 +12,7 @@ from _webtools.templatedefs import laa, aa, repl, strip_tags
 
   <%include file="article/head.mako" args="_=_, lang=lang, article=article" />
 
-  <section class="body">
+  <section class="entry-content">
     ${content | n}
   </section>
 
