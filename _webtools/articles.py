@@ -290,7 +290,7 @@ class Article(object):
         f.close()
         self.headers = ArticleHeaders(head)
         self.raw_content = unicode(content.decode("utf-8"))
-        self.soup = BeautifulSoup(self.raw_content)
+        self.soup = BeautifulSoup(self.raw_content, fromEncoding="utf-8")
 
         self.complete_headers()
         self.process_content()
@@ -389,7 +389,7 @@ class Article(object):
                 logging.warning("Couldn't find lexer for %s" % lang)
                 lexer = guess_lexer(text)
             result = pygments.highlight(text, lexer, ArticleFormatter)
-            highlighted = BeautifulSoup(result)
+            highlighted = BeautifulSoup(result, fromEncoding="utf-8")
             for at, val in pre.attrs:
                 if at == "class":
                     highlighted.ol[at] += u" "+val
