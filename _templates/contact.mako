@@ -53,7 +53,7 @@ function h($s) {
 
 function v($s) {
     if (array_key_exists($s, $_POST)) {
-        return trim(preg_replace('/[\x00-\x08\e\x7F\\]/u', '?', $_POST[$s]));
+        return trim(preg_replace('/[\x00-\x08\e\x7F\\\\]/u', '?', $_POST[$s]));
     } else {
         return '';
     }
