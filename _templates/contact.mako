@@ -16,7 +16,14 @@ $lang = '</%text>${lang}<%text>';
 $msg = '';
 
 if (! v('sent')) {
-} elseif ($mail && $name && $subj && $text) {
+} elseif ($mail && $name && $text) {
+    if (! $subj) {
+        if (preg_match('/^.{1,80}\n\n/', $text)) {
+            list($subj, $text) = explode("\n\n", $text, 2);
+        } else {
+            $subj = "-no subject-";
+        }
+    }
     $headers = "From: \"$name\" <$mail>\r\n" .
                "X-Mailer: PHP/".phpversion()."\r\n".
                "X-Sender-IP: ${_SERVER['REMOTE_ADDR']}\r\n".
@@ -36,7 +43,6 @@ if (! v('sent')) {
     $msg = '<section class="error"><p></%text>${_(u'Please correct the following errors:')}<%text></p><ul>';
     if ($mail == False) { $msg .= '<li></%text>${_(u'The E-Mail address is wrong.')}<%text></li>'; }
     if ($name == '') { $msg .= '<li></%text>${_(u'Please tell me your name.')}<%text></li>'; }
-    if ($subj == '') { $msg .= '<li></%text>${_(u'You haven’t entered a subject.')}<%text></li>'; }
     if ($text == '') { $msg .= '<li></%text>${_(u'There is no text.')}<%text></li>'; }
     $msg .= '</ul></section>';
 }
