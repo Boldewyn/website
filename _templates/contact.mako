@@ -10,7 +10,7 @@ $success = False;
 $name = v('name');
 $mail = filter_var(v('mail'), FILTER_VALIDATE_EMAIL);
 $subj = v('subj');
-$text = v('text');
+$text = str_replace("\r\n", "\n", v('text'));
 $honey = v('hp');
 $lang = '</%text>${lang}<%text>';
 $msg = '';
@@ -53,7 +53,7 @@ function h($s) {
 
 function v($s) {
     if (array_key_exists($s, $_POST)) {
-        return trim(preg_replace('/[\p{C}\\\]/u', 'X', $_POST[$s]));
+        return trim(preg_replace('/[\x00-\x08\e\x7F\\]/u', '?', $_POST[$s]));
     } else {
         return '';
     }
