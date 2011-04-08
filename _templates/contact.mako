@@ -69,13 +69,13 @@ function v($s) {
 >
   % if prev_article:
     <p class="article_nav article_prev">
-      <a href="${aa(prev_article.url)}" title="${prev_article.headers.title}">&lt; ${_(u"previous")}</a>
+      <a href="${laa(lang, prev_article.url)}" title="${prev_article.headers.title}">&lt; ${_(u"previous")}</a>
     </p>
   % endif
 
   % if next_article:
     <p class="article_nav article_next">
-      <a href="${aa(next_article.url)}" title="${next_article.headers.title}">${_(u"next")} ></a>
+      <a href="${laa(lang, next_article.url)}" title="${next_article.headers.title}">${_(u"next")} ></a>
     </p>
   % endif
 
