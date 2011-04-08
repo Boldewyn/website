@@ -26,7 +26,7 @@ from _webtools.templatedefs import laa, date, get_cat_title
       % if len(article.headers.subject) > 0:
         <p class="info-subject">${_("Keywords:")}
           % for i, tag in enumerate(article.headers.subject):
-            <a href="${laa(lang, "tag/%s" % tag)}" rel="tag">${tag}</a>\
+            <a href="${laa(lang, "tag/%s/" % tag)}" rel="tag">${tag}</a>\
             % if i < len(article.headers.subject) - 1:
 , \
             % endif
