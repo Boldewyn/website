@@ -247,29 +247,30 @@ class LocalizedRenderer(object):
         """Render an article"""
         if article.hard_language not in (self.lang, None):
             return False
-        url = article.url.copy().switch_language(self.lang)
-        next = None
-        prev = None
-        for i, art in enumerate(ctx.get('articles', [])):
-            if art == article:
-                if len(ctx['articles']) > i+1:
-                    prev = ctx['articles'][i+1]
-                if i > 0:
-                    next = ctx['articles'][i-1]
-                break
-        ctx.update({
-            'url': url,
-            'article': article,
-            'content': article.__unicode__(),
-            'next_article': next,
-            'prev_article': prev,
-        })
         nctx = self.ctx.copy()
         nctx.update(ctx)
         ctx = nctx
         filename = article.headers.get("template", "article")
         if not filename.endswith(".mako"):
             filename = "_templates/"+filename+".mako"
+        url = article.url.copy().switch_language(self.lang)
+        next = None
+        prev = None
+        for i, art in enumerate(self.ctx.get('articles', [])):
+            if art == article:
+                if len(self.ctx['articles']) > i+1:
+                    prev = self.ctx['articles'][i+1]
+                if i > 0:
+                    next = self.ctx['articles'][i-1]
+                break
+        ctx.update({
+            'url': url,
+            'article': article,
+            'articles': self.ctx['articles'],
+            'content': article.__unicode__(),
+            'next_article': next,
+            'prev_article': prev,
+        })
         tpl = self.lookup.get_template(filename)
         sitemap = [url, article.headers.date, "yearly", 0.5]
         if "modified" in article.headers:
@@ -286,6 +287,9 @@ class LocalizedRenderer(object):
         nctx = self.ctx.copy()
         nctx.update(ctx)
         ctx = nctx
+        ctx.update({
+            'articles': self.ctx['articles'],
+        })
         pl = settings.PAGINATE_N
         articles = ctx["a"][:]
         if self.lang is not None:
@@ -316,6 +320,9 @@ class LocalizedRenderer(object):
         nctx = self.ctx.copy()
         nctx.update(ctx)
         ctx = nctx
+        ctx.update({
+            'articles': self.ctx['articles'],
+        })
         if self.lang is not None and "a" in ctx:
             ctx["a"] = filter(lambda a: a.hard_language in (self.lang, None), ctx["a"])
         if not isinstance(path, Url):
