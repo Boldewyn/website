@@ -471,6 +471,9 @@ class Article(object):
                            "_" + self.headers.ID).hexdigest()
         return int(s, 16)
 
+    def __repr__(self):
+        return '<Article "%s">' % self.url.get()
+
     def __cmp__(self, other):
         """Compare articles by date first, ID second"""
         s = self.headers.date.strftime("%Y-%m-%dT%H:%m:%s") + "_" + self.headers.ID
