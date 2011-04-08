@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import aa
+from _webtools.templatedefs import aa, laa
 %>\
 <%inherit file="base.mako"/>
 <%namespace name="orig" file="article.mako" />
@@ -16,7 +16,7 @@ $lang = '</%text>${lang}<%text>';
 $msg = '';
 
 if (! v('sent')) {
-} elseif ($mail && $name && $text) {
+} elseif ($mail && $name && $text && ! $honey) {
     if (! $subj) {
         if (preg_match('/^.{1,80}\n\n/', $text)) {
             list($subj, $text) = explode("\n\n", $text, 2);
@@ -41,9 +41,10 @@ if (! v('sent')) {
     }
 } else {
     $msg = '<section class="error"><p></%text>${_(u'Please correct the following errors:')}<%text></p><ul>';
-    if ($mail == False) { $msg .= '<li></%text>${_(u'The E-Mail address is wrong.')}<%text></li>'; }
+    if ($mail == False) { $msg .= '<li></%text>${_(u'The E-Mail address is missing or wrong.')}<%text></li>'; }
     if ($name == '') { $msg .= '<li></%text>${_(u'Please tell me your name.')}<%text></li>'; }
     if ($text == '') { $msg .= '<li></%text>${_(u'There is no text.')}<%text></li>'; }
+    if ($honey != '') { $msg .= '<li></%text>${_(u'You have put text in a field, where you shouldn’t have.')}<%text></li>'; }
     $msg .= '</ul></section>';
 }
 
@@ -61,16 +62,15 @@ function v($s) {
 ?></%text>
 
 
-<article id="content" \
+<article id="content" class="hentry" \
   % if lang != article.headers.language:
     xml:lang="${article.headers.language}"\
   % endif
 >
 
-  <h1>${_(u"Contact me")}</h1>
-  <%include file="article/head.mako" args="_=_, lang=lang, article=article, title=False" />
+  <%include file="article/head.mako" args="_=_, lang=lang, article=article" />
 
-  <section class="body">
+  <section class="entry-content">
     ${content | n}
   </section>
 
@@ -87,7 +87,7 @@ function v($s) {
     </p>
     <p>
       <label for="contact_mail">${_(u"E-Mail:")}</label>
-      <input type="text" name="mail" id="contact_mail" value="<?php echo h($mail)?>" />
+      <input type="text" name="mail" id="contact_mail" value="<?php echo h(v('mail'))?>" />
     </p>
     <p>
       <label for="contact_subj">${_(u"Subject:")}</label>
@@ -99,7 +99,7 @@ function v($s) {
     </p>
     <p class="honezpot">
       <label for="contact_hp">${_(u"Please leave this field empty!")}</label>
-      <input type="text" name="hp" id="contact_hp" value="" />
+      <input type="text" name="hp" id="contact_hp" value="<?php echo h($honey)?>" />
     </p>
     <%text><?php if (! $success): ?></%text>
     <p>
@@ -114,12 +114,14 @@ function v($s) {
   </section>
   <?php endif ?>
 
+  <%include file="article/foot.mako" args="_=_, lang=lang, article=article" />
+
 </article>
 
 <%def name="get_title()">\
-  ${orig.get_title()}
+${orig.get_title()}
 </%def>
 
 <%def name="head()">
-  ${orig.head()}
+${orig.head()}
 </%def>
