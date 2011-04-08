@@ -21,7 +21,7 @@ from _webtools.templatedefs import laa, date, get_cat_title
         % endif
       ">${_("by %s") % '<span class="fn">'+_(article.headers.author)+'</span>' | n}</address>
       % if article.category:
-        <p class="info-category">${_("Filed under %s") % '<a href="%s/" rel="tag">%s</a>' % (laa(lang, article.category+"/"), get_cat_title(_, article.category)) | n}</p>
+        <p class="info-category">${_("Filed under %s") % '<a href="%s" rel="tag">%s</a>' % (laa(lang, article.category+"/"), get_cat_title(_, article.category)) | n}</p>
       % endif
       % if len(article.headers.subject) > 0:
         <p class="info-subject">${_("Keywords:")}
