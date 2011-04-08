@@ -248,10 +248,21 @@ class LocalizedRenderer(object):
         if article.hard_language not in (self.lang, None):
             return False
         url = article.url.copy().switch_language(self.lang)
+        next = None
+        prev = None
+        for i, art in enumerate(ctx.get('articles', [])):
+            if art == article:
+                if len(ctx['articles']) > i+1:
+                    prev = ctx['articles'][i+1]
+                if i > 0:
+                    next = ctx['articles'][i-1]
+                break
         ctx.update({
             'url': url,
             'article': article,
             'content': article.__unicode__(),
+            'next_article': next,
+            'prev_article': prev,
         })
         nctx = self.ctx.copy()
         nctx.update(ctx)
