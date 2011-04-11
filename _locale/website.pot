@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-03-31 17:55+0200\n"
+"POT-Creation-Date: 2011-04-11 07:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,59 +17,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: _webtools/settings.py:60
+#: _webtools/settings.py:66
 msgid "unknown"
 msgstr ""
 
-#: _webtools/templatedefs.py:59 _templates/base.mako:42
+#: _webtools/templatedefs.py:78 _templates/base.mako:42
 msgid "title"
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Jan."
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Feb."
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Mar."
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Apr."
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "May"
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "June"
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "July"
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Aug."
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Sep."
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Oct."
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Nov."
 msgstr ""
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Dec."
 msgstr ""
 
@@ -83,11 +83,19 @@ msgstr ""
 msgid "Feed for %s"
 msgstr ""
 
-#: _templates/article.mako:24
+#: _templates/article.mako:14 _templates/contact.mako:72
+msgid "previous"
+msgstr ""
+
+#: _templates/article.mako:20 _templates/contact.mako:78
+msgid "next"
+msgstr ""
+
+#: _templates/article.mako:35
 msgid "Previous:"
 msgstr ""
 
-#: _templates/article.mako:30
+#: _templates/article.mako:41
 msgid "Next:"
 msgstr ""
 
@@ -117,63 +125,59 @@ msgstr ""
 msgid "Feed for category %s"
 msgstr ""
 
-#: _templates/contact.mako:26
+#: _templates/contact.mako:33
 msgid "Sent from the contact form at"
 msgstr ""
 
-#: _templates/contact.mako:31
+#: _templates/contact.mako:38
 msgid "The e-mail was successfully sent."
 msgstr ""
 
-#: _templates/contact.mako:33
+#: _templates/contact.mako:40
 msgid "An unknown error occurred. Please try later."
 msgstr ""
 
-#: _templates/contact.mako:36
+#: _templates/contact.mako:43
 msgid "Please correct the following errors:"
 msgstr ""
 
-#: _templates/contact.mako:37
-msgid "The E-Mail address is wrong."
+#: _templates/contact.mako:44
+msgid "The E-Mail address is missing or wrong."
 msgstr ""
 
-#: _templates/contact.mako:38
+#: _templates/contact.mako:45
 msgid "Please tell me your name."
 msgstr ""
 
-#: _templates/contact.mako:39
-msgid "You haven’t entered a subject."
-msgstr ""
-
-#: _templates/contact.mako:40
+#: _templates/contact.mako:46
 msgid "There is no text."
 msgstr ""
 
-#: _templates/contact.mako:64
-msgid "Contact me"
+#: _templates/contact.mako:47
+msgid "You have put text in a field, where you shouldn’t have."
 msgstr ""
 
-#: _templates/contact.mako:79
+#: _templates/contact.mako:96
 msgid "Name:"
 msgstr ""
 
-#: _templates/contact.mako:83
+#: _templates/contact.mako:100
 msgid "E-Mail:"
 msgstr ""
 
-#: _templates/contact.mako:87
+#: _templates/contact.mako:104
 msgid "Subject:"
 msgstr ""
 
-#: _templates/contact.mako:91
+#: _templates/contact.mako:108
 msgid "Your Message:"
 msgstr ""
 
-#: _templates/contact.mako:95
+#: _templates/contact.mako:112
 msgid "Please leave this field empty!"
 msgstr ""
 
-#: _templates/contact.mako:101
+#: _templates/contact.mako:118
 msgid "Send e-mail"
 msgstr ""
 

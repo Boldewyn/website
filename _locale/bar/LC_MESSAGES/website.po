@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-03-31 17:55+0200\n"
-"PO-Revision-Date: 2011-03-31 17:59+0100\n"
+"POT-Creation-Date: 2011-04-11 07:34+0200\n"
+"PO-Revision-Date: 2011-04-11 07:42+0100\n"
 "Last-Translator: Manuel Strehl <translate@manuel-strehl.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,60 +16,60 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: _webtools/settings.py:60
+#: _webtools/settings.py:66
 msgid "unknown"
 msgstr "wiß’ma ned"
 
-#: _webtools/templatedefs.py:59
+#: _webtools/templatedefs.py:78
 #: _templates/base.mako:42
 msgid "title"
 msgstr "Titl"
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Jan."
 msgstr "Jan."
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Feb."
 msgstr "Feb."
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Mar."
 msgstr "März"
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Apr."
 msgstr "Apr."
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "May"
 msgstr "Mai"
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "June"
 msgstr "Juni"
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "July"
 msgstr "Juli"
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Aug."
 msgstr "Aug."
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Sep."
 msgstr "Sep."
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Oct."
 msgstr "Okt."
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Nov."
 msgstr "Nov."
 
-#: _webtools/templatedefs.py:73
+#: _webtools/templatedefs.py:92
 msgid "Dec."
 msgstr "Dez."
 
@@ -84,11 +84,21 @@ msgstr "Oids Zeich vom %s"
 msgid "Feed for %s"
 msgstr "Kanal fian %s"
 
-#: _templates/article.mako:24
+#: _templates/article.mako:14
+#: _templates/contact.mako:72
+msgid "previous"
+msgstr "voriga"
+
+#: _templates/article.mako:20
+#: _templates/contact.mako:78
+msgid "next"
+msgstr "näxda"
+
+#: _templates/article.mako:35
 msgid "Previous:"
 msgstr "Zruck:"
 
-#: _templates/article.mako:30
+#: _templates/article.mako:41
 msgid "Next:"
 msgstr "Weida:"
 
@@ -118,65 +128,61 @@ msgstr "Schubladn „%s“"
 msgid "Feed for category %s"
 msgstr "Kanal fiad Schubladn „%s“"
 
-#: _templates/contact.mako:26
-msgid "Sent from the contact form at"
-msgstr ""
-
-#: _templates/contact.mako:31
-msgid "The e-mail was successfully sent."
-msgstr ""
-
 #: _templates/contact.mako:33
-msgid "An unknown error occurred. Please try later."
-msgstr ""
-
-#: _templates/contact.mako:36
-msgid "Please correct the following errors:"
-msgstr ""
-
-#: _templates/contact.mako:37
-msgid "The E-Mail address is wrong."
-msgstr ""
+msgid "Sent from the contact form at"
+msgstr "G’send’t vom Kontaktformular vo "
 
 #: _templates/contact.mako:38
-msgid "Please tell me your name."
-msgstr ""
-
-#: _templates/contact.mako:39
-msgid "You haven’t entered a subject."
-msgstr ""
+msgid "The e-mail was successfully sent."
+msgstr "De Blitzpost is guad loskemma."
 
 #: _templates/contact.mako:40
+msgid "An unknown error occurred. Please try later."
+msgstr "Ebbs säidsams is passiat. Bitt’ sche, vasuachan’S ’s späda no amoi."
+
+#: _templates/contact.mako:43
+msgid "Please correct the following errors:"
+msgstr "Bitt’ sche, schaugn’S si de foigndn Fehla o:"
+
+#: _templates/contact.mako:44
+msgid "The E-Mail address is missing or wrong."
+msgstr "De Blitzpost-Adressn fäid oda is foisch."
+
+#: _templates/contact.mako:45
+msgid "Please tell me your name."
+msgstr "Bitt’ sche, sagn’S ma Eanan Namn."
+
+#: _templates/contact.mako:46
 msgid "There is no text."
-msgstr ""
+msgstr "Da is ja gar koa Text."
 
-#: _templates/contact.mako:64
-msgid "Contact me"
-msgstr ""
+#: _templates/contact.mako:47
+msgid "You have put text in a field, where you shouldn’t have."
+msgstr "Sie habn Text wo neigschriebn, wo koana neigheard."
 
-#: _templates/contact.mako:79
+#: _templates/contact.mako:96
 msgid "Name:"
-msgstr ""
+msgstr "Nam:"
 
-#: _templates/contact.mako:83
+#: _templates/contact.mako:100
 msgid "E-Mail:"
-msgstr ""
+msgstr "Blitzpost:"
 
-#: _templates/contact.mako:87
+#: _templates/contact.mako:104
 msgid "Subject:"
-msgstr ""
+msgstr "Betreff:"
 
-#: _templates/contact.mako:91
+#: _templates/contact.mako:108
 msgid "Your Message:"
-msgstr ""
+msgstr "Eana Nachricht:"
 
-#: _templates/contact.mako:95
+#: _templates/contact.mako:112
 msgid "Please leave this field empty!"
-msgstr ""
+msgstr "Bitt’ sche, laßn’S des Feld lear!"
 
-#: _templates/contact.mako:101
+#: _templates/contact.mako:118
 msgid "Send e-mail"
-msgstr ""
+msgstr "Blitzpost losschicka"
 
 #: _templates/index.mako:5
 msgid "Another Blog Around"
@@ -209,7 +215,7 @@ msgstr "Kanal fias Bapperl %s"
 
 #: _templates/article/foot.mako:30
 msgid "Discussion disabled due to privacy settings. Click here to re-enable."
-msgstr ""
+msgstr "Gschmatz ausgschoitd, wal’S es so gwoit ham. Klickn’S hia, um an wieda eizumschoitn."
 
 #: _templates/article/head.mako:22
 #, python-format
