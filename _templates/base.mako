@@ -53,7 +53,7 @@ from _webtools.templatedefs import laa, aa, static
         <li class="home"><a href="${settings.URL}" rel="home">${_(u"Home")}</a></li>
         % if categories:
           % for category in categories:
-            <li><a href="${laa(lang, category+"/"}">${self.category_title(category)}</a></li>
+            <li><a href="${laa(lang, category+"/")}">${self.category_title(category)}</a></li>
           % endfor
         % endif
       </ul>
