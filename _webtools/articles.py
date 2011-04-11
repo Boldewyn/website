@@ -26,6 +26,9 @@ except ImportError:
         return datetime.strptime(re.sub(r'[+-]\d{2}:?\d{2}$', '', str), settings.DATE_FORMAT)
 
 
+logger = logging.getLogger("website.articles")
+
+
 BeautifulSoup.PRESERVE_WHITESPACE_TAGS |= set(["code"])
 
 
@@ -77,9 +80,9 @@ def get_articles(dir=""):
             try:
                 candidate = Article(dir + a)
             except ValueError, e:
-                logging.warning("Couldn't process _articles/" + dir + a + ": " + str(e))
+                logger.warning("Couldn't process _articles/" + dir + a + ": " + str(e))
                 if settings.DEBUG:
-                    logging.warning(traceback.format_exc())
+                    logger.warning(traceback.format_exc())
             else:
                 if candidate.is_live():
                     articles.append(candidate)
@@ -386,7 +389,7 @@ class Article(object):
                 else:
                     lexer = get_lexer_by_name(lang, stripnl=False)
             except pygments.util.ClassNotFound:
-                logging.warning("Couldn't find lexer for %s" % lang)
+                logger.warning("Couldn't find lexer for %s" % lang)
                 lexer = guess_lexer(text)
             result = pygments.highlight(text, lexer, ArticleFormatter)
             highlighted = BeautifulSoup(result, fromEncoding="utf-8")
@@ -409,7 +412,7 @@ class Article(object):
         dr = ""
         if "draft" in self.headers.status:
             dr = "*DRAFT* "
-        logging.debug(dr + self.url.get())
+        logger.debug(dr + self.url.get())
         if "draft" in self.headers.status and not settings.DEBUG:
             raise ValueError("Can't save drafts")
         if "noindex" not in self.headers.get("robots", ""):

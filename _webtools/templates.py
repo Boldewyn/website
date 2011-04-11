@@ -20,6 +20,9 @@ from .i18n import get_gettext
 from .url import Url
 
 
+logger = logging.getLogger("website.templates")
+
+
 class TemplateEngine(object):
     """"""
 
@@ -71,7 +74,7 @@ class TemplateEngine(object):
         try:
             to.write(content.encode("UTF-8"))
         except:
-            logging.critical(exceptions.text_error_template().render())
+            logger.critical(exceptions.text_error_template().render())
             exit()
         to.close()
         if not isinstance(mtime, datetime):
@@ -94,11 +97,11 @@ class TemplateEngine(object):
             try:
                 to.write(tpl.render_unicode(**data).encode("UTF-8"))
             except:
-                logging.critical(exceptions.text_error_template().render())
+                logger.critical(exceptions.text_error_template().render())
                 exit()
             to.close()
         else:
-            logging.info("Sitemap already exists")
+            logger.info("Sitemap already exists")
 
     def add_to_index(self, url, content, lang=None):
         """Add content to the search index"""
