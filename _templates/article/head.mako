@@ -5,9 +5,13 @@ from _webtools.templatedefs import laa, date, get_cat_title
 <%page args="_, lang, article, title=True" />\
 
   % if title:
-    <h1 class="entry-title">${article.headers.title | n}</h1>
     % if article.headers.subtitle:
-      <h2>${article.headers.subtitle | n}</h2>
+      <hgroup class="entry-title">
+        <h1>${article.headers.title | n}</h1>
+        <h2>${article.headers.subtitle | n}</h2>
+      </hgroup>
+    % else:
+      <h1 class="entry-title">${article.headers.title | n}</h1>
     % endif
   % endif
   % if "no-info" not in article.headers.status:
