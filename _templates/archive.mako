@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import aa
+from _webtools.templatedefs import laa
 %>\
 <%inherit file="base.mako"/>
 
@@ -20,5 +20,5 @@ ${_(u"Archive for %s") % xdate} — \
 </%def>
 
 <%def name="head()">
-  <link rel="alternate" type="application/atom+xml" title="${_("Feed for %s") % xdate}" href="${("archive/%s/feed.xml" % xdate) | aa}" />
+  <link rel="alternate" type="application/atom+xml" title="${_("Feed for %s") % xdate}" href="${laa(lang, "archive/%s/feed.xml" % xdate)}" />
 </%def>

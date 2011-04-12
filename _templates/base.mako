@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import laa, aa, static
+from _webtools.templatedefs import laa, static
 %>\
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang or 'en'}" lang="${lang or 'en'}">
@@ -10,7 +10,7 @@ from _webtools.templatedefs import laa, aa, static
       <script src="${'html5.js' | static}"></script>
     <![endif]-->
     <link rel="stylesheet" href="${'style.css' | static}" />
-    <link rel="alternate" type="application/atom+xml" href="${"feed.xml" | aa}" />
+    <link rel="alternate" type="application/atom+xml" href="${laa(lang, "feed.xml")}" />
     <link rel="profile" href="http://www.w3.org/2003/g/data-view" />
     <link rel="schema.dc" href="http://purl.org/dc/terms/" />
     <link rel="transformation" href="http://dublincore.org/transform/dc-html-20080804-grddl/dc-html2rdfxml.xsl" />
