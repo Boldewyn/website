@@ -57,7 +57,7 @@ def _unescape(text):
             except KeyError:
                 pass
         return text # leave as is
-    return re.sub(r"&#?\w+;", fixup, unicode(text.decode("UTF-8")), re.U)
+    return re.sub(r"&#?\w+;", fixup, text.decode("UTF-8"), re.U)
 
 
 def get_articles(dir=""):
@@ -168,7 +168,7 @@ class ArticleHeaders(object):
                 continue
             k,v = line.split(":", 1)
             k = k.upper()
-            v = unicode(v.strip().decode("UTF-8"))
+            v = v.strip().decode("UTF-8")
             if k in headers:
                 headers[k] += u", " + v
             else:
@@ -292,7 +292,7 @@ class Article(object):
         head, content = f.read().replace("\r\n", "\n").split("\n\n", 1)
         f.close()
         self.headers = ArticleHeaders(head)
-        self.raw_content = unicode(content.decode("utf-8"))
+        self.raw_content = content.decode("utf-8")
         self.soup = BeautifulSoup(self.raw_content, fromEncoding="utf-8")
 
         self.complete_headers()
@@ -334,7 +334,7 @@ class Article(object):
             if "abstract" in self.headers:
                 self.headers.description = self.headers.abstract
             elif "standalone" in self.headers.status:
-                self.headers.description = generate_description(unicode(self.soup.body).replace(u'<!--<!--', u'<!--').replace(u'-->-->', u'-->'))
+                self.headers.description = generate_description(str(self.soup.body).decode("UTF-8"))
             else:
                 self.headers.description = generate_description(self.__unicode__())
 
@@ -467,7 +467,7 @@ class Article(object):
 
     def __unicode__(self):
         # work around bug in BeautifulSoup
-        return unicode(str(self.soup).decode('UTF-8'))
+        return str(self.soup).decode('UTF-8')
 
     def __hash__(self):
         s = hashlib.sha224(self.headers.date.strftime("%Y-%m-%dT%H:%m:%s") +

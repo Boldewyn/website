@@ -26,7 +26,7 @@ def render_tags(articles):
     for tag, a in tags.iteritems():
         description = None
         if os.path.exists("_doc/%s.tag.html" % tag):
-            description = unicode(open("_doc/%s.tag.html" % category).read().decode("UTF-8"))
+            description = open("_doc/%s.tag.html" % category).read().decode("UTF-8")
         template_engine.render_paginated("tag", "tag/"+
                         tag+"/index.html", **locals())
         render_feed(a, "tag/%s" % tag)
@@ -75,7 +75,7 @@ def render_indexes(articles):
         elif not has_index(settings.BUILD_TARGET+"/"+category):
             description = None
             if os.path.exists("_doc/%s.category.html" % category):
-                description = unicode(open("_doc/%s.category.html" % category).read().decode("UTF-8"))
+                description = open("_doc/%s.category.html" % category).read().decode("UTF-8")
             template_engine.render_paginated("category", category+
                             "/index.html", **locals())
             render_feed(a, category)
