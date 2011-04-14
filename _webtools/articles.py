@@ -416,7 +416,9 @@ class Article(object):
         if "draft" in self.headers.status and not settings.DEBUG:
             raise ValueError("Can't save drafts")
         if "noindex" not in self.headers.get("robots", ""):
-            template_engine.add_to_index(self.url, self.__unicode__(), self.headers.language)
+            x = u""
+            x += u" ".join([ "%s %s" % (x,y) for x, y in self.headers.get_dc().iteritems() ])
+            template_engine.add_to_index(self.url, x + u" " + self.__unicode__(), self.headers.language)
         if "standalone" in self.headers.status:
             template_engine.write_to(self.url.get_path(), self.__unicode__())
         else:
