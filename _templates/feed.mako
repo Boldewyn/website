@@ -5,7 +5,7 @@ from _webtools.templatedefs import aa, strip_tags
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title>${title}</title>
+  <title>${_(title)}</title>
   <link href="${link | aa}"/>
   <updated>${updated}</updated>
 

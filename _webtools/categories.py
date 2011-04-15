@@ -83,17 +83,21 @@ def render_indexes(articles):
 
 def render_feed(all_articles, category=""):
     """Render the atom newsfeed"""
+    _ = lambda s: s
     articles = all_articles[:settings.get("FEED_LENGTH", len(all_articles))]
     author = settings.DEFAULTS['AUTHOR']
     updated = datetime.now().isoformat()
     link = (settings.URL+category).rstrip("/") + "/"
     title = settings.get("TITLE", "")
     if category.startswith("tag/"):
-        title = u"Tag \u201C%s\u201D \u2014 %s" % (category[4:], title)
+        title = _(u"Tag \u201C%(tag)s\u201D \u2014 %(title)s") % { 'tag': category[4:],
+                                                                  'title': title }
     elif category.startswith("archive/"):
-        title = u"Archive for %s \u2014 %s" % (category[8:], title)
+        title = _(u"Archive for %(date)s \u2014 %(title)s") % { 'date': category[8:],
+                                                               'title': title }
     elif category != "" and category in settings.CATEGORY:
-        title = u"Category \u201C%s\u201D \u2014 %s" % (settings.CATEGORY[category]['title'], title)
+        title = _(u"Category \u201C%(category)s\u201D \u2014 %(title)s") % {
+                    'category': settings.CATEGORY[category]['title'], 'title': title }
     id = settings.URL + category
     nolang = True
     template_engine.render_template("_templates/feed.mako",

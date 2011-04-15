@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-04-11 07:34+0200\n"
+"POT-Creation-Date: 2011-04-15 07:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: _webtools/settings.py:66
+#: _webtools/categories.py:93
+#, python-format
+msgid "Tag “%(tag)s” — %(title)s"
+msgstr ""
+
+#: _webtools/categories.py:96
+#, python-format
+msgid "Archive for %(date)s — %(title)s"
+msgstr ""
+
+#: _webtools/categories.py:99
+#, python-format
+msgid "Category “%(category)s” — %(title)s"
+msgstr ""
+
+#: _webtools/settings.py:69
 msgid "unknown"
 msgstr ""
 
@@ -211,17 +226,17 @@ msgstr ""
 msgid "Discussion disabled due to privacy settings. Click here to re-enable."
 msgstr ""
 
-#: _templates/article/head.mako:22
+#: _templates/article/head.mako:26
 #, python-format
 msgid "by %s"
 msgstr ""
 
-#: _templates/article/head.mako:24
+#: _templates/article/head.mako:28
 #, python-format
 msgid "Filed under %s"
 msgstr ""
 
-#: _templates/article/head.mako:27
+#: _templates/article/head.mako:31
 msgid "Keywords:"
 msgstr ""
 

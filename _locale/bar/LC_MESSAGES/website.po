@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-04-11 07:34+0200\n"
-"PO-Revision-Date: 2011-04-11 07:42+0100\n"
+"POT-Creation-Date: 2011-04-15 07:49+0200\n"
+"PO-Revision-Date: 2011-04-15 07:52+0100\n"
 "Last-Translator: Manuel Strehl <translate@manuel-strehl.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,7 +16,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: _webtools/settings.py:66
+#: _webtools/categories.py:93
+#, python-format
+msgid "Tag “%(tag)s” — %(title)s"
+msgstr "Bapperl „%(tag)s“ — %(title)s"
+
+#: _webtools/categories.py:96
+#, python-format
+msgid "Archive for %(date)s — %(title)s"
+msgstr "Archiv fia %(date)s — %(title)s"
+
+#: _webtools/categories.py:99
+#, python-format
+msgid "Category “%(category)s” — %(title)s"
+msgstr "Schubladn „%(category)s“ — %(title)s"
+
+#: _webtools/settings.py:69
 msgid "unknown"
 msgstr "wiß’ma ned"
 
@@ -217,17 +232,17 @@ msgstr "Kanal fias Bapperl %s"
 msgid "Discussion disabled due to privacy settings. Click here to re-enable."
 msgstr "Gschmatz ausgschoitd, wal’S es so gwoit ham. Klickn’S hia, um an wieda eizumschoitn."
 
-#: _templates/article/head.mako:22
+#: _templates/article/head.mako:26
 #, python-format
 msgid "by %s"
 msgstr "vom %s"
 
-#: _templates/article/head.mako:24
+#: _templates/article/head.mako:28
 #, python-format
 msgid "Filed under %s"
 msgstr "Gspeichad ois %s"
 
-#: _templates/article/head.mako:27
+#: _templates/article/head.mako:31
 msgid "Keywords:"
 msgstr "Bapperln:"
 
