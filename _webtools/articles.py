@@ -343,15 +343,26 @@ class Article(object):
             super(Article.MyHtmlFormatter, self).__init__(encoding='UTF-8', classprefix="s_", hl_lines=hl_lines)
 
         def wrap(self, inner, outfile):
-            yield (0, '<ol class="highlight">')
-            for i, (c, l) in enumerate(inner):
-                if c != 1:
-                    yield t, value
-                if i+1 in self.hl_lines:
-                    yield (c, '<li class="hll"><code>'+l+'</code></li>')
-                else:
-                    yield (c, '<li><code>'+l+'</code></li>')
-            yield (0, '</ol>')
+            if settings.HIGHLIGHT_OL:
+                yield (0, '<ol class="highlight">')
+                for i, (c, l) in enumerate(inner):
+                    if c != 1:
+                        yield t, value
+                    if i+1 in self.hl_lines:
+                        yield (c, '<li class="hll"><code>'+l+'</code></li>')
+                    else:
+                        yield (c, '<li><code>'+l+'</code></li>')
+                yield (0, '</ol>')
+            else:
+                yield (0, '<pre class="highlight">')
+                for i, (c, l) in enumerate(inner):
+                    if c != 1:
+                        yield t, value
+                    if i+1 in self.hl_lines:
+                        yield (c, '<span class="line hll">'+l+'</span>')
+                    else:
+                        yield (c, '<span class="line">'+l+'</span>')
+                yield (0, '</pre>')
 
         def _highlight_lines(self, tokensource):
             for tup in tokensource:
@@ -393,12 +404,20 @@ class Article(object):
                 lexer = guess_lexer(text)
             result = pygments.highlight(text, lexer, ArticleFormatter)
             highlighted = BeautifulSoup(result, fromEncoding="utf-8")
-            for at, val in pre.attrs:
-                if at == "class":
-                    highlighted.ol[at] += u" "+val
-                else:
-                    highlighted.ol[at] = val
-            pre.replaceWith(highlighted.ol)
+            if settings.HIGHLIGHT_OL:
+                for at, val in pre.attrs:
+                    if at == "class":
+                        highlighted.ol[at] += u" "+val
+                    else:
+                        highlighted.ol[at] = val
+                pre.replaceWith(highlighted.ol)
+            else:
+                for at, val in pre.attrs:
+                    if at == "class":
+                        highlighted.pre[at] += u" "+val
+                    else:
+                        highlighted.pre[at] = val
+                pre.replaceWith(highlighted.pre)
         self.processed = True
 
     def save(self, **ctx):
