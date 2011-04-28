@@ -3,9 +3,10 @@
 from _webtools.templatedefs import laa
 %>\
 <%inherit file="base.mako"/>\
+<%namespace name="comp" file="components.mako" />\
 \
 <section id="content" class="category">\
-<h1>${self.category_title(category)}</h1>\
+<h1>${comp.category_title(category)}</h1>\
 % if description:
 <section class="description">${description | n}</section>\
 % endif

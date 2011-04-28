@@ -53,8 +53,8 @@ ${article.headers.title | n,strip_tags} — \
 ${parent.head()}\
 <link rel="profile" href="http://microformats.org/profile/hatom"/>\
 <link rel="canonical" href="${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(article.url)}"/>\
-<link rel="dc.isPartOf" href="${laa(lang, article.category+"/")}"/>\
-<link rel="dc.tableOfContents" href="${laa(lang, article.category+"/")}"/>\
+<link rel="dc:isPartOf" href="${laa(lang, article.category+"/")}"/>\
+<link rel="dc:tableOfContents" href="${laa(lang, article.category+"/")}"/>\
 <meta name="description" content="${article.headers.description}"/>\
 <meta name="keywords" content="${",".join(article.headers.subject)}"/>\
 % if article.headers.robots:
@@ -64,9 +64,9 @@ ${parent.head()}\
 % endif
 % for k, v in article.headers.get_dc().iteritems():
 % if v.startswith("http"):
-<link rel="dc.${k}" href="${v | repl}"/>\
+<link rel="dc:${k}" href="${v | repl}"/>\
 % else:
-<meta name="dc.${k}" content="${_(v)}"/>\
+<meta name="dc:${k}" content="${_(v)}"/>\
 % endif
 % endfor
 % for css in article.headers.stylesheet:
