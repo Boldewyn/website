@@ -276,12 +276,14 @@ class LocalizedRenderer(object):
         })
         tpl = self.lookup.get_template(filename)
         sitemap = [url, article.headers.date, "yearly", 0.5]
+        date = article.headers.date
         if "modified" in article.headers:
             sitemap[1] = article.headers.modified
+            date = article.headers.modified
         if "accrualperiodicity" in article.headers:
             sitemap[2] = article.headers.accrualperiodicity
         template_engine.write_to(url.get_path(), tpl.render_unicode(**ctx),
-                                 article.headers.date)
+                                 date)
         self.sitemap.append(sitemap)
         return True
 
