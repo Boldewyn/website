@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-04-15 07:49+0200\n"
-"PO-Revision-Date: 2011-04-15 07:53+0100\n"
+"POT-Creation-Date: 2011-04-30 14:25+0200\n"
+"PO-Revision-Date: 2011-04-30 14:26+0100\n"
 "Last-Translator: Manuel Strehl <translate@manuel-strehl.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -36,7 +36,7 @@ msgid "unknown"
 msgstr "unbekannt"
 
 #: _webtools/templatedefs.py:78
-#: _templates/base.mako:42
+#: _templates/components.mako:9
 msgid "title"
 msgstr "Titel"
 
@@ -89,59 +89,73 @@ msgid "Dec."
 msgstr "Dez."
 
 #: _templates/archive.mako:8
-#: _templates/archive.mako:19
+#: _templates/archive.mako:16
 #, python-format
 msgid "Archive for %s"
 msgstr "Archiv für %s"
 
-#: _templates/archive.mako:23
+#: _templates/archive.mako:20
 #, python-format
 msgid "Feed for %s"
 msgstr "Kanal für %s"
 
-#: _templates/article.mako:14
+#: _templates/article.mako:13
 #: _templates/contact.mako:72
 msgid "previous"
 msgstr "zurück"
 
-#: _templates/article.mako:20
+#: _templates/article.mako:19
 #: _templates/contact.mako:78
 msgid "next"
 msgstr "weiter"
 
-#: _templates/article.mako:35
+#: _templates/article.mako:32
 msgid "Previous:"
 msgstr "Zurück:"
 
-#: _templates/article.mako:41
+#: _templates/article.mako:38
 msgid "Next:"
 msgstr "Weiter:"
 
-#: _templates/base.mako:53
-msgid "Home"
-msgstr "Start"
-
-#: _templates/base.mako:73
-msgid "Tags"
-msgstr "Schlagworte"
-
-#: _templates/base.mako:83
-msgid "Archive"
-msgstr "Archiv"
-
-#: _templates/base.mako:93
-msgid "Latest Articles"
-msgstr "Neueste Artikel"
-
-#: _templates/category.mako:25
+#: _templates/category.mako:20
 #, python-format
 msgid "Category “%s”"
 msgstr "Kategorie „%s“"
 
-#: _templates/category.mako:29
+#: _templates/category.mako:24
 #, python-format
 msgid "Feed for category %s"
 msgstr "Kanal für Kategorie „%s“"
+
+#: _templates/components.mako:20
+#: _templates/components.mako:22
+msgid "search"
+msgstr "suchen"
+
+#: _templates/components.mako:29
+msgid "Tags"
+msgstr "Schlagworte"
+
+#: _templates/components.mako:33
+msgid "one article"
+msgstr "ein Artikel"
+
+#: _templates/components.mako:35
+#, python-format
+msgid "%s articles"
+msgstr "%s Artikel"
+
+#: _templates/components.mako:45
+msgid "Archive"
+msgstr "Archiv"
+
+#: _templates/components.mako:55
+msgid "Latest Articles"
+msgstr "Neueste Artikel"
+
+#: _templates/components.mako:65
+msgid "Home"
+msgstr "Start"
 
 #: _templates/contact.mako:33
 msgid "Sent from the contact form at"
@@ -203,7 +217,7 @@ msgstr "Email abschicken"
 msgid "Another Blog Around"
 msgstr "Noch ein Blog"
 
-#: _templates/index.mako:7
+#: _templates/index.mako:6
 msgid "Latest Articles:"
 msgstr "Neueste Artikel:"
 
@@ -218,19 +232,24 @@ msgid "End"
 msgstr "Ende"
 
 #: _templates/tag.mako:8
-#: _templates/tag.mako:25
+#: _templates/tag.mako:19
 #, python-format
 msgid "Tag “%s”"
 msgstr "Schlagwort „%s“"
 
-#: _templates/tag.mako:29
+#: _templates/tag.mako:23
 #, python-format
 msgid "Feed for tag %s"
 msgstr "Kanal für Schlagwort „%s“"
 
-#: _templates/article/foot.mako:30
+#: _templates/article/foot.mako:26
 msgid "Discussion disabled due to privacy settings. Click here to re-enable."
 msgstr "Diskussion deaktiviert aufgrund von Privatsphäreneinstellungen. Klicken Sie hier zur Reaktivierung."
+
+#: _templates/article/foot.mako:32
+#, python-format
+msgid "Blog comments powered by %s"
+msgstr "Blog-Kommentare unterstützt von %s"
 
 #: _templates/article/head.mako:26
 #, python-format

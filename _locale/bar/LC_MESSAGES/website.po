@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-04-15 07:49+0200\n"
-"PO-Revision-Date: 2011-04-15 07:52+0100\n"
+"POT-Creation-Date: 2011-04-30 14:25+0200\n"
+"PO-Revision-Date: 2011-04-30 14:28+0100\n"
 "Last-Translator: Manuel Strehl <translate@manuel-strehl.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -36,7 +36,7 @@ msgid "unknown"
 msgstr "wiß’ma ned"
 
 #: _webtools/templatedefs.py:78
-#: _templates/base.mako:42
+#: _templates/components.mako:9
 msgid "title"
 msgstr "Titl"
 
@@ -89,59 +89,73 @@ msgid "Dec."
 msgstr "Dez."
 
 #: _templates/archive.mako:8
-#: _templates/archive.mako:19
+#: _templates/archive.mako:16
 #, python-format
 msgid "Archive for %s"
 msgstr "Oids Zeich vom %s"
 
-#: _templates/archive.mako:23
+#: _templates/archive.mako:20
 #, python-format
 msgid "Feed for %s"
 msgstr "Kanal fian %s"
 
-#: _templates/article.mako:14
+#: _templates/article.mako:13
 #: _templates/contact.mako:72
 msgid "previous"
 msgstr "voriga"
 
-#: _templates/article.mako:20
+#: _templates/article.mako:19
 #: _templates/contact.mako:78
 msgid "next"
 msgstr "näxda"
 
-#: _templates/article.mako:35
+#: _templates/article.mako:32
 msgid "Previous:"
 msgstr "Zruck:"
 
-#: _templates/article.mako:41
+#: _templates/article.mako:38
 msgid "Next:"
 msgstr "Weida:"
 
-#: _templates/base.mako:53
-msgid "Home"
-msgstr "Hoam"
-
-#: _templates/base.mako:73
-msgid "Tags"
-msgstr "Bapperl"
-
-#: _templates/base.mako:83
-msgid "Archive"
-msgstr "Oide Sachn"
-
-#: _templates/base.mako:93
-msgid "Latest Articles"
-msgstr "Neiasde Artikln"
-
-#: _templates/category.mako:25
+#: _templates/category.mako:20
 #, python-format
 msgid "Category “%s”"
 msgstr "Schubladn „%s“"
 
-#: _templates/category.mako:29
+#: _templates/category.mako:24
 #, python-format
 msgid "Feed for category %s"
 msgstr "Kanal fiad Schubladn „%s“"
+
+#: _templates/components.mako:20
+#: _templates/components.mako:22
+msgid "search"
+msgstr "suachn"
+
+#: _templates/components.mako:29
+msgid "Tags"
+msgstr "Bapperl"
+
+#: _templates/components.mako:33
+msgid "one article"
+msgstr "oa Artikl"
+
+#: _templates/components.mako:35
+#, python-format
+msgid "%s articles"
+msgstr "%s Artikl"
+
+#: _templates/components.mako:45
+msgid "Archive"
+msgstr "Oide Sachn"
+
+#: _templates/components.mako:55
+msgid "Latest Articles"
+msgstr "Neiasde Artikln"
+
+#: _templates/components.mako:65
+msgid "Home"
+msgstr "Hoam"
 
 #: _templates/contact.mako:33
 msgid "Sent from the contact form at"
@@ -203,7 +217,7 @@ msgstr "Blitzpost losschicka"
 msgid "Another Blog Around"
 msgstr "No a Blog"
 
-#: _templates/index.mako:7
+#: _templates/index.mako:6
 msgid "Latest Articles:"
 msgstr "Neiasde Artikln:"
 
@@ -218,19 +232,24 @@ msgid "End"
 msgstr "End"
 
 #: _templates/tag.mako:8
-#: _templates/tag.mako:25
+#: _templates/tag.mako:19
 #, python-format
 msgid "Tag “%s”"
 msgstr "Bapperl „%s“"
 
-#: _templates/tag.mako:29
+#: _templates/tag.mako:23
 #, python-format
 msgid "Feed for tag %s"
 msgstr "Kanal fias Bapperl %s"
 
-#: _templates/article/foot.mako:30
+#: _templates/article/foot.mako:26
 msgid "Discussion disabled due to privacy settings. Click here to re-enable."
 msgstr "Gschmatz ausgschoitd, wal’S es so gwoit ham. Klickn’S hia, um an wieda eizumschoitn."
+
+#: _templates/article/foot.mako:32
+#, python-format
+msgid "Blog comments powered by %s"
+msgstr "%s huift mit de Blogmeinunga"
 
 #: _templates/article/head.mako:26
 #, python-format
