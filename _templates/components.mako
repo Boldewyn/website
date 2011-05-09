@@ -60,9 +60,11 @@ ${_(u"%s articles") % n}\
 % endif
 </%def>\
 \
-<%def name="show_navigation(extra=[])">\
+<%def name="show_navigation(home=True,extra=[])">\
 <ul>\
+% if home:
 <li class="home"><a href="${settings.URL}" rel="home">${_(u"Home")}</a></li>\
+% endif
 % if categories:
 % for category in categories:
 <li><a href="${laa(lang, category+"/")}">${self.category_title(category)}</a></li>\
