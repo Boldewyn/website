@@ -67,13 +67,28 @@ ${_(u"%s articles") % n}\
 % if home:
 <li class="home"><a href="${settings.URL}" rel="home">${_(u"Home")}</a></li>\
 % endif
-% if categories:
-% for category in categories:
-<li><a href="${laa(lang, category+"/")}">${self.category_title(category)}</a></li>\
-% endfor
-% endif
+${render_cats(categories)}\
 % for url, title in extra:
 <li><a href="${url}">${title}</a></li>\
 % endfor
 </ul>\
+</%def>\
+\
+<%def name="render_cats(categories)">\
+% if categories:
+% for category in filter(lambda s: "/" not in s, categories):
+<li><a href="${laa(lang, category+"/")}">${self.category_title(category)}</a>\
+<%
+subcats = filter(lambda s: s.startswith(category+"/"), categories)
+%>\
+% if subcats:
+<ul>\
+% for subcat in subcats:
+<li><a href="${laa(lang, subcat+"/")}">${self.category_title(subcat)}</a></li>\
+% endfor
+</ul>\
+% endif
+</li>\
+% endfor
+% endif
 </%def>\

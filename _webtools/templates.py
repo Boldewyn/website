@@ -209,8 +209,6 @@ def get_archives(articles):
     return dates
 
 
-
-
 class LocalizedRenderer(object):
     """Handle the rendering of stuff, one language at a time"""
 
