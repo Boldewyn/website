@@ -9,6 +9,8 @@ from _webtools.templatedefs import laa, static
     title = _(settings.CATEGORY[category]["title"])
   except:
     title = category
+    if "/" in title:
+      title = title.split("/")[-1]
 %>\
 ${title}\
 </%def>\
