@@ -354,7 +354,7 @@ class Article(object):
                         yield (c, '<li><code>'+l+'</code></li>')
                 yield (0, '</ol>')
             else:
-                yield (0, '<pre class="highlight">')
+                yield (0, '<pre class="highlight"><code>')
                 for i, (c, l) in enumerate(inner):
                     if c != 1:
                         yield t, value
@@ -362,7 +362,7 @@ class Article(object):
                         yield (c, '<span class="line hll">'+l+'</span>')
                     else:
                         yield (c, '<span class="line">'+l+'</span>')
-                yield (0, '</pre>')
+                yield (0, '</code></pre>')
 
         def _highlight_lines(self, tokensource):
             for tup in tokensource:
@@ -413,7 +413,9 @@ class Article(object):
                 pre.replaceWith(highlighted.ol)
             else:
                 for at, val in pre.attrs:
-                    if at == "class":
+                    if at == "data-lang":
+                        highlighted.pre.code[at] = val
+                    elif at == "class":
                         highlighted.pre[at] += u" "+val
                     else:
                         highlighted.pre[at] = val
