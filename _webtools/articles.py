@@ -16,7 +16,6 @@ from BeautifulSoup import BeautifulSoup
 from .settings import settings
 from datetime import datetime
 from .templates import template_engine
-from .templatedefs import aa
 from .util import get_extensions
 from .url import Url
 try:
@@ -119,6 +118,23 @@ def generate_description(markup, length=200, append=u"\u2026"):
     return plain[:length]+plainadd+append
 
 
+def _get_by_id(ID, articles):
+    """Get an article by its ID"""
+    if isinstance(ID, list):
+        r = []
+        for i in ID:
+            for a in articles:
+                if a.headers.ID == i:
+                    r.append(a)
+                    continue
+        return r
+    else:
+        for a in articles:
+            if a.headers.ID == ID:
+                return a
+        return None
+
+
 class ArticleHeaders(object):
     """Store article headers in a highly accessible key:value db
 
@@ -148,7 +164,7 @@ class ArticleHeaders(object):
     BOOLS = ()
     DATES = ("DATE", "MODIFIED", "AVAILABLE", "CREATED", "DATEACCEPTED", "DATECOPYRIGHTED",
              "DATESUBMITTED", "ISSUED", "MODIFIED")
-    LISTS = ("SUBJECT", "STYLESHEET", "SCRIPT", "STATUS")
+    LISTS = ("SUBJECT", "STYLESHEET", "SCRIPT", "STATUS", "TRANSLATION")
 
     def __init__(self, data=None):
         """Initialize header storage"""
@@ -447,23 +463,19 @@ class Article(object):
                 # resolve the "id:" pseudo-scheme
                 ax = self.soup.findAll("a", href=re.compile(r"^id:"))
                 for a in ax:
-                    id = a['href'][3:]
-                    for a2 in ctx['articles']:
-                        if a2.headers.ID == id:
-                            a['href'] = aa(a2.url)
-                            break
+                    a['href'] = _get_by_id(a['href'][3:],
+                                  ctx['articles']).url.copy().switch_language(self.headers.language).get()
                 # resolve links to Requires and isRequiredBy
                 # TODO: Do we need multiple Requires?
                 if 'Requires' in self.headers:
-                    for a in ctx['articles']:
-                        if a.headers.ID == self.headers.Requires:
-                            self.headers.Requires = a
-                            break
+                    self.headers.Requires = _get_by_id(self.headers.Requires,
+                                                       ctx['articles'])
                 if 'IsRequiredBy' in self.headers:
-                    for a in ctx['articles']:
-                        if a.headers.ID == self.headers.IsRequiredBy:
-                            self.headers.IsRequiredBy = a
-                            break
+                    self.headers.IsRequiredBy = _get_by_id(self.headers.IsRequiredBy,
+                                                           ctx['articles'])
+                if 'translation' in self.headers:
+                    self.headers.translation = _get_by_id(self.headers.translation,
+                                                          ctx['articles'])
             for protocol, url_scheme in settings.PROTOCOLS.iteritems():
                 # resolve all pseudo-schemes
                 ax = self.soup.findAll(href=re.compile(u"^%s:" % protocol))

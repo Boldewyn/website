@@ -23,6 +23,7 @@ def render_tags(articles):
             if a_tag not in tags:
                 tags[a_tag] = []
             tags[a_tag].append(article)
+    del article
     for tag, a in tags.iteritems():
         description = None
         if os.path.exists("_doc/%s.tag.html" % tag):
@@ -44,6 +45,7 @@ def render_archives(articles):
         if y not in dates:
             dates[y] = []
         dates[y].append(article)
+    del article
     for xdate, a in dates.iteritems():
         if len(xdate) == 4:
             date = datetime(int(xdate), 12, 31)
@@ -66,6 +68,7 @@ def render_indexes(articles):
             if rootcat not in cats:
                 cats[rootcat] = []
             cats[rootcat].append(article)
+    del article
     for category, a in cats.iteritems():
         if category == "":
             if not has_index(settings.BUILD_TARGET):

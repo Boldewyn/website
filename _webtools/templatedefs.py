@@ -8,6 +8,7 @@ except ImportError:
 import re
 import os
 import urllib
+from .articles import Article
 from .settings import settings
 from .url import Url
 from babel.dates import format_date
@@ -34,7 +35,13 @@ def laa(lang=None, url=None):
     if lang is None:
         lang = settings.LANGUAGE
     def _laa(path):
-        if isinstance(path, Url):
+        if isinstance(path, Article):
+            if path.headers.translation:
+                for t in path.headers.translation:
+                    if t.headers.language.startswith(lang):
+                        return t.url.get()
+            return path.url.copy().switch_language(lang).get()
+        elif isinstance(path, Url):
             return path.copy().switch_language(lang).get()
         else:
             return Url(path).switch_language(lang).get()
