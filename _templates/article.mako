@@ -52,7 +52,6 @@ ${article.headers.title | n,strip_tags} — \
 <%def name="head()">\
 ${parent.head()}\
 <link rel="profile" href="http://microformats.org/profile/hatom"/>\
-<link rel="canonical" href="${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(article.url)}"/>\
 <link rel="dc:isPartOf" href="${laa(lang, article.category+"/")}"/>\
 <link rel="dc:tableOfContents" href="${laa(lang, article.category+"/")}"/>\
 <meta name="description" content="${article.headers.description}"/>\

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import laa, static
+from _webtools.templatedefs import laa, static, aa
 %>\
 <%namespace name="comp" file="components.mako" />\
 <!DOCTYPE html SYSTEM "about:legacy">\
@@ -12,6 +12,11 @@ from _webtools.templatedefs import laa, static
 <link rel="alternate" type="application/atom+xml" href="${laa(lang, "feed.xml")}" />\
 <link rel="profile" href="http://www.w3.org/2003/g/data-view" />\
 <link rel="shortcut icon" href="/favicon.ico" />\
+% if article:
+<link rel="canonical" href="${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(article.url)}"/>\
+% else:
+<link rel="canonical" href="${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(url)}"/>\
+% endif
 <script src="${'script.js' | static}"></script>\
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />\
 ${self.head()}\
