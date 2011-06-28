@@ -41,5 +41,5 @@ default-author\
 % endif
 \
 % if article.headers.abstract:
-<section class="abstract entry-summary"><p>${article.headers.abstract}</p></section>\
+<section class="abstract entry-summary"><p>${article.headers.abstract | n}</p></section>\
 % endif
