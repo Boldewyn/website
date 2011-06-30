@@ -20,7 +20,7 @@ from _webtools.templatedefs import aa, strip_tags
       <title>${article.headers.title | n,strip_tags}</title>
       <link href="${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(article.url)}"/>
       <id>${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(article.url)}</id>
-      <updated>${article.headers.date.strftime("%Y-%m-%dT%H:%M:%S%z")}</updated>
+      <updated>${article.headers.date.isoformat("T")}</updated>
       <summary>${article.headers.description}</summary>
     </entry>
   % endfor
