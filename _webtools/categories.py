@@ -89,7 +89,7 @@ def render_feed(all_articles, category=""):
     _ = lambda s: s
     articles = all_articles[:settings.get("FEED_LENGTH", len(all_articles))]
     author = settings.DEFAULTS['AUTHOR']
-    updated = datetime.now().isoformat()
+    updated = datetime.utcnow().isoformat()[0:19]+"Z"
     link = (settings.URL+category).rstrip("/") + "/"
     title = settings.get("TITLE", "")
     if category.startswith("tag/"):
