@@ -18,6 +18,9 @@ ${page.paginate(pag)}\
 \
 <%def name="get_title()">\
 ${_(u"Category “%s”") % category} — \
+% if pag and pag["pages"] and pag["cur"] > 1:
+${_("Page %s") % pag["cur"]} — \
+% endif
 </%def>\
 \
 <%def name="head()">\

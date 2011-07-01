@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-04-30 14:25+0200\n"
-"PO-Revision-Date: 2011-04-30 14:26+0100\n"
+"POT-Creation-Date: 2011-07-01 21:35+0200\n"
+"PO-Revision-Date: 2011-07-01 21:37+0100\n"
 "Last-Translator: Manuel Strehl <translate@manuel-strehl.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,17 +16,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: _webtools/categories.py:93
+#: _webtools/categories.py:96
 #, python-format
 msgid "Tag “%(tag)s” — %(title)s"
 msgstr "Schlagwort „%(tag)s“ — %(title)s"
 
-#: _webtools/categories.py:96
+#: _webtools/categories.py:99
 #, python-format
 msgid "Archive for %(date)s — %(title)s"
 msgstr "Archiv für %(date)s — %(title)s"
 
-#: _webtools/categories.py:99
+#: _webtools/categories.py:102
 #, python-format
 msgid "Category “%(category)s” — %(title)s"
 msgstr "Kategorie „%(category)s“ — %(title)s"
@@ -35,56 +35,56 @@ msgstr "Kategorie „%(category)s“ — %(title)s"
 msgid "unknown"
 msgstr "unbekannt"
 
-#: _webtools/templatedefs.py:78
+#: _webtools/templatedefs.py:85
 #: _templates/components.mako:9
 msgid "title"
 msgstr "Titel"
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Jan."
 msgstr "Jan."
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Feb."
 msgstr "Feb."
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Mar."
 msgstr "März"
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Apr."
 msgstr "Apr."
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "May"
 msgstr "Mai"
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "June"
 msgstr "Juni"
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "July"
 msgstr "Juli"
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Aug."
 msgstr "Aug."
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Sep."
 msgstr "Sep."
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Oct."
 msgstr "Okt."
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Nov."
 msgstr "Nov."
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Dec."
 msgstr "Dez."
 
@@ -94,7 +94,15 @@ msgstr "Dez."
 msgid "Archive for %s"
 msgstr "Archiv für %s"
 
-#: _templates/archive.mako:20
+#: _templates/archive.mako:18
+#: _templates/category.mako:22
+#: _templates/index.mako:16
+#: _templates/tag.mako:21
+#, python-format
+msgid "Page %s"
+msgstr "Seite %s"
+
+#: _templates/archive.mako:23
 #, python-format
 msgid "Feed for %s"
 msgstr "Kanal für %s"
@@ -122,38 +130,38 @@ msgstr "Weiter:"
 msgid "Category “%s”"
 msgstr "Kategorie „%s“"
 
-#: _templates/category.mako:24
+#: _templates/category.mako:27
 #, python-format
 msgid "Feed for category %s"
 msgstr "Kanal für Kategorie „%s“"
 
-#: _templates/components.mako:20
 #: _templates/components.mako:22
+#: _templates/components.mako:24
 msgid "search"
 msgstr "suchen"
 
-#: _templates/components.mako:29
+#: _templates/components.mako:31
 msgid "Tags"
 msgstr "Schlagworte"
 
-#: _templates/components.mako:33
+#: _templates/components.mako:35
 msgid "one article"
 msgstr "ein Artikel"
 
-#: _templates/components.mako:35
+#: _templates/components.mako:37
 #, python-format
 msgid "%s articles"
 msgstr "%s Artikel"
 
-#: _templates/components.mako:45
+#: _templates/components.mako:47
 msgid "Archive"
 msgstr "Archiv"
 
-#: _templates/components.mako:55
+#: _templates/components.mako:57
 msgid "Latest Articles"
 msgstr "Neueste Artikel"
 
-#: _templates/components.mako:65
+#: _templates/components.mako:68
 msgid "Home"
 msgstr "Start"
 
@@ -221,6 +229,10 @@ msgstr "Noch ein Blog"
 msgid "Latest Articles:"
 msgstr "Neueste Artikel:"
 
+#: _templates/index.mako:14
+msgid "Start page"
+msgstr "Startseite"
+
 #: _templates/paginate.mako:25
 #: _templates/paginate.mako:27
 msgid "Start"
@@ -237,7 +249,7 @@ msgstr "Ende"
 msgid "Tag “%s”"
 msgstr "Schlagwort „%s“"
 
-#: _templates/tag.mako:23
+#: _templates/tag.mako:26
 #, python-format
 msgid "Feed for tag %s"
 msgstr "Kanal für Schlagwort „%s“"
@@ -267,6 +279,6 @@ msgstr "Schlüsselwörter:"
 
 #~ msgid "You haven’t entered a subject."
 #~ msgstr "Sie haben keinen Betreff angegeben."
+
 #~ msgid "Contact me"
 #~ msgstr "Mich kontaktieren"
-

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-04-30 14:25+0200\n"
+"POT-Creation-Date: 2011-07-01 21:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,17 +17,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: _webtools/categories.py:93
+#: _webtools/categories.py:96
 #, python-format
 msgid "Tag “%(tag)s” — %(title)s"
 msgstr ""
 
-#: _webtools/categories.py:96
+#: _webtools/categories.py:99
 #, python-format
 msgid "Archive for %(date)s — %(title)s"
 msgstr ""
 
-#: _webtools/categories.py:99
+#: _webtools/categories.py:102
 #, python-format
 msgid "Category “%(category)s” — %(title)s"
 msgstr ""
@@ -36,55 +36,55 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: _webtools/templatedefs.py:78 _templates/components.mako:9
+#: _webtools/templatedefs.py:85 _templates/components.mako:9
 msgid "title"
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Jan."
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Feb."
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Mar."
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Apr."
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "May"
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "June"
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "July"
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Aug."
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Sep."
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Oct."
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Nov."
 msgstr ""
 
-#: _webtools/templatedefs.py:92
+#: _webtools/templatedefs.py:99
 msgid "Dec."
 msgstr ""
 
@@ -93,7 +93,13 @@ msgstr ""
 msgid "Archive for %s"
 msgstr ""
 
-#: _templates/archive.mako:20
+#: _templates/archive.mako:18 _templates/category.mako:22
+#: _templates/index.mako:16 _templates/tag.mako:21
+#, python-format
+msgid "Page %s"
+msgstr ""
+
+#: _templates/archive.mako:23
 #, python-format
 msgid "Feed for %s"
 msgstr ""
@@ -119,37 +125,37 @@ msgstr ""
 msgid "Category “%s”"
 msgstr ""
 
-#: _templates/category.mako:24
+#: _templates/category.mako:27
 #, python-format
 msgid "Feed for category %s"
 msgstr ""
 
-#: _templates/components.mako:20 _templates/components.mako:22
+#: _templates/components.mako:22 _templates/components.mako:24
 msgid "search"
 msgstr ""
 
-#: _templates/components.mako:29
+#: _templates/components.mako:31
 msgid "Tags"
 msgstr ""
 
-#: _templates/components.mako:33
+#: _templates/components.mako:35
 msgid "one article"
 msgstr ""
 
-#: _templates/components.mako:35
+#: _templates/components.mako:37
 #, python-format
 msgid "%s articles"
 msgstr ""
 
-#: _templates/components.mako:45
+#: _templates/components.mako:47
 msgid "Archive"
 msgstr ""
 
-#: _templates/components.mako:55
+#: _templates/components.mako:57
 msgid "Latest Articles"
 msgstr ""
 
-#: _templates/components.mako:65
+#: _templates/components.mako:68
 msgid "Home"
 msgstr ""
 
@@ -217,6 +223,10 @@ msgstr ""
 msgid "Latest Articles:"
 msgstr ""
 
+#: _templates/index.mako:14
+msgid "Start page"
+msgstr ""
+
 #: _templates/paginate.mako:25 _templates/paginate.mako:27
 msgid "Start"
 msgstr ""
@@ -230,7 +240,7 @@ msgstr ""
 msgid "Tag “%s”"
 msgstr ""
 
-#: _templates/tag.mako:23
+#: _templates/tag.mako:26
 #, python-format
 msgid "Feed for tag %s"
 msgstr ""
