@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="static/style.css" />
+    <title>website, HTML-to-HTML transformer</title>
+  </head>
+  <body>
+    <div id="global">
+      <article>
+        <header>
+          <hgroup>
+            <h1><code>website</code></h1>
+            <h2>HTML-to-HTML transformer</h2>
+          </hgroup>
+        </header>
+        <section>
+          <p><code>website</code> generates web sites from a bunch of HTML
+          files. Great! Let’s look at it.</p>
+          <pre><b>$ ls</b>
+_articles/
+_config.py
+_templates/
+assets/
+
+<b>$ ls _articles</b>
+_articles/my_post.html
+
+<b>$ cat _articles/my_post.html</b>
+Title: My First Post
+Date: 2011-07-01
+Subject: blog, Python, simple, usable
+
+&lt;p>This is my first post.&lt;/p>
+&lt;ul>&lt;li>Look! A list!&lt;/li>&lt;/ul></pre>
+          <p>In steps <code>website</code> to produce from this a fully
+          functional web site. Run it on this folder and see the magic
+          happen.</p>
+          <pre><b>$ python -m website.__main__</b>
+
+<b>$ ls</b>
+_articles/
+_config.py
+_templates/
+assets/
+site/
+
+<b>$ ls site</b>
+site/assets/
+site/my_post.html
+
+<b>$ cat site/my_post.html</b>
+&lt;!DOCTYPE html>
+&lt;html lang="en">
+  &lt;head>
+    &lt;title>My First Post&lt;/title>
+[…]
+&lt;p>This is my first post.&lt;/p>
+&lt;ul>&lt;li>Look! A list!&lt;/li>&lt;/ul>
+[…]
+    </pre>
+          <p>The new folder <var>site</var> contains the finished
+          data, complete with index files, news feeds and assets. It’s
+          ready to get uploaded or viewed directly.</p>
+        </section>
+        <section>
+          <h2>Getting Started</h2>
+          <p>To get started with <code>website</code>, see <a href="getting_started.html">this
+          detailed instruction</a>. It guides you through downloading, installing,
+          setting up your cinfig file and finally writing your first article.
+          Give it a try, it's simpler than it seems.</p>
+        </section>
+        <section>
+          <h2>Recipes (How do I…)</h2>
+          <p>See <a href="recipes.html"><code>website</code> recipes</a> for snippets on
+          how to achieve specific results with <code>website</code>.
+        </section>
+        <section>
+          <h2>How come?</h2>
+          <p>Have you ever struggled with WYSIWYG editors or substitute
+          markup, that just doesn’t do what you want? Did you ever wish you
+          could just use plain old HTML (sometimes referred to as <abbr
+          title="Plain Old Semantic HTML">POSH</abbr>), when you look up,
+          how a table is marked up in MediaWiki syntax?</p>
+          <p>This was my line of thought, when I wanted to start a blog.
+          I know HTML, so why use another markup language? I want all the
+          freedom of direct source code editing without the hassle of
+          managing manually a dozen headers and footers. I don’t need a
+          shiny database just to display a tagcloud of my articles. And I
+          want a simple way to embed metadata.</p>
+          <p>Therefore I wrote this Python framework, that takes a bunch
+          of HTML stubs and converts them to a fully functional website.</p>
+          <p>Take a look at the above example file. The format is oriented towards
+          HTTP. First there are header lines, that describe metadata. Then
+          a blank line. And then full-power awesome HTML markup with all
+          the shiny HTML5 features ready to be used inline. What could be
+          simpler than that?</p>
+        </section>
+        <section>
+          <h2>Features</h2>
+          <p><code>website</code> is coded with flexibility and standards
+          in mind. It is aimed to be a great platform for webtech savvy
+          people.</p>
+          <ul>
+            <li>provides an <strong>ATOM news feed</strong></li>
+            <li>generates a <strong>sitemap.xml</strong></li>
+            <li>supports <strong>full <abbr
+            title="internationalization">i18n</abbr></strong> via Gettext:
+            Posts and the UI can be translated independently</li>
+            <li>auto-generates <strong>paginated index pages</strong> for
+            the folder structure under <var>_article</var></li>
+            <li>auto-generates <strong>archive pages</strong> for years and
+            months</li>
+            <li>provides a <strong>tag cloud</strong> feature</li>
+            <li>allows <strong>embedding</strong> of the Python code: All
+            you need in a single folder, version-controlled with Git</li>
+            <li>provides far-reaching <strong>Dublin Core</strong>
+            metadata support</li>
+            <li>uses <strong>syntax highlighting</strong> via Pygments</li>
+            <li>integrates <a href="http://disqus.com">Disqus</a>
+            for <strong>commenting</strong> functionality</li>
+            <li>allows <strong>URL shortcuts</strong>:
+            <code>href="w:HTML"</code> becomes
+            <code>href="http://en.wikipedia.org/wiki/HTML"</code></li>
+            <li>Gives <strong>full mako template power</strong> to you
+            thanks to template inheritance and overwriting</li>
+            <li>simplifies <strong>performance tweaks</strong>: HTML is
+            short on unnecessary white-space, assets can live in a
+            separate folder or even under a separate domain</li>
+            <li>features a <strong>debug mode</strong></li>
+            <li>supports <strong>standards</strong> and well-known
+            workflows, e.g., GNU make, Gettext, HTML5, microformats, …</li>
+            <li>uses <strong>PHP</strong> to generate the pages, that
+            need server-side components, like contact forms and search results</li>
+            <li>works hand in hand with <strong>Apache’s
+            mod_negotiation</strong>, but can be used with any web server
+            (after all it’s only HTML)</li>
+          </ul>
+        </section>
+        <section>
+          <h2>But I want…</h2>
+          <p><code>website</code>’s way of handling things may or may not
+          suit your needs. That’s okay, and there are several options from
+          here:</p>
+          <ul>
+            <li>If you spotted an error in <code>website</code>, please
+            file a bug report at <a
+            href="http://github.com/Boldewyn/website/issues">Github’s
+            issue tracker</a></li>
+            <li>You miss a cool feature? Fork the project, implement it
+            and I’m most happy to include your pull request</li>
+            <li><code>website</code> handles things fundamentally different
+            from what you’d expect: I’d appreciate the feedback, however
+            you might be better off with another website compiler. There
+            is, for example, <a href="">Jeckyll</a>  and <a href="">toto</a>
+            in the Ruby world and <a href="http://blogofile.com">Blogofile</a>
+            or <a href="">weblog</a> for Python</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Who stands behind this?</h2>
+          <p>Hi! My name is Manuel Strehl, also known as Boldewyn. I created
+          <code>website</code>, because I wasn’t content with the choice
+          of blogging (and website creation in general) software out there
+          targeted at web developers.</p>
+          <p>This code powers <a href="http://www.manuel-strehl.de">manuel-strehl.de</a>,
+          my personal web site. Go take a look at it to see
+          <code>website</code> in action.</p>
+          <p>If you like what you see, take a minute and look at some other
+          projects of mine:</p>
+          <ul>
+            <li><a href="http://boldewyn.github.com/ebooks/">ebooks</a>: A project
+            to convert free books into HTML5 format</li>
+            <li><a href="http://boldewyn.github.com/motokai/">motokai</a>: A
+            ChatZilla motif based on the Monokai theme for TextMate</li>
+            <li><a href="http://boldewyn.github.com/rm-ns/">rm-ns</a>: remove
+            namespaced elements and attributes from your XML files</li>
+            <li><a href="http://boldewyn.github.com/view-source/">view-source</a>:
+            A XML syntax highlighter written in XSLT</li>
+            <li><a href="http://boldewyn.github.com/digraphs/">Digraphs</a>: A
+            Firefox addon, that brings Vim’s digraph support to Firefox</li>
+            <li><a href="http://boldewyn.github.com/unicodeinfo/">unicodeinfo</a>:
+            A set of tools to get information on Unicode codepoints</li>
+          </ul>
+        </section>
+      </article>
+    </div>
+  </body>
+</html>

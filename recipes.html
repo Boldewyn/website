@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="static/style.css" />
+    <script src="static/jquery.js"></script>
+    <script>
+$(function() {
+  $('dd').hide();
+  $('dt').css('cursor', 'pointer').prepend($('<span style="font-family:monospace">+</span> '))
+    .click(function() {
+      var dd = $(this).next('dd');
+      dd.toggle();
+      if (dd.filter(":visible").length) {
+        $(this).find('span:eq(0)').text("-");
+      } else {
+        $(this).find('span:eq(0)').text("+");
+      }
+    });
+    $('header').append($('<p><a href="#">Show all recipes.</a></p>').find("a").click(function(){
+      $('dd').show();
+      $('dt').find('span:first-child').text('-');
+      return false;
+    }).end());
+});
+    </script>
+    <title>website, HTML-to-HTML transformer</title>
+  </head>
+  <body>
+    <div id="global">
+      <article class="recipes">
+        <header>
+          <hgroup>
+            <h1><code>website</code> Recipes</h1>
+            <h2>“How Do I…” for <code>website</code> powered sites</h2>
+          </hgroup>
+          <p><a href="index.html">What is <code>website</code>?</a></p>
+        </header>
+        <nav>
+        </nav>
+        <section>
+          <h2>Settings and Defaults</h2>
+          <dl>
+            <dt>How can I set a default author for all posts?</dt>
+            <dd>
+              <p>In your <var>_config.py</var> add a dictionary <var>DEFAULTS</var> with
+              the key <code>AUTHOR</code>:</p>
+              <pre>DEFAULTS: {&#xA;    "AUTHOR": "John Doe"&#xA;}</pre></dd>
+            <dt>How can I add new pseudo-protocols?</dt>
+            <dd>
+              <p>Pseudo-protocols allow you to abbreviate hyperlinks in
+              your article posts. New ones are set in the <var>_config.py</var> file
+              with the variable <var>PROTOCOLS:</var></p>
+              <pre>PROTOCOLS: {&#xA;    "foo": "http://example.com/%s"&#xA;}</pre>
+              <p>You can then use it in your posts like this:</p>
+              <pre>href="foo:bar"</pre>
+              <p>which will turn out as</p>
+              <pre>href="http://example.com/bar"</pre></dd>
+            <dt>How do I enable comments for articles?</dt>
+            <dd>
+              <p>Since all articles are compiled to static HTML, <code>website</code> uses
+              <a href="http://disqus.com">Disqus</a> to host commenting
+              functionality. Add your Disqus user name to <var>_config.py</var>, and the rest
+              comes automatically:</p>
+              <pre>DISQUS_NAME = "foobar"</pre></dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Articles</h2>
+          <dl>
+            <dt>How do I add meta-data or headers to articles?</dt>
+            <dd>
+              <p>The syntax of an article file is quite simple. First there come the headers
+              in the form of key-value pairs, then an empty line followed by the post
+              body (HTML). Header lines may be split by beginning following lines with
+              a single white space. A complete post file looks like this:</p>
+              <pre>Title: My Post
+Author: John Doe
+Date: 2011-07-01T12:00:00Z
+Subject: website, writing, recipe
+
+&lt;p>This is a blog post.&lt;/p>
+&lt;p>There are lots of paragraphs&lt;/p>
+&lt;h2>Or Headings&lt;/h2></pre></dd>
+            <dt>How can I create categories for articles?</dt>
+            <dd>
+              <p>This is simple. Use folders under <var>_article</var> to organize your posts.
+              For example, putting a file under <var>_articles/my_cat/my_post.html</var> gives
+              the post the category “my_cat”. Nesting folders is of course supported.</p>
+            </dd>
+            <dt>How can I create tags for articles?</dt>
+            <dd>
+              <p>Use the header <var>Subject</var> and a comma-separated list to define
+              tags for a post:</p>
+              <pre>Title: My Post
+Subject: Tag 1, Tag 2
+
+&lt;p>Post content goes here…&lt;/p></pre></dd>
+            <dt>How do I create a series of articles?</dt>
+            <dd>
+              <p>There are two headers, that are used for this. <var>Requires</var> points
+              to another article, that preceeds the current, and <var>isRequiredBy</var>
+              references the next, following part. If you give the article an ID, you can
+              reference it easily:</p>
+              <pre>Title: Part 2 of 3
+ID: Part_2
+Requires: Part_1
+IsRequiredBy: Part_3
+
+&lt;p>This is part 2 of 3…&lt;/p></pre></dd>
+            <dt>How can I modify an article’s short description on index pages?</dt>
+            <dd>
+              <p>Usually index pages show the first 200 characters of the article. You can
+              change this in two ways: If you add a header <var>Abstract</var>, this abstract
+              is displayed per default before the article text, and is also used as
+              description. If you specify the header <var>Description</var>, this is used
+              as index page description, but doesn’t occur on the article’s page.</p>
+              <pre>Title: My Post
+Description: This appears on index pages
+Abstract: This is displayed in front of the article and
+ on index pages, if Description is not set
+
+&lt;p>This appears, if neither is set…&lt;/p></dd>
+            <dt>Can specific articles have no comment form?</dt>
+            <dd>
+              <p>The <var>Status</var> header is used for this. Add the value <var>no-discussion</var>
+              and the Disqus code will not be embedded:</p>
+              <pre>Title: There’s nothing to discuss&#xA;Status: no-discussion</pre></dd>
+            <dt>Can I prevent an article to appear in the index pages?</dt>
+            <dd>
+              <p>Add the value <var>noref</var> to the <var>Status</var> header:
+              <pre>Title: This should not appear on index pages&#xA;Status: noref</pre></dd>
+            <dt>An article should not be indexed by search engines. How?</dt>
+            <dd>
+              <p>You can add a <var>robots.txt</var> to your project, that will
+              automatically copied to the project:</p>
+              <pre>User-agent: *&#xA;Disallow: /my-secret-post.html</pre>
+              <p>Alternatively use the <var>Robots</var> header to set the corresponding
+              meta element in the finished HTML page:</p>
+              <pre>Title: Don’t spider me&#xA;Robots: no-follow, no-index</pre></dd>
+            <dt>Can I use custom CSS and JS in my posts?</dt>
+            <dd>
+              <p>You can always embed Javascript in your post and it will be output
+              straight through. For CSS it is a bit more complicated, because it
+              should live in the HTML head. You can use the header <var>Stylesheet</var> to
+              embed them. The strings <code>#a#</code> and <code>#s#</code> will
+              be replaced by the absolute path to the article and to the static
+              files, respectively.</p>
+              <pre>Stylesheet: #a#article.css, #s#series.css</pre></dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Newsfeeds and Sitemaps</h2>
+          <dl>
+            <dt>Can I prevent an article to appear in the news feed?</dt>
+            <dd></dd>
+            <dt></dt>
+            <dd></dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Dynamic Content</h2>
+          <dl>
+            <dt>How can I create a simple contact form?</dt>
+            <dd></dd>
+            <dt>How do I add comment functionality to my posts?</dt>
+            <dd></dd>
+            <dt>How can I offer a site search?</dt>
+            <dd></dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Templates, Static Content and Custom Markup</h2>
+          <dl>
+            <dt>I need XHTML 1.0 instead of HTML5. Where can I change the markup?</dt>
+            <dd></dd>
+            <dt>Can I use a completely different template for a single post?</dt>
+            <dd></dd>
+            <dt>Where do I put my global CSS and JS files?</dt>
+            <dd></dd>
+            <dt>How do I reference images from my static files in articles?</dt>
+            <dd></dd>
+            <dt></dt>
+            <dd></dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Translations and Languages</h2>
+          <dl>
+            <dt>How do I translate the template strings?</dt>
+            <dd></dd>
+            <dt>I’m not satisfied with the default translation. Can I overwrite it?</dt>
+            <dd></dd>
+            <dt>How can I provided articles in several languages?</dt>
+            <dd></dd>
+          </dl>
+        </section>
+      </article>
+    </div>
+  </body>
+</html>
