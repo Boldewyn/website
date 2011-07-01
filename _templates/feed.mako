@@ -7,6 +7,7 @@ from _webtools.templatedefs import aa, strip_tags
 
   <title>${_(title)}</title>
   <link href="${link | aa}"/>
+  <link rel="self" href="${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(url)}"/>
   <updated>${updated}</updated>
 
   <author>
@@ -17,9 +18,9 @@ from _webtools.templatedefs import aa, strip_tags
   % for article in articles:
     <entry>
       <title>${article.headers.title | n,strip_tags}</title>
-      <link href="${aa(article.url)}"/>
-      <id>${article.headers.ID}</id>
-      <updated>${article.headers.date.strftime("%Y-%m-%dT%H:%M:%S%z")}</updated>
+      <link href="${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(article.url)}"/>
+      <id>${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(article.url)}</id>
+      <updated>${article.headers.date.isoformat("T")}</updated>
       <summary>${article.headers.description}</summary>
     </entry>
   % endfor
