@@ -1,0 +1,141 @@
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin:0;
+  padding:0;
+  border:0;
+  outline:0;
+  font-size:100%;
+  vertical-align:baseline;
+  background:transparent;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section { 
+    display:block;
+}
+
+nav ul { list-style:none; }
+
+blockquote, q { quotes:none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after { content:''; content:none; }
+
+a { margin:0; padding:0; font-size:100%; vertical-align:baseline; background:transparent; }
+
+ins { background-color:#ff9; color:#000; text-decoration:none; }
+
+mark { background-color:#ff9; color:#000; font-style:italic; font-weight:bold; }
+
+del { text-decoration: line-through; }
+
+abbr[title], dfn[title] { border-bottom:1px dotted; cursor:help; }
+
+/* tables still need cellspacing="0" in the markup */
+table { border-collapse:collapse; border-spacing:0; }
+
+hr { display:block; height:1px; border:0; border-top:1px solid #ccc; margin:1em 0; padding:0; }
+
+input, select { vertical-align:middle; }
+
+/* END RESET CSS */
+
+body {
+  font: 100%/1.25 "DejaVu Sans",sans-serif;
+  color: #232323;
+  background: #f9f8f6;
+}
+
+article {
+  max-width: 40em;
+  margin: 80px auto 10px;
+  padding: 0 20px 70px;
+}
+
+section {
+  margin: 0 0 40px;
+}
+
+@media (min-width: 60em) {
+  article {
+    max-width: 60em;
+  }
+  section {
+    -moz-column-count: 2;
+    -moz-column-gap: 20px;
+    border-bottom: 1px solid #ddd;
+    padding: 0 0 40px;
+  }
+  .recipes section {
+    -moz-column-count: 1;
+  }
+}
+
+code, pre {
+  font-family: "DejaVu Sans Mono", monospace;
+}
+
+h1, h2, h3, h4, h5, h6,
+p, ul, ol, pre, blockquote {
+  margin: 0 0 20px;
+}
+
+dd, pre, blockquote {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+pre {
+  background: #e0dedc;
+}
+
+@media (min-width: 60em) {
+  ul, ol {
+    margin-left: 20px;
+  }
+}
+
+h1 {
+  font-size: 48px;
+  line-height: 60px;
+}
+
+h2 {
+  font-size: 36px;
+  line-height: 40px;
+}
+
+h3 {
+  font-size: 28px;
+  line-height: 40px;
+}
+
+dt, b, strong {
+  font-weight: bold;
+  color: #444;
+}
+
+dt:target {
+  background: #ff8;
+}
+
+a {
+  text-decoration: none;
+  color: #e20021;
+  text-shadow: 1px 0 #f9f8f6;
+}
+
+a:focus,
+a:hover {
+  text-decoration: underline;
+  color: #f03;
+}

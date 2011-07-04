@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="static/style.css" />
+    <title>website, HTML-to-HTML transformer</title>
+  </head>
+  <body>
+    <div id="global">
+      <article>
+        <header>
+          <hgroup>
+            <h1>Getting Started with <code>website</code></h1>
+            <h2>How to Install and Run It</h2>
+          </hgroup>
+          <p><a href="index.html">What is <code>website</code>?</a></p>
+        </header>
+        <section>
+          <h2>Prerequisites</h2>
+          <p>This is a Python application. It runs under Python 2.5 or higher,
+          but unfortunately not under Python 3.X. You will need the following
+          Python libraries in place to run
+          <code>website:</code></p>
+          <ul>
+              <li><strong>Babel</strong>: Used to format dates in templates</li>
+              <li><strong>BeautifulSoup</strong>: Used for syntax highlighting
+              and pseudo-protocol links</li>
+              <li><strong>dateutil</strong> (optional): Strongly encouraged for
+              its date_parse method. Otherwise you will have to use a
+              stripped-down version of datetime.strptime.</li>
+              <li><strong>Mako</strong>: Templating system in use</li>
+              <li><strong>Pygments</strong>: Syntax highlighting library</li>
+              <li><strong>Simplejson</strong> as fallback, if there is no
+              native json</li>
+              <li><strong>SQLite3</strong> (optional): </li>
+          </ul>
+          <p>All of these can be installed via pip or easy_install.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</html>
