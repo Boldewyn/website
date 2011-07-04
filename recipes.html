@@ -7,7 +7,7 @@
     <script>
 $(function() {
   $('dd').hide();
-  $('dt').css('cursor', 'pointer').prepend($('<span style="font-family:monospace">+</span> '))
+  $('dt').css('cursor', 'pointer').prepend($('<span style="float:left;width:1.2em;">+</span>'))
     .click(function() {
       var dd = $(this).next('dd');
       dd.toggle();
@@ -22,6 +22,21 @@ $(function() {
       $('dt').find('span:first-child').text('-');
       return false;
     }).end());
+  $('a[href^="#"]').click(function() {
+    var dt = $($(this).attr("href")).filter('dt');
+    if (dt.length) {
+      dt.find('span:first-child').text('-').end()
+        .next('dd').show();
+    }
+    return true;
+  });
+  if (window.location.hash.length > 1) {
+    var dt = $(window.location.hash).filter('dt');
+    if (dt.length) {
+      dt.find('span:first-child').text('-').end()
+        .next('dd').show();
+    }
+  }
 });
     </script>
     <title>website, HTML-to-HTML transformer</title>
@@ -56,7 +71,7 @@ $(function() {
               <pre>href="foo:bar"</pre>
               <p>which will turn out as</p>
               <pre>href="http://example.com/bar"</pre></dd>
-            <dt>How do I enable comments for articles?</dt>
+            <dt id="enable-comments">How do I enable comments for articles?</dt>
             <dd>
               <p>Since all articles are compiled to static HTML, <code>website</code> uses
               <a href="http://disqus.com">Disqus</a> to host commenting
@@ -164,7 +179,7 @@ Abstract: This is displayed in front of the article and
             <dt>How can I create a simple contact form?</dt>
             <dd></dd>
             <dt>How do I add comment functionality to my posts?</dt>
-            <dd></dd>
+            <dd>This is <a href="#enable-comments">answered above</a>.</dd>
             <dt>How can I offer a site search?</dt>
             <dd></dd>
           </dl>

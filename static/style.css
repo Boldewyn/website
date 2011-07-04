@@ -124,6 +124,10 @@ dt, b, strong {
   color: #444;
 }
 
+dt:target {
+  background: #ff8;
+}
+
 a {
   text-decoration: none;
   color: #e20021;
