@@ -67,7 +67,7 @@ site/my_post.html
           <h2>Getting Started</h2>
           <p>To get started with <code>website</code>, see <a href="getting_started.html">this
           detailed instruction</a>. It guides you through downloading, installing,
-          setting up your cinfig file and finally writing your first article.
+          setting up your config file and finally writing your first article.
           Give it a try, it's simpler than it seems.</p>
         </section>
         <section>
@@ -77,21 +77,22 @@ site/my_post.html
         </section>
         <section>
           <h2>How come?</h2>
-          <p>Have you ever struggled with WYSIWYG editors or substitute
-          markup, that just doesn’t do what you want? Did you ever wish you
-          could just use plain old HTML (sometimes referred to as <abbr
+          <p>Have you ever struggled with <em>WYSIWYG editors</em> or <em>substitute
+          markup</em>, that just doesn’t do what you want? Did you ever wish you
+          could just use <em>plain old HTML</em> (sometimes referred to as <abbr
           title="Plain Old Semantic HTML">POSH</abbr>), when you look up,
-          how a table is marked up in MediaWiki syntax?</p>
+          how a table is marked up in <em>MediaWiki syntax</em>?</p>
           <p>This was my line of thought, when I wanted to start a blog.
           I know HTML, so why use another markup language? I want all the
-          freedom of direct source code editing without the hassle of
+          <em>freedom</em> of direct source code editing without the hassle of
           managing manually a dozen headers and footers. I don’t need a
-          shiny database just to display a tagcloud of my articles. And I
-          want a simple way to embed metadata.</p>
+          full-blown database just to display a tagcloud of my articles. And I
+          want a simple way to embed metadata and to publish in several
+          languages.</p>
           <p>Therefore I wrote this Python framework, that takes a bunch
           of HTML stubs and converts them to a fully functional website.</p>
-          <p>Take a look at the above example file. The format is oriented towards
-          HTTP. First there are header lines, that describe metadata. Then
+          <p>Take a look at the above example file. The format is <em>oriented towards
+          HTTP</em>. First there are header lines, that describe metadata. Then
           a blank line. And then full-power awesome HTML markup with all
           the shiny HTML5 features ready to be used inline. What could be
           simpler than that?</p>
@@ -105,36 +106,38 @@ site/my_post.html
             <li>provides an <strong>ATOM news feed</strong></li>
             <li>generates a <strong>sitemap.xml</strong></li>
             <li>supports <strong>full <abbr
-            title="internationalization">i18n</abbr></strong> via Gettext:
-            Posts and the UI can be translated independently</li>
+              title="internationalization">i18n</abbr></strong> via Gettext:
+              Posts and the UI can be translated independently</li>
             <li>auto-generates <strong>paginated index pages</strong> for
-            the folder structure under <var>_article</var></li>
+              the folder structure under <var>_article</var></li>
             <li>auto-generates <strong>archive pages</strong> for years and
-            months</li>
+              months</li>
+            <li>generates an SQLite <strong>search index</strong>, so that your
+              static pages are fully searchable (PHP based site search included)</li>
             <li>provides a <strong>tag cloud</strong> feature</li>
             <li>allows <strong>embedding</strong> of the Python code: All
-            you need in a single folder, version-controlled with Git</li>
+              you need in a single folder, version-controlled with Git</li>
             <li>provides far-reaching <strong>Dublin Core</strong>
-            metadata support</li>
+              metadata support</li>
             <li>uses <strong>syntax highlighting</strong> via Pygments</li>
             <li>integrates <a href="http://disqus.com">Disqus</a>
-            for <strong>commenting</strong> functionality</li>
+              for <strong>commenting</strong> functionality</li>
             <li>allows <strong>URL shortcuts</strong>:
-            <code>href="w:HTML"</code> becomes
-            <code>href="http://en.wikipedia.org/wiki/HTML"</code></li>
+              <code>href="w:HTML"</code> becomes
+              <code>href="http://en.wikipedia.org/wiki/HTML"</code></li>
             <li>Gives <strong>full mako template power</strong> to you
-            thanks to template inheritance and overwriting</li>
+              thanks to template inheritance and overwriting</li>
             <li>simplifies <strong>performance tweaks</strong>: HTML is
-            short on unnecessary white-space, assets can live in a
-            separate folder or even under a separate domain</li>
+              short on unnecessary white-space, assets can live in a
+              separate folder or even under a separate domain</li>
             <li>features a <strong>debug mode</strong></li>
             <li>supports <strong>standards</strong> and well-known
-            workflows, e.g., GNU make, Gettext, HTML5, microformats, …</li>
+              workflows, e.g., GNU make, Gettext, HTML5, microformats, …</li>
             <li>uses <strong>PHP</strong> to generate the pages, that
-            need server-side components, like contact forms and search results</li>
+              need server-side components, like contact forms and search results</li>
             <li>works hand in hand with <strong>Apache’s
-            mod_negotiation</strong>, but can be used with any web server
-            (after all it’s only HTML)</li>
+              mod_negotiation</strong>, but can be used with any web server
+              (after all it’s only HTML)</li>
           </ul>
         </section>
         <section>

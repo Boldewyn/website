@@ -17,24 +17,68 @@
         </header>
         <section>
           <h2>Prerequisites</h2>
-          <p>This is a Python application. It runs under Python 2.5 or higher,
+          <p>This is a pure Python application. It runs under <strong>Python 2.5</strong> or higher,
           but unfortunately not under Python 3.X. You will need the following
-          Python libraries in place to run
-          <code>website:</code></p>
+          Python libraries in place to run <code>website:</code></p>
           <ul>
-              <li><strong>Babel</strong>: Used to format dates in templates</li>
-              <li><strong>BeautifulSoup</strong>: Used for syntax highlighting
-              and pseudo-protocol links</li>
-              <li><strong>dateutil</strong> (optional): Strongly encouraged for
-              its date_parse method. Otherwise you will have to use a
-              stripped-down version of datetime.strptime.</li>
-              <li><strong>Mako</strong>: Templating system in use</li>
-              <li><strong>Pygments</strong>: Syntax highlighting library</li>
-              <li><strong>Simplejson</strong> as fallback, if there is no
-              native json</li>
-              <li><strong>SQLite3</strong> (optional): </li>
+            <li><strong>Babel</strong>: Used to format dates in templates</li>
+            <li><strong>BeautifulSoup</strong>: Used for syntax highlighting
+            and pseudo-protocol links</li>
+            <li><strong>dateutil</strong> (optional): Strongly encouraged for
+            its date_parse method. Otherwise you will have to use a
+            stripped-down version of datetime.strptime.</li>
+            <li><strong>Mako</strong>: Templating system in use</li>
+            <li><strong>Pygments</strong>: Syntax highlighting library</li>
+            <li><strong>Simplejson</strong> as fallback, if there is no
+            native json</li>
+            <li><strong>SQLite3</strong> (optional): this is needed, if you want
+            search functionality based on PHP on your site</li>
           </ul>
           <p>All of these can be installed via pip or easy_install.</p>
+        </section>
+        <section>
+          <h2>Installation</h2>
+          <p>Install either via pip or easy_install:</p>
+          <pre>$ pip install website
+$ easy_install website</pre>
+          <p>or download website from Github:
+          <a href="http://github.com/Boldewyn/website">github.com/Boldewyn/website</a>
+          and unpack it somewhere in your Python path. Alternatively you can
+          use the website folder directly to start your project in.</p>
+        </section>
+        <section>
+          <h2>Starting a Project</h2>
+          <p>Create a folder and change into it:</p>
+          <pre>$ mkdir my_site &amp;&amp; cd my_site</pre>
+          <p>Create a folder _articles. In that folder you will put your posts
+          later.</p>
+          <pre>$ mkdir _articles</pre>
+          <p>Create the configuration file _config.py:</p>
+          <pre>$ cat &lt;&lt;EOCONFIG > _config.py
+> URL = "http://example.com/"
+> TITLE = "My new blog"
+> AUTHOR = "Your Name"
+> EOCONFIG</pre>
+          <p>If you want to modify the default templates, create a folder
+          _templates and put there any template that you want to change (see
+          the installation of website for the template file names).</p>
+          <p><strong>Finished!</strong></p>
+        </section>
+        <section>
+          <h2>Creating the Site</h2>
+          <p>Put a blog post in _articles. You can use sub-folders to
+          organize your posts. These will automatically translate to
+          categories on the finished site.</p>
+          <p>Every blog post consists of a header of key-value pairs, then
+          an empty line followed by the actual post in HTML. The header
+          must at minimum include the title:</p>
+          <pre>Title: A Minimal Post
+
+&lt;p&gt;This is a minimal post.&lt;/p&gt;</pre>
+          <p>When you’re finished, run</p>
+          <pre>$ python -m website.__main__</pre>
+          <p>Your website is now in the folder site. Upload it to
+          your web space or however you want to bring it live.</p>
         </section>
       </article>
     </div>
