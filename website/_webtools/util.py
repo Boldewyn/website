@@ -59,7 +59,7 @@ def copy_statics():
     shutil.rmtree(settings.BUILD_TARGET, True)
     copytree(".", settings.BUILD_TARGET,
             ignore=ignore_patterns("_*", ".*swp", ".git*",
-                                   "*.mako", "Makefile"))
+                                   "*.mako", "Makefile", *settings.get("IGNORED_PATTERNS", [])))
 
 
 def get_templates(dir=""):
