@@ -75,5 +75,6 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Markup :: HTML',
     ],
-    requires = ["BeautifulSoup", "Babel", "Mako"]
+    requires = ["BeautifulSoup", "Babel", "Mako"],
+    scripts = ["scripts/website"]
 )
