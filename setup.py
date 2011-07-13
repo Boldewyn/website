@@ -1,11 +1,24 @@
 # -*- coding: UTF-8 -*-
 
+import os
 from distutils.core import setup
 from website import get_version
 
+
+data_files = []
+for dirpath, dirnames, filenames in os.walk("website"):
+    # Ignore dirnames that start with '.'
+    for i, dirname in enumerate(dirnames):
+        if dirname.startswith('.'): del dirnames[i]
+    if filenames:
+        ls = [os.path.join(dirpath, f) for f in filenames if not f.endswith(".pyc") and not f.endswith(".py")]
+        if len(ls):
+            data_files.append((dirpath, ls))
+
+
 setup(
     name = 'website',
-    packages = ['website'],
+    packages = ['website', 'website._webtools'],
     version = get_version(),
     author = 'Manuel Strehl',
     author_email = 'boldewyn [at] googlemail.com',
@@ -75,5 +88,6 @@ news feeds and assets. It's ready to get uploaded or viewed directly.''',
         'Topic :: Text Processing :: Markup :: HTML',
     ],
     requires = ["BeautifulSoup", "Babel", "Mako"],
-    scripts = ["scripts/website"]
+    scripts = ["scripts/website"],
+    data_files = data_files
 )
