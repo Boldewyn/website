@@ -1,2 +1,4 @@
+global-exclude *.pyc
 graft docs
+graft scripts
 graft website
