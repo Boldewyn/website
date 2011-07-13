@@ -1,11 +1,12 @@
 # -*- coding: UTF-8 -*-
 
 from distutils.core import setup
+from website import get_version
 
 setup(
     name = 'website',
     packages = ['website'],
-    version = '1.0',
+    version = get_version(),
     author = 'Manuel Strehl',
     author_email = 'boldewyn [at] googlemail.com',
     url = 'http://boldewyn.github.com/website/',
@@ -73,5 +74,6 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Site Management',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Markup :: HTML',
-    ]
+    ],
+    requires = ["BeautifulSoup", "Babel", "Mako"]
 )
