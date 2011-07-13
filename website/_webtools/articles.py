@@ -5,13 +5,9 @@ import hashlib
 import logging
 import re
 import os
-import pygments
 import shutil
 import traceback
 from htmlentitydefs import name2codepoint
-from pygments.formatters import HtmlFormatter
-from pygments.lexers import get_lexer_by_name, guess_lexer
-from pygments.lexer import Lexer
 from BeautifulSoup import BeautifulSoup
 from .settings import settings
 from datetime import datetime
@@ -23,6 +19,13 @@ try:
 except ImportError:
     def date_parse(str):
         return datetime.strptime(re.sub(r'[+-]\d{2}:?\d{2}$', '', str), settings.DATE_FORMAT)
+try:
+    import pygments
+    from pygments.formatters import HtmlFormatter
+    from pygments.lexers import get_lexer_by_name, guess_lexer
+    from pygments.lexer import Lexer
+except ImportError:
+    pygments = None
 
 
 logger = logging.getLogger("website.articles")
@@ -354,35 +357,36 @@ class Article(object):
             else:
                 self.headers.description = generate_description(self.__unicode__())
 
-    class MyHtmlFormatter(HtmlFormatter):
-        def __init__(self, hl_lines=None):
-            super(Article.MyHtmlFormatter, self).__init__(encoding='UTF-8', classprefix="s_", hl_lines=hl_lines)
+    if pygments is not None:
+        class MyHtmlFormatter(HtmlFormatter):
+            def __init__(self, hl_lines=None):
+                super(Article.MyHtmlFormatter, self).__init__(encoding='UTF-8', classprefix="s_", hl_lines=hl_lines)
 
-        def wrap(self, inner, outfile):
-            if settings.HIGHLIGHT_OL:
-                yield (0, '<ol class="highlight">')
-                for i, (c, l) in enumerate(inner):
-                    if c != 1:
-                        yield t, value
-                    if i+1 in self.hl_lines:
-                        yield (c, '<li class="hll"><code>'+l+'</code></li>')
-                    else:
-                        yield (c, '<li><code>'+l+'</code></li>')
-                yield (0, '</ol>')
-            else:
-                yield (0, '<pre class="highlight"><code>')
-                for i, (c, l) in enumerate(inner):
-                    if c != 1:
-                        yield t, value
-                    if i+1 in self.hl_lines:
-                        yield (c, '<span class="line hll">'+l+'</span>')
-                    else:
-                        yield (c, '<span class="line">'+l+'</span>')
-                yield (0, '</code></pre>')
+            def wrap(self, inner, outfile):
+                if settings.HIGHLIGHT_OL:
+                    yield (0, '<ol class="highlight">')
+                    for i, (c, l) in enumerate(inner):
+                        if c != 1:
+                            yield t, value
+                        if i+1 in self.hl_lines:
+                            yield (c, '<li class="hll"><code>'+l+'</code></li>')
+                        else:
+                            yield (c, '<li><code>'+l+'</code></li>')
+                    yield (0, '</ol>')
+                else:
+                    yield (0, '<pre class="highlight"><code>')
+                    for i, (c, l) in enumerate(inner):
+                        if c != 1:
+                            yield t, value
+                        if i+1 in self.hl_lines:
+                            yield (c, '<span class="line hll">'+l+'</span>')
+                        else:
+                            yield (c, '<span class="line">'+l+'</span>')
+                    yield (0, '</code></pre>')
 
-        def _highlight_lines(self, tokensource):
-            for tup in tokensource:
-                yield tup
+            def _highlight_lines(self, tokensource):
+                for tup in tokensource:
+                    yield tup
 
     def process_content(self):
         """Change the raw content to a renderable state
@@ -403,39 +407,40 @@ class Article(object):
                     item.attrs[index] = ( name, name )
         # Syntax highlighting:
         pres = self.soup.findAll("pre", {"data-lang": re.compile(r".+")})
-        for pre in pres:
-            ArticleFormatter = Article.MyHtmlFormatter(hl_lines=pre.get("data-hl", "").split(","))
-            lang = pre["data-lang"]
-            text = _unescape(pre.renderContents())
-            try:
-                if lang in self.lexers:
-                    if isinstance(self.lexers[lang], Lexer):
-                        lexer = self.lexers[lang]
+        if pygments is not None:
+            for pre in pres:
+                ArticleFormatter = Article.MyHtmlFormatter(hl_lines=pre.get("data-hl", "").split(","))
+                lang = pre["data-lang"]
+                text = _unescape(pre.renderContents())
+                try:
+                    if lang in self.lexers:
+                        if isinstance(self.lexers[lang], Lexer):
+                            lexer = self.lexers[lang]
+                        else:
+                            lexer = get_lexer_by_name(self.lexers[lang][0], stripnl=False, **self.lexers[lang][1])
                     else:
-                        lexer = get_lexer_by_name(self.lexers[lang][0], stripnl=False, **self.lexers[lang][1])
+                        lexer = get_lexer_by_name(lang, stripnl=False)
+                except pygments.util.ClassNotFound:
+                    logger.warning("Couldn't find lexer for %s" % lang)
+                    lexer = guess_lexer(text)
+                result = pygments.highlight(text, lexer, ArticleFormatter)
+                highlighted = BeautifulSoup(result, fromEncoding="utf-8")
+                if settings.HIGHLIGHT_OL:
+                    for at, val in pre.attrs:
+                        if at == "class":
+                            highlighted.ol[at] += u" "+val
+                        else:
+                            highlighted.ol[at] = val
+                    pre.replaceWith(highlighted.ol)
                 else:
-                    lexer = get_lexer_by_name(lang, stripnl=False)
-            except pygments.util.ClassNotFound:
-                logger.warning("Couldn't find lexer for %s" % lang)
-                lexer = guess_lexer(text)
-            result = pygments.highlight(text, lexer, ArticleFormatter)
-            highlighted = BeautifulSoup(result, fromEncoding="utf-8")
-            if settings.HIGHLIGHT_OL:
-                for at, val in pre.attrs:
-                    if at == "class":
-                        highlighted.ol[at] += u" "+val
-                    else:
-                        highlighted.ol[at] = val
-                pre.replaceWith(highlighted.ol)
-            else:
-                for at, val in pre.attrs:
-                    if at == "data-lang":
-                        highlighted.pre.code[at] = val
-                    elif at == "class":
-                        highlighted.pre[at] += u" "+val
-                    else:
-                        highlighted.pre[at] = val
-                pre.replaceWith(highlighted.pre)
+                    for at, val in pre.attrs:
+                        if at == "data-lang":
+                            highlighted.pre.code[at] = val
+                        elif at == "class":
+                            highlighted.pre[at] += u" "+val
+                        else:
+                            highlighted.pre[at] = val
+                    pre.replaceWith(highlighted.pre)
         self.processed = True
 
     def save(self, **ctx):
