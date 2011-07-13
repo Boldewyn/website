@@ -17,6 +17,7 @@ def render(articles):
 def render_tags(articles):
     """"""
     tags = {}
+    article = None
     for article in articles:
         a_tags = article.headers.get('SUBJECT', [])
         for a_tag in a_tags:
@@ -36,6 +37,7 @@ def render_tags(articles):
 def render_archives(articles):
     """"""
     dates = {}
+    article = None
     for article in articles:
         d = article.headers['DATE'].strftime("%Y/%m")
         if d not in dates:
@@ -59,6 +61,7 @@ def render_archives(articles):
 def render_indexes(articles):
     """"""
     cats = {}
+    article = None
     for article in articles:
         if article.category not in cats:
             cats[article.category] = []
