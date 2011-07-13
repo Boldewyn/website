@@ -39,7 +39,7 @@ $(function() {
   }
 });
     </script>
-    <title>website, HTML-to-HTML transformer</title>
+    <title>Recipes « website, HTML-to-HTML transformer</title>
   </head>
   <body>
     <div id="global">
@@ -97,13 +97,13 @@ Subject: website, writing, recipe
 &lt;p>This is a blog post.&lt;/p>
 &lt;p>There are lots of paragraphs&lt;/p>
 &lt;h2>Or Headings&lt;/h2></pre></dd>
-            <dt>How can I create categories for articles?</dt>
+            <dt id="create_categories">How can I create categories for articles?</dt>
             <dd>
               <p>This is simple. Use folders under <var>_article</var> to organize your posts.
               For example, putting a file under <var>_articles/my_cat/my_post.html</var> gives
               the post the category “my_cat”. Nesting folders is of course supported.</p>
             </dd>
-            <dt>How can I create tags for articles?</dt>
+            <dt id="create_tags">How can I create tags for articles?</dt>
             <dd>
               <p>Use the header <var>Subject</var> and a comma-separated list to define
               tags for a post:</p>
@@ -185,12 +185,32 @@ Abstract: This is displayed in front of the article and
           </dl>
         </section>
         <section>
-          <h2>Newsfeeds and Sitemaps</h2>
+          <h2>Categories, Newsfeeds and Sitemaps</h2>
           <dl>
             <dt>Can I prevent an article to appear in the news feed?</dt>
             <dd>
               <p>Yes. Place the header <code>Robots: noindex</code> in the article, and it will not
               appear in your news feed. It will also be not spidered by search engines.</p>
+            </dd>
+            <dt>I want an introduction on a category/tag index page.</dt>
+            <dd>
+              <p>Create a file <var>_doc/&lt;category>.category.html</var> (where
+              <var>&lt;category></var> is the name of the category) and put any
+              markup there. It will be included before the article list on the
+              index page of the category. For tag index pages use <var>_doc/&lt;tag>.tag.html</var>.</p>
+            </dd>
+            <dt>I have some other content I’d like to see in my sitemap.xml file. How can I add it?</dt>
+            <dd>
+              <p>Put a file <var>local_sitemap.xml</var> in the folder <var>_doc</var>. This is no full
+              XML file but rather the portion to be included in the generated <var>sitemap.xml</var>.</p>
+            </dd>
+            <dt>How can I create categories for articles?</dt>
+            <dd>
+              <p><a href="#create_categories">See above</a>.</p>
+            </dd>
+            <dt>How can I create tags for articles?</dt>
+            <dd>
+              <p><a href="#create_tags">See above</a>.</p>
             </dd>
             <dt></dt>
             <dd></dd>
@@ -248,11 +268,13 @@ Template: funky
         <section>
           <h2>Translations and Languages</h2>
           <dl>
+            <dt>How can I provided articles in several languages?</dt>
+            <dd></dd>
             <dt>How do I translate the template strings?</dt>
             <dd></dd>
             <dt>I’m not satisfied with the default translation. Can I overwrite it?</dt>
             <dd></dd>
-            <dt>How can I provided articles in several languages?</dt>
+            <dt>I want to translate settings like the title. How do I do that?</dt>
             <dd></dd>
           </dl>
         </section>
