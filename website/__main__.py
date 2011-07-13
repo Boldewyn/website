@@ -17,6 +17,10 @@ from _webtools.util import copy_statics, get_templates
 
 def main():
     """"""
+    settings.ORIG_BUILD_TARGET = settings.BUILD_TARGET.rstrip("/")
+    settings.BUILD_TARGET = os.path.abspath(settings.BUILD_TARGET)
+    if settings.DEBUG:
+        logging.basicConfig(level=logging.DEBUG)
     copy_statics()
     all_articles = _webtools.articles.get_articles()
     articles = [a for a in all_articles \
@@ -41,10 +45,6 @@ def main():
 
 
 if __name__ == "__main__":
-    settings.ORIG_BUILD_TARGET = settings.BUILD_TARGET.rstrip("/")
-    settings.BUILD_TARGET = os.path.abspath(settings.BUILD_TARGET)
-    if settings.DEBUG:
-        logging.basicConfig(level=logging.DEBUG)
     try:
         sys.exit(main())
     except Exception:
