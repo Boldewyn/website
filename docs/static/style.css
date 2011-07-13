@@ -130,6 +130,10 @@ dt, b, strong {
   color: #444;
 }
 
+dt {
+  margin: 10px 0 0;
+}
+
 dt:target {
   background: #ff8;
 }
@@ -145,3 +149,31 @@ a:hover {
   text-decoration: underline;
   color: #f03;
 }
+
+
+
+
+/**
+ * counter
+ */
+article {
+  counter-reset: h2;
+}
+
+section h2 {
+  counter-increment: h2;
+}
+
+section h2:before {
+  content: counter(h2);
+  display: block;
+  float: left;
+  width: 120px;
+  margin-left: -140px;
+  margin-top: 25px;
+  text-align: right;
+  font-size: 2.5em;
+  color: #fff;
+  text-shadow: 0 0 10px #ccc;
+}
+
