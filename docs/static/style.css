@@ -72,11 +72,17 @@ section {
   section {
     -moz-column-count: 2;
     -moz-column-gap: 20px;
+    -webkit-column-count: 2;
+    -webkit-column-gap: 20px;
+    column-count: 2;
+    column-gap: 20px;
     border-bottom: 1px solid #ddd;
     padding: 0 0 40px;
   }
   .recipes section {
     -moz-column-count: 1;
+    -webkit-column-count: 1;
+    column-count: 1;
   }
 }
 
