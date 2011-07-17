@@ -49,10 +49,15 @@ input, select { vertical-align:middle; }
 
 /* END RESET CSS */
 
+#global {
+}
+
+
 body {
   font: 100%/1.25 "DejaVu Sans",sans-serif;
   color: #232323;
   background: #f9f8f6;
+  background: url(antikythera.png) right 0 no-repeat #f9f8f6;
 }
 
 article {
