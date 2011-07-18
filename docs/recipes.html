@@ -297,7 +297,20 @@ Abstract: This is displayed in front of the article and
           <h2>Translations and Languages</h2>
           <dl>
             <dt>How can I provided articles in several languages?</dt>
-            <dd></dd>
+            <dd>
+              <p>If you want to provide articles in translations, you create
+              one file for each article, naming it <var>&lt;article name>.&lt;language>.html</var>.
+              It is not necessary, that the <var>&lt;article name></var> is the same for each
+              translation.</p>
+              <p>In each article you reference the translations then with the header
+              <var>Translation</var>, with the valu a comma separated list of the
+              IDs of the translation articles. You <em>should</em> also specify the <var>Language</var>
+              header, although this is not strictly necessary.</p>
+              <pre>Title: My Multilingual Post
+Language: en
+ID: mymult.en
+Translation: meinmult.de, mimult.es, μεμυλτ.el</pre>
+            </dd>
             <dt>How do I translate the template strings?</dt>
             <dd></dd>
             <dt>I’m not satisfied with the default translation. Can I overwrite it?</dt>
