@@ -11,8 +11,12 @@ import urllib
 from .articles import Article
 from .settings import settings
 from .url import Url
-from babel.dates import format_date
-from babel import UnknownLocaleError
+try:
+    from babel.dates import format_date
+    from babel import UnknownLocaleError
+except ImportError:
+    def format_date(datetime, locale=None):
+        return datetime.strftime("%Y-%m-%d %H:%M")
 
 
 def urlquote(string):
