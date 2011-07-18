@@ -22,7 +22,7 @@ else:
             sys.argv.remove("--verbose")
         except ValueError:
             pass
-    if hasattr(c, sys.argv[1]):
+    if sys.argv[1] in c.commands:
         exit(getattr(c, sys.argv[1])(*sys.argv[2:]))
     else:
         sys.stderr.write("Command %s not recognized.\n" % sys.argv[1])

@@ -73,3 +73,10 @@ Date: %s
 def make(*args):
     import __main__ as main
     return main.main()
+
+
+commands = {
+    "help": help,
+    "init": init,
+    "make": make,
+}
