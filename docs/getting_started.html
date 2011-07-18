@@ -23,51 +23,54 @@
         </header>
         <section>
           <h2>Prerequisites</h2>
-          <p>This is a pure Python application. It runs under <strong>Python 2.5</strong> or higher,
-          but unfortunately not under Python 3.X. You will need the following
+          <p>This is a pure <a href="http://python.org">Python</a> application. It runs under <strong>Python 2.5</strong> or higher,
+          but unfortunately not yet under Python 3.X. You will need the following
           Python libraries in place to run <code>website:</code></p>
           <ul>
-            <li><strong>Babel</strong>: Used to format dates in templates</li>
-            <li><strong>BeautifulSoup</strong>: Used for syntax highlighting
+            <li><strong><a href="http://pypi.python.org/pypi/BeautifulSoup">BeautifulSoup</a></strong>: Used for syntax highlighting
             and pseudo-protocol links</li>
-            <li><strong>dateutil</strong> (optional): Strongly encouraged for
+            <li><strong><a href="http://pypi.python.org/pypi/Mako">Mako</a></strong>: Templating system in use</li>
+          </ul>
+          <p>The following libraries are optional but highly recommended:</p>
+          <ul>
+            <li><strong>Babel</strong> (<i>optional</i>): Used to format dates in templates</li>
+            <li><strong>dateutil</strong> (<i>optional</i>): Strongly encouraged for
             its date_parse method. Otherwise you will have to use a
             stripped-down version of datetime.strptime.</li>
-            <li><strong>Mako</strong>: Templating system in use</li>
-            <li><strong>Pygments</strong>: Syntax highlighting library</li>
-            <li><strong>Simplejson</strong> as fallback, if there is no
+            <li><strong>Pygments</strong> (<i>optional</i>): Syntax highlighting library</li>
+            <li><strong>Simplejson</strong> as <em>fallback</em>, if there is no
             native json</li>
-            <li><strong>SQLite3</strong> (optional): this is needed, if you want
+            <li><strong>SQLite3</strong> (<i>optional</i>): this is needed, if you want
             search functionality based on PHP on your site</li>
           </ul>
           <p>All of these can be installed via pip or easy_install.</p>
         </section>
         <section>
           <h2>Installation</h2>
-          <p>Install either via pip or easy_install:</p>
+          <p>Install <code>website</code> either via pip or easy_install:</p>
           <pre>$ pip install website
 $ easy_install website</pre>
-          <p>or download website from Github:
-          <a href="http://github.com/Boldewyn/website">github.com/Boldewyn/website</a>
-          and unpack it somewhere in your Python path. Alternatively you can
-          use the website folder directly to start your project in.</p>
+          <p>Alternatively you can download the code from Github,
+          <a href="https://github.com/Boldewyn/website/zipball/master">github.com/Boldewyn/website/zipball/master</a>,
+          and run</p>
+          <pre>$ python setup.py install</pre>
+          <p>Instead of installing you can also use the <code>website</code> folder
+          directly to start your project in.</p>
         </section>
         <section>
           <h2>Starting a Project</h2>
-          <p>Create a folder and change into it:</p>
-          <pre>$ mkdir my_site &amp;&amp; cd my_site</pre>
-          <p>Create a folder _articles. In that folder you will put your posts
-          later.</p>
-          <pre>$ mkdir _articles</pre>
-          <p>Create the configuration file _config.py:</p>
-          <pre>$ cat &lt;&lt;EOCONFIG > _config.py
-> URL = "http://example.com/"
-> TITLE = "My new blog"
-> AUTHOR = "Your Name"
-> EOCONFIG</pre>
-          <p>If you want to modify the default templates, create a folder
-          _templates and put there any template that you want to change (see
-          the installation of website for the template file names).</p>
+          <p>If you installed <code>website</code>, you can use the command
+          <var>website</var> to start a new project. Use <code>website help init</code>
+          to see options.</p>
+          <pre><b>$ website init my_site</b>
+Base URL: <em>http://example.com</em>
+Title of the website: <em>My Website</em>
+Your name: <em>John Doe</em>
+Your email address (optional): 
+Website language (optional): <em>en</em>
+Your Disqus username (optional): 
+<b>$ cd my_site</b></pre>
+          <p>A sample post is created under <var>_articles/first_post.html</var>.</p>
           <p><strong>Finished!</strong></p>
         </section>
         <section>
@@ -82,9 +85,13 @@ $ easy_install website</pre>
 
 &lt;p&gt;This is a minimal post.&lt;/p&gt;</pre>
           <p>When you’re finished, run</p>
-          <pre>$ python -m website.__main__</pre>
-          <p>Your website is now in the folder site. Upload it to
-          your web space or however you want to bring it live.</p>
+          <pre><b>$ website make</b></pre>
+          <p>(If you have chosen to embed <code>website</code> in your project,
+          you can also run <code>python __main__.py</code>) Use <code>website help make</code>
+          for usage instructions and options.</p>
+          <p>Your website is now in the folder <var>site/</var>. Upload it to
+          your web space or wherever you want to bring it live.</p>
+          <p><strong>That’s it, you have completed your first <code>website</code>.</strong></p>
         </section>
         <section>
           <h2>Version Controlling</h2>
@@ -94,6 +101,10 @@ $ easy_install website</pre>
           <p>If you use, for example, SVN, you should place this line in your
           _config.py file:</p>
           <pre>IGNORED_PATTERNS = [".svn"]</pre>
+          <p>The version control system plays its advantage, when you combine
+          <code>website</code> with its check-in hooks. For example, you can make Git
+          run a script every time you check something in. Why not letting it
+          auto-magically update your website this way?</p>
         </section>
       </article>
     </div>
