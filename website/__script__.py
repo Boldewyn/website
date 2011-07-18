@@ -5,6 +5,7 @@ import re
 import sys
 import logging
 from datetime import datetime
+from urlparse import urlparse
 
 
 logger = logging.getLogger("website.script")
@@ -66,7 +67,9 @@ Date: %s
 
 <p>This is my first post. See, how simple this is?</p>""" % datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
     art.close()
-    open("robots.txt", "w").close()
+    if urlparse(url).path.lstrip("/") == "":
+        open("robots.txt", "w").close()
+        open("humans.txt", "w").close()
     return 0
 
 
