@@ -233,8 +233,21 @@ Abstract: This is displayed in front of the article and
             <dt>How do I add comment functionality to my posts?</dt>
             <dd>This is <a href="#enable-comments">answered above</a>. <code>website</code> uses
             <a href="http://disqus.com">Disqus</a> for this.</dd>
-            <dt>How can I offer a site search?</dt>
-            <dd></dd>
+            <dt>How do I offer a site search?</dt>
+            <dd>
+              <p>For one, you can always add a Google custom search to your site.</p>
+              <p>On the other hand, <code>website</code> comes equipped with a ready-to-use
+              search functionality. For this you have to set</p>
+              <pre>INDEX = 'SQLITE'</pre>
+              <p>in your <var>_config.py</var> file. Then <code>website</code> creates
+              a database file <var>index.sqlite</var>, that maps the article content to the
+              path of the articles.</p>
+              <p>Create an article with <a href="#custom-templates">the template
+              <var>search</var></a> directly under <var>_articles</var>, name it
+              <var>search.php</var> (the <var>.php</var> is important) and leave its
+              content empty. Then you have your site search set up under
+              <var>&lt;URL>/search.php</var>.</p>
+            </dd>
           </dl>
         </section>
         <section>
@@ -246,7 +259,7 @@ Abstract: This is displayed in front of the article and
               you like by creating a folder <var>_templates</var> in your project and
               in that placing a mako template named <var>base.mako</var>.</p>
             </dd>
-            <dt>Can I use a completely different template for a specific post?</dt>
+            <dt id="custom-templates">Can I use a completely different template for a specific post?</dt>
             <dd>
               <p>Yes. You can have, if you like, a custom template for each one of your
               posts. This gives you the maximal freedom in creating your articles, from
@@ -254,17 +267,30 @@ Abstract: This is displayed in front of the article and
               <p>Place the header Template in your article to choose a template from
               your <var>_templates</var> folder. The default is <var>_templates/article.mako</var>
               (this is loaded from the <code>website</code> installation, if it doesn’t exist).</p>
-              <pre>Title: And now for something completely different
-Template: funky
+              <pre>Title: And now for something completely different&#xA;Template: funky
 
 &lt;p>This uses the template funky.mako.&lt;/p></pre>
             </dd>
             <dt>Where do I put my global CSS and JS files?</dt>
-            <dd></dd>
+            <dd>
+              <p>This is totally up to you. I recommend to set the URL, where your
+              assets live, as <var>STATICURL</var> in your config file. Then you can
+              reference this in your templates and use the <code>s:</code> pseudo-protocol
+              to link to them.</p>
+            </dd>
             <dt>How do I reference images from my static files in articles?</dt>
-            <dd></dd>
-            <dt></dt>
-            <dd></dd>
+            <dd>
+              <p>If you put your images under your <var>STATICURL</var>, you can simply
+              use the <code>s:</code> pseudo-protocol. Let’s assume, your image
+              is stored under <var>&lt;DOCROOT>/assets/images/foo.png</var>. In
+              your <var>_config.py</var> file you have the line</p>
+              <pre>STATICURL = URL + "assets/"</pre>
+              <p>Then you can reference the image in your articles like this:</p>
+              <pre>&lt;figure>
+  &lt;img src="s:images/foo.png" alt="Foo image" />
+  &lt;figcaption>The Foo image&lt;/figcaption>
+&lt;/figure></pre>
+            </dd>
           </dl>
         </section>
         <section>
