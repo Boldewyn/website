@@ -23,6 +23,10 @@ footer, header, hgroup, menu, nav, section {
     display:block;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 nav ul { list-style:none; }
 
 blockquote, q { quotes:none; }
@@ -60,10 +64,15 @@ body {
   background: url(antikythera.png) right 0 no-repeat #f9f8f6;
 }
 
+nav,
 article {
   max-width: 40em;
   margin: 80px auto 10px;
   padding: 0 20px 70px;
+}
+
+nav {
+  padding-bottom: 0;
 }
 
 section {
@@ -71,6 +80,7 @@ section {
 }
 
 @media (min-width: 60em) {
+  nav,
   article {
     max-width: 60em;
   }
