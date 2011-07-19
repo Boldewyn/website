@@ -74,12 +74,31 @@ Date: %s
 
 
 def make(*args):
+    if "_config.py" not in os.listdir("."):
+        logger.error("This seems to be no website project.")
+        exit(1)
     import __main__ as main
     return main.main()
+
+
+def makelang(*args):
+    if "_config.py" not in os.listdir("."):
+        logger.error("This seems to be no website project.")
+        exit(1)
+    try:
+        from babel.messages import frontend
+    except ImportError:
+        logger.error("Cannot find pybabel.")
+        exit(2)
+    if not os.path.isdir("_locale"):
+        os.mkdir("_locale")
+    frontend.CommandLineInterface().run(["pybabel", "extract", "-F", os.path.dirname(__file__)+"/_locale/babel.cfg", "-o", "_locale/website.pot", ".", "_articles", "_templates"])
+    return 0
 
 
 commands = {
     "help": help,
     "init": init,
     "make": make,
+    "makelang": makelang,
 }
