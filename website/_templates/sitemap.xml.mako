@@ -1,5 +1,5 @@
 <%!
-from _webtools.templatedefs import aa
+from website._webtools.templatedefs import aa
 %>\
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

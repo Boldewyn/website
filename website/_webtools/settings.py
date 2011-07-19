@@ -36,9 +36,9 @@ class Settings(object):
             "EMAIL": "info@localhost",
         }
 
+        self.h["__BASE"] = os.path.abspath(".")
         if "/" in __file__:
             codebase = os.path.abspath(os.path.dirname(__file__)+"/..")
-            sys.path.insert(0, codebase)
         else:
             codebase = os.path.abspath("..")
         self.h["CODEBASE"] = codebase

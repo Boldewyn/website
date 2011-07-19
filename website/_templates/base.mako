@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import static, aa, laa
+from website._webtools.templatedefs import static, aa, laa
 %>\
 <%namespace name="comp" file="components.mako" />\
 <!DOCTYPE html SYSTEM "about:legacy-compat">\

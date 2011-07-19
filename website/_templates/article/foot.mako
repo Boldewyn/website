@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import aa, jsq, strip_tags
+from website._webtools.templatedefs import aa, jsq, strip_tags
 %>\
 <%page args="_, lang, article" />\
 \

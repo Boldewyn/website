@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import laa
+from website._webtools.templatedefs import laa
 %>\
 <%def name="paginate(ctx)">\
 <%

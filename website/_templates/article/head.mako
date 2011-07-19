@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import laa, date, get_cat_title
+from website._webtools.templatedefs import laa, date, get_cat_title
 %>\
 <%page args="_, lang, article, title=True" />\
 \

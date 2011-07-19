@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import aa, laa
+from website._webtools.templatedefs import aa, laa
 %>\
 <%inherit file="base.mako"/>
 <%namespace name="orig" file="article.mako" />

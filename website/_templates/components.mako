@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import laa, static
+from website._webtools.templatedefs import laa, static
 %>\
 \
 <%def name="category_title(category)">\

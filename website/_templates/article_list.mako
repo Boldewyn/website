@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import laa, month
+from website._webtools.templatedefs import laa, month
 %>\
 <%def name="list(articles, cls=None)">\
 <ul class="hfeed \

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%!
-from _webtools.templatedefs import laa, aa, repl, strip_tags
+from website._webtools.templatedefs import laa, aa, repl, strip_tags
 %>\
 <%inherit file="base.mako" />\
 <article id="content" class="hentry" \
