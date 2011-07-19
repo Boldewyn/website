@@ -13,10 +13,17 @@ from ._webtools.articles import get_articles
 from ._webtools.categories import render, render_feed
 from ._webtools.templates import template_engine
 from ._webtools.util import copy_statics, get_templates
+from ._webtools.plugins import load_plugins, fire_hook
 
 
 def main():
     """"""
+    build()
+
+def build():
+    """"""
+    fire_hook("build")
+    load_plugins()
     settings.ORIG_BUILD_TARGET = settings.BUILD_TARGET.rstrip("/")
     settings.BUILD_TARGET = os.path.abspath(settings.BUILD_TARGET)
     if settings.DEBUG:
