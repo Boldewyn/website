@@ -6,6 +6,7 @@ import sys
 import logging
 from datetime import datetime
 from urlparse import urlparse
+from . import __main__ as main
 
 
 logger = logging.getLogger("website.script")
@@ -77,7 +78,6 @@ def make(*args):
     if "_config.py" not in os.listdir("."):
         logger.error("This seems to be no website project.")
         exit(1)
-    import __main__ as main
     return main.main()
 
 
