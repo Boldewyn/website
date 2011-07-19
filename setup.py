@@ -87,7 +87,7 @@ news feeds and assets. It's ready to get uploaded or viewed directly.''',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Markup :: HTML',
     ],
-    requires = ["BeautifulSoup", "Babel", "Mako"],
+    requires = ["BeautifulSoup", "Mako"],
     scripts = ["scripts/website"],
     data_files = data_files
 )
