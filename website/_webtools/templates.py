@@ -227,6 +227,8 @@ class LocalizedRenderer(object):
             article.url.switch_language(self.lang)
         if self.lang is not None:
             self.ctx["articles"] = filter(lambda a: a.hard_language in (self.lang, None), articles)
+        else:
+            self.ctx["articles"] = articles
         self.collect_page_requisites()
 
     def collect_page_requisites(self):

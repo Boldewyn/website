@@ -16,6 +16,8 @@ class WebtoolsTranslations(gettext.GNUTranslations):
 
 def get_gettext(lang):
     """Return the ready to use '_' function"""
+    if lang is None:
+        lang = settings.LANGUAGE
     t = gettext.translation("website", localedir=settings.CODEBASE+"/_locale",
                             languages=[lang], class_=WebtoolsTranslations,
                             fallback=True)

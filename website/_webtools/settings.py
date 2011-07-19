@@ -22,7 +22,7 @@ class Settings(object):
         h = {
             "BUILD_TARGET": "site",
             "CATEGORY": [],
-            "NEGOTIATE_EXTENSIONS": True,
+            "NEGOTIATE_EXTENSIONS": False,
             "DATE_FORMAT": "%Y-%m-%dT%H:%M:%S",
             "DEBUG": False,
             "DEFAULTS": {},

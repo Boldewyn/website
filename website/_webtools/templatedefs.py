@@ -71,6 +71,8 @@ def repl(base, path="#a#"):
 
 def date(datetime, lang):
     """Format a date depending on current locale"""
+    if lang is None:
+        lang = settings.LANGUAGE
     try:
         r = format_date(datetime, locale=lang)
     except UnknownLocaleError:
