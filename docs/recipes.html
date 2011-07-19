@@ -47,6 +47,7 @@ $(function() {
         <p>
           <a href="index.html">Start</a> |
           <a href="getting_started.html">Getting Started</a> |
+          <a href="documentation.html">Documentation</a> |
           <span><code>website</code> Recipes</span>
         </p>
       </nav>
@@ -311,10 +312,34 @@ Language: en
 ID: mymult.en
 Translation: meinmult.de, mimult.es, μεμυλτ.el</pre>
             </dd>
-            <dt>How do I translate the template strings?</dt>
-            <dd></dd>
+            <dt>How do I access the URLs of translated articles in templates?</dt>
+            <dd>
+              <p>Use the template function <code>laa(lang, article)</code> for this:</p>
+              <pre>&lt;%!
+from _webtools.templatedefs import laa
+%>
+Link to German translation: ${ laa("de", article) }</pre>
+              <p>If the specified translation cannot be found, the URL of the current
+              article will be returned unchanged.</p>
+            </dd>
+            <dt>How do I translate template strings?</dt>
+            <dd>
+              <p>Templates receive the function <code>_</code>, that points to
+              a Gettext resource. You can mark strings for translation like this:</p>
+              <pre>${ _(u"Inside a template. Translate me.") }</pre>
+              <p>Then you run <code>website makelang</code>, which generates a file
+              <var>_locale/website.pot</var>. Translations of this file’s content
+              live in <var>_locale/&lt;LANGUAGE_CODE>/LC_MESSAGES/website.po</var>.
+              For the translation itself I recommend <a href="http://www.poedit.net">poEdit</a>,
+              which hides much of the hassle under a nice UI.</p>
+            </dd>
             <dt>I’m not satisfied with the default translation. Can I overwrite it?</dt>
-            <dd></dd>
+            <dd>
+              <p>If you provide your own translations for strings, these will automatically
+              overwrite the default translations. Copy the desired parts from the
+              <code>website</code> installation’s <var>_locale/website.pot</var> to
+              your own <var>_locale/website.pot</var> and proceed as in the recipe above.</p>
+            </dd>
             <dt>I want to translate settings like the title. How do I do that?</dt>
             <dd></dd>
           </dl>
