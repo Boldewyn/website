@@ -18,11 +18,11 @@ from ._webtools.plugins import load_plugins, fire_hook
 
 def main():
     """"""
-    build()
+    return build()
 
 def build():
     """"""
-    fire_hook("build")
+    fire_hook("build.start")
     load_plugins()
     settings.ORIG_BUILD_TARGET = settings.BUILD_TARGET.rstrip("/")
     settings.BUILD_TARGET = os.path.abspath(settings.BUILD_TARGET)
@@ -48,6 +48,7 @@ def build():
         render_feed(articles)
     template_engine.render_sitemap()
     template_engine.make_index()
+    fire_hook("build.end")
     return 0
 
 
