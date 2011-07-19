@@ -316,7 +316,7 @@ Translation: meinmult.de, mimult.es, μεμυλτ.el</pre>
             <dd>
               <p>Use the template function <code>laa(lang, article)</code> for this:</p>
               <pre>&lt;%!
-from _webtools.templatedefs import laa
+from website._webtools.templatedefs import laa
 %>
 Link to German translation: ${ laa("de", article) }</pre>
               <p>If the specified translation cannot be found, the URL of the current
