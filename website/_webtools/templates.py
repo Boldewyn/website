@@ -4,7 +4,7 @@
 try:
     import json
 except ImportError:
-    import simplejson as json
+    from .lib import simplejson as json
 import logging
 import sqlite3
 import math
