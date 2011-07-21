@@ -6,82 +6,86 @@ import sys
 import logging
 from datetime import datetime
 from urlparse import urlparse
-from . import __main__ as main
+from website._webtools.lib import argparse
+from website._webtools.build import build
+from website._webtools.bootstrap import bootstrap
 
 
 logger = logging.getLogger("website.script")
 
 
-def help(*args):
-    print "usage: website [COMMAND]"
+def dispatch(*args):
+    """Dispatch the right command (args[0])"""
+    if len(args) == 0:
+        return help()
+    else:
+        if args[0] in dict(commands):
+            com = dict(commands)[args[0]]
+            return com(*args[1:])
+        else:
+            return help(args[0])
+
+
+def help(com=None):
+    help.__doc__ = """usage: website COMMAND [OPTIONS]
+where COMMAND is one of
+  %s
+
+Initializes and controls a website project. Use
+  website help COMMAND
+for detailed information.""" % ", ".join([n for n,c in commands])
+    if com is None:
+        print help.__doc__
+    else:
+        if com in [n for n,c in commands]:
+            print dict(commands)[com].__doc__
+        else:
+            sys.stderr.write("Command %s not recognized.\n" % com)
+            sys.stderr.flush()
+            print help.__doc__
     return 0
 
 
 def init(*args):
-    logger.info("Create new website")
+    """usage: website init NAME
+Create a new website project.
+
+Options:
+    NAME        name of the project folder"""
+    config = dict([
+            ["URL", raw_input("Base URL (e.g., http://example.com/blog): ")],
+            ["TITLE", raw_input("Title of the website: ")],
+            ["DEFAULTS", {
+                "AUTHOR": raw_input("Your name: ")
+            }],
+            ["EMAIL", raw_input("Your email address (optional): ")],
+            ["LANGUAGE", raw_input("Website language (optional, two-letter language code): ")],
+            ["DISQUS_NAME", raw_input("Your Disqus username (optional): ")],
+    ])
     if len(args) == 0:
         target = "."
     else:
         target = args[0]
     if os.path.isdir(target):
         if os.listdir(target) != []:
-            sys.stderr.write("The directory %s is not empty.\n" % target)
-            exit(1)
-    else:
-        try:
-            logger.info("Create directory %s" % target)
-            os.mkdir(target)
-        except OSError:
-            sys.stderr.write("Cannot create directory %s.\n" % target)
-            exit(2)
-    os.chdir(target)
-    os.mkdir("_articles")
-    os.mkdir("_templates")
-    conf = open("_config.py", "w")
-    conf.write("""# Config file for this website
-# uncomment the following line for l10n support:
-# _ = lambda s: s
-
-""")
-    url = raw_input("Base URL (e.g., http://example.com/blog): ").rstrip("/") + "/"
-    if not re.match(r"[a-z0-9_-]+:", url):
-        url = "http://" + url
-    conf.write("""URL = "%s"\n\n""" % url)
-    title = raw_input("Title of the website: ")
-    conf.write("""TITLE = "%s"\n\n""" % title)
-    name = raw_input("Your name: ")
-    conf.write("""DEFAULTS = {\n    "AUTHOR": "%s"\n}\n\n""" % name)
-    email = raw_input("Your email address (optional): ")
-    if email:
-        conf.write("""EMAIL = "%s"\n\n""" % email)
-    lang = raw_input("Website language (optional, two-letter language code): ")
-    if lang:
-        conf.write("""LANGUAGE = "%s"\n\n""" % lang)
-    disqus = raw_input("Your Disqus username (optional): ")
-    if disqus:
-        conf.write("""DISQUS_NAME = "%s"\n\n""" % disqus)
-    conf.close()
-    logger.info("Create example article")
-    art = open("_articles/first_post.html", "w")
-    art.write("""Title: My First Post
-Date: %s
-
-<p>This is my first post. See, how simple this is?</p>""" % datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
-    art.close()
-    if urlparse(url).path.lstrip("/") == "":
-        open("robots.txt", "w").close()
-        open("humans.txt", "w").close()
-    return 0
+            logger.critical("The directory %s is not empty" % target)
+            raise ValueError
+    return bootstrap(target, config)
 
 
 def make(*args):
+    """usage: website make
+Compile the output."""
     if "_config.py" not in os.listdir("."):
         logger.error("This seems to be no website project.")
         exit(1)
-    return main.main()
+    return build()
 
 
 def makelang(*args):
+    """usage: website makelang
+Compile the language strings used in the project and store them in
+_locale/website.pot."""
     if "_config.py" not in os.listdir("."):
         logger.error("This seems to be no website project.")
         exit(1)
@@ -96,9 +100,13 @@ def makelang(*args):
     return 0
 
 
-commands = {
-    "help": help,
-    "init": init,
-    "make": make,
-    "makelang": makelang,
-}
+commands = (
+    ("help", help),
+    ("init", init),
+    ("make", make),
+    ("makelang", makelang),
+ )
+
+
+if __name__ == "__main__":
+    exit(dispatch(*sys.argv[1:]))

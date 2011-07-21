@@ -2,30 +2,21 @@
 
 import sys
 import logging
-import website.__script__ as c
+from website.__script__ import dispatch
 
 
 logger = logging.getLogger("website.script")
 logger.addHandler(logging.StreamHandler())
 
 
-if len(sys.argv) < 2:
-    exit(c.help())
-else:
-    if "-v" in sys.argv or "--verbose" in sys.argv:
-        logger.setLevel(logging.DEBUG)
-        try:
-            sys.argv.remove("-v")
-        except ValueError:
-            pass
-        try:
-            sys.argv.remove("--verbose")
-        except ValueError:
-            pass
-    if sys.argv[1] in c.commands:
-        exit(getattr(c, sys.argv[1])(*sys.argv[2:]))
-    else:
-        sys.stderr.write("Command %s not recognized.\n" % sys.argv[1])
-        sys.stderr.flush()
-        exit(c.help(*sys.argv[2:]))
-
+if "-v" in sys.argv or "--verbose" in sys.argv:
+    logger.setLevel(logging.DEBUG)
+    try:
+        sys.argv.remove("-v")
+    except ValueError:
+        pass
+    try:
+        sys.argv.remove("--verbose")
+    except ValueError:
+        pass
+exit(dispatch(*sys.argv[1:]))
