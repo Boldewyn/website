@@ -9,11 +9,11 @@ import shutil
 import traceback
 from htmlentitydefs import name2codepoint
 from BeautifulSoup import BeautifulSoup
-from website.settings import settings
+from website._webtools.settings import settings
 from datetime import datetime
-from website.templates import template_engine
-from website.util import get_extensions
-from website.url import Url
+from website._webtools.templates import template_engine
+from website._webtools.util import get_extensions
+from website._webtools.url import Url
 try:
     from dateutil.parser import parse as date_parse
 except ImportError:

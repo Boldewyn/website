@@ -3,7 +3,7 @@
 
 import os.path
 from urllib import quote
-from website.settings import settings
+from website._webtools.settings import settings
 
 
 class Url(object):

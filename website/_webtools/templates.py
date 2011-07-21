@@ -4,7 +4,7 @@
 try:
     import json
 except ImportError:
-    from website.lib import simplejson as json
+    from website._webtools.lib import simplejson as json
 import logging
 import sqlite3
 import math
@@ -15,9 +15,9 @@ from mako.template import Template
 from mako import exceptions
 from mako.lookup import TemplateLookup
 from calendar import timegm
-from website.settings import settings
-from website.i18n import get_gettext
-from website.url import Url
+from website._webtools.settings import settings
+from website._webtools.i18n import get_gettext
+from website._webtools.url import Url
 
 
 logger = logging.getLogger("website.templates")
