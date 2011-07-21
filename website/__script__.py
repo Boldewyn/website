@@ -1,17 +1,15 @@
 
 
-import os
-import re
-import sys
 import logging
-from datetime import datetime
-from urlparse import urlparse
+import os
+import sys
+import traceback
 from website._webtools.lib import argparse
 from website._webtools.build import build
 from website._webtools.bootstrap import bootstrap
 
 
-logger = logging.getLogger("website.script")
+logger = logging.getLogger("website")
 
 
 def dispatch(*args):
@@ -109,4 +107,13 @@ commands = (
 
 
 if __name__ == "__main__":
-    exit(dispatch(*sys.argv[1:]))
+    try:
+        r = dispatch(*sys.argv[1:])
+        if not isinstance(r, int):
+            r = 0
+    except Exception:
+        logger.critical(traceback.format_exc())
+        r = 1
+    sys.exit(r)
+
+
