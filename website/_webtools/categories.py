@@ -4,8 +4,8 @@
 import glob
 import os
 from datetime import datetime
-from .templates import template_engine
-from .settings import settings
+from website.templates import template_engine
+from website.settings import settings
 
 
 def render(articles):

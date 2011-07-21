@@ -1,9 +1,10 @@
 """"""
 
 
+import logging
 import os
 import shutil
-from .settings import settings
+from website.settings import settings
 try:
     from shutil import ignore_patterns
 except ImportError:
@@ -52,6 +53,9 @@ except ImportError:
             raise Error, errors
 else:
     from shutil import copytree
+
+
+logger = logging.getLogger("website.util")
 
 
 def copy_statics():

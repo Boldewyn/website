@@ -5,7 +5,7 @@ import imp
 import logging
 import os
 import sys
-from .settings import settings
+from website.settings import settings
 
 
 logger = logging.getLogger("website.plugins")

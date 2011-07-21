@@ -3,7 +3,7 @@
 
 import gettext
 import os
-from .settings import settings
+from website.settings import settings
 
 
 class WebtoolsTranslations(gettext.GNUTranslations):

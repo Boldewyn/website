@@ -4,13 +4,13 @@
 try:
     import json
 except ImportError:
-    from .lib import simplejson as json
+    from website.lib import simplejson as json
 import re
 import os
 import urllib
-from .articles import Article
-from .settings import settings
-from .url import Url
+from website.articles import Article
+from website.settings import settings
+from website.url import Url
 try:
     from babel.dates import format_date
     from babel import UnknownLocaleError
