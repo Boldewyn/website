@@ -2,10 +2,10 @@
 
 import sys
 import logging
-from website.__script__ import dispatch
+from website.__main__ import dispatch
 
 
-logger = logging.getLogger("website.script")
+logger = logging.getLogger("website")
 logger.addHandler(logging.StreamHandler())
 
 
