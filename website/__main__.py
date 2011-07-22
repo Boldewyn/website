@@ -5,7 +5,6 @@ import os
 import sys
 import traceback
 from website._webtools.lib import argparse
-from website._webtools.build import build
 from website._webtools.bootstrap import bootstrap
 
 
@@ -71,13 +70,14 @@ Options:
     return bootstrap(target, config)
 
 
-def make(*args):
+def build(*args):
     """usage: website make
 Compile the output."""
     if "_config.py" not in os.listdir("."):
         logger.error("This seems to be no website project.")
         exit(1)
-    return build()
+    from website._webtools.build import build as nbuild
+    return nbuild()
 
 
 def makelang(*args):
@@ -101,7 +101,7 @@ _locale/website.pot."""
 commands = (
     ("help", help),
     ("init", init),
-    ("make", make),
+    ("build", build),
     ("makelang", makelang),
  )
 
