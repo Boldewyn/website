@@ -15,6 +15,7 @@ logger = logging.getLogger("website.bootstrap")
 def bootstrap(target, config):
     """Create a new website project"""
     logger.info("Create new website")
+    config = config or {}
     if os.path.isdir(target):
         if os.listdir(target) != []:
             logger.critical("The directory %s is not empty" % target)
@@ -35,9 +36,12 @@ def bootstrap(target, config):
 # _ = lambda s: s
 
 """)
-    config["URL"] = config["URL"].rstrip("/") + "/"
-    if not re.match(r"[a-z0-9_-]+:", config["URL"]):
-        config["URL"] = "http://" + config["URL"]
+    if "URL" in config:
+        config["URL"] = config["URL"].rstrip("/") + "/"
+        if not re.match(r"[a-z0-9_-]+:", config["URL"]):
+            config["URL"] = "http://" + config["URL"]
+    else:
+        config["URL"] = "http://localhost/"
     for k, v in config.iteritems():
         conf.write("%s = %s\n\n" % (k, pprint.pformat(v)))
     conf.close()
