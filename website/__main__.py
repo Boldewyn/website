@@ -73,6 +73,8 @@ Options:
 def build(*args):
     """usage: website make
 Compile the output."""
+    if "WEBSITE_WD" in os.environ and os.path.isdir(os.environ["WEBSITE_WD"]):
+        os.chdir(os.environ["WEBSITE_WD"])
     if "_config.py" not in os.listdir("."):
         logger.error("This seems to be no website project.")
         exit(1)
@@ -84,6 +86,8 @@ def makelang(*args):
     """usage: website makelang
 Compile the language strings used in the project and store them in
 _locale/website.pot."""
+    if "WEBSITE_WD" in os.environ and os.path.isdir(os.environ["WEBSITE_WD"]):
+        os.chdir(os.environ["WEBSITE_WD"])
     if "_config.py" not in os.listdir("."):
         logger.error("This seems to be no website project.")
         exit(1)
