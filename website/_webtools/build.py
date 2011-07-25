@@ -79,8 +79,6 @@ def build():
     load_plugins()
     settings.ORIG_BUILD_TARGET = settings.BUILD_TARGET.rstrip("/")
     settings.BUILD_TARGET = os.path.abspath(settings.BUILD_TARGET)
-    if settings.DEBUG:
-        logging.basicConfig(level=logging.DEBUG)
     copy_statics()
     all_articles = get_articles()
     articles = [a for a in all_articles \

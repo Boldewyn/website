@@ -78,6 +78,9 @@ Compile the output."""
     if "_config.py" not in os.listdir("."):
         logger.error("This seems to be no website project.")
         exit(1)
+    from website._webtools.settings import settings
+    if settings.DEBUG:
+        logger.setLevel(logging.DEBUG)
     from website._webtools.build import build as nbuild
     return nbuild()
 
