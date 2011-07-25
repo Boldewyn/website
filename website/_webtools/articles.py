@@ -90,6 +90,7 @@ def get_articles(dir=""):
                     articles.append(candidate)
     if dir == "/":
         articles.sort()
+        logger.info("Found %s articles." % len(articles))
         return tuple(articles)
     return articles
 
