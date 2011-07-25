@@ -358,35 +358,39 @@ class Article(object):
                 self.headers.description = generate_description(self.__unicode__())
 
     if pygments is not None:
-        class MyHtmlFormatter(HtmlFormatter):
-            def __init__(self, hl_lines=None):
-                super(Article.MyHtmlFormatter, self).__init__(encoding='UTF-8', classprefix="s_", hl_lines=hl_lines)
+        if "FORMATTER" in settings:
+            class MyHtmlFormatter(settings.FORMATTER):
+                pass
+        else:
+            class MyHtmlFormatter(HtmlFormatter):
+                def __init__(self, hl_lines=None):
+                    super(Article.MyHtmlFormatter, self).__init__(encoding='UTF-8', classprefix="s_", hl_lines=hl_lines)
 
-            def wrap(self, inner, outfile):
-                if settings.HIGHLIGHT_OL:
-                    yield (0, '<ol class="highlight">')
-                    for i, (c, l) in enumerate(inner):
-                        if c != 1:
-                            yield t, value
-                        if i+1 in self.hl_lines:
-                            yield (c, '<li class="hll"><code>'+l+'</code></li>')
-                        else:
-                            yield (c, '<li><code>'+l+'</code></li>')
-                    yield (0, '</ol>')
-                else:
-                    yield (0, '<pre class="highlight"><code>')
-                    for i, (c, l) in enumerate(inner):
-                        if c != 1:
-                            yield t, value
-                        if i+1 in self.hl_lines:
-                            yield (c, '<span class="line hll">'+l+'</span>')
-                        else:
-                            yield (c, '<span class="line">'+l+'</span>')
-                    yield (0, '</code></pre>')
+                def wrap(self, inner, outfile):
+                    if settings.HIGHLIGHT_OL:
+                        yield (0, '<ol class="highlight">')
+                        for i, (c, l) in enumerate(inner):
+                            if c != 1:
+                                yield t, value
+                            if i+1 in self.hl_lines:
+                                yield (c, '<li class="hll"><code>'+l+'</code></li>')
+                            else:
+                                yield (c, '<li><code>'+l+'</code></li>')
+                        yield (0, '</ol>')
+                    else:
+                        yield (0, '<pre class="highlight"><code>')
+                        for i, (c, l) in enumerate(inner):
+                            if c != 1:
+                                yield t, value
+                            if i+1 in self.hl_lines:
+                                yield (c, '<span class="line hll">'+l+'</span>')
+                            else:
+                                yield (c, '<span class="line">'+l+'</span>')
+                        yield (0, '</code></pre>')
 
-            def _highlight_lines(self, tokensource):
-                for tup in tokensource:
-                    yield tup
+                def _highlight_lines(self, tokensource):
+                    for tup in tokensource:
+                        yield tup
 
     def process_content(self):
         """Change the raw content to a renderable state
@@ -413,6 +417,9 @@ class Article(object):
                 lang = pre["data-lang"]
                 text = _unescape(pre.renderContents())
                 try:
+                    # lexers can be given in the config. They are either directly
+                    # Pygment Lexer instances or a list of lexer name and optional
+                    # lexer config dict.
                     if lang in self.lexers:
                         if isinstance(self.lexers[lang], Lexer):
                             lexer = self.lexers[lang]
