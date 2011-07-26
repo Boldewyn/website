@@ -62,10 +62,7 @@ class TemplateEngine(object):
         The file will be written to a subfolder of
         settings.BUILD_TARGET.
 
-        The modification time will be set to mtime. If
-        sort_ext is True, the extensions will be
-        sorted in a way to be useful for Apache's mod_
-        negotiation.
+        The modification time will be set to mtime.
         """
         save_path = os.path.join(settings.BUILD_TARGET, path.lstrip("/"))
         if not os.path.isdir(os.path.dirname(save_path)):
