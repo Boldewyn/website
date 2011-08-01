@@ -15,7 +15,7 @@ from website._webtools.templatedefs import aa, strip_tags
   </author>
   <id>${id}</id>
 
-  % for article in articles:
+  % for article in a:
     <entry>
       <title>${article.headers.title | n,strip_tags}</title>
       <link href="${settings.URL_PARTS[0]}://${settings.URL_PARTS[1]}${aa(article.url)}"/>
