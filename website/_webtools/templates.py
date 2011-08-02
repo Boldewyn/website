@@ -327,6 +327,8 @@ class LocalizedRenderer(object):
         })
         if self.lang is not None and "a" in ctx:
             ctx["a"] = filter(lambda a: a.hard_language in (self.lang, None), ctx["a"])
+        if ctx.get("filter_langs", False) and "a" in ctx:
+            ctx["a"] = filter(lambda a: a.headers.language in (self.lang, None), ctx["a"])
         if not isinstance(path, Url):
             path = Url(path).switch_language(self.lang)
         else:
