@@ -31,7 +31,7 @@ def render_tags(articles):
             description = open("_doc/%s.tag.html" % category).read().decode("UTF-8")
         template_engine.render_paginated("tag", "tag/"+
                         tag+"/index.html", **locals())
-        render_feed(a, "tag/%s" % tag)
+        render_feed(a, "tag/%s" % tag, filter_langs=True)
 
 
 def render_archives(articles):
@@ -87,7 +87,7 @@ def render_indexes(articles):
             render_feed(a, category)
 
 
-def render_feed(all_articles, category=""):
+def render_feed(all_articles, category="", filter_langs=False):
     """Render the atom newsfeed"""
     _ = lambda s: s
     a = all_articles[:settings.get("FEED_LENGTH", len(all_articles))]
