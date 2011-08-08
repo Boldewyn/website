@@ -6,6 +6,7 @@ import tempfile
 import shutil
 from website._webtools.bootstrap import bootstrap
 from website._webtools.build import build
+from website._webtools import templatedefs
 
 
 class BootstrapTestCase(unittest.TestCase):
