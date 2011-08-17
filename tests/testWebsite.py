@@ -36,12 +36,12 @@ class BootstrapTestCase(unittest.TestCase):
     def test_noconf(self):
         """Bootstrap with empty config"""
         bootstrap(os.path.join(self.tmpdir, "noconf"), None)
-        self.assertTrue(os.path.isfile(os.path.join(self.tmpdir, "noconf/_config.py")))
+        self.assertTrue(os.path.isfile(os.path.join(self.tmpdir, "noconf/_config.py")), "config file not added")
 
     def test_minimal(self):
         """Bootstrap with a minimal config"""
         bootstrap(os.path.join(self.tmpdir, "minimal"), self.baseConfig)
-        self.assertTrue(os.path.isfile(os.path.join(self.tmpdir, "minimal/_config.py")))
+        self.assertTrue(os.path.isfile(os.path.join(self.tmpdir, "minimal/_config.py")), "config file not added")
 
     def test_usual(self):
         """Test with all usual config options set"""
@@ -50,7 +50,7 @@ class BootstrapTestCase(unittest.TestCase):
         cfg["LANGUAGE"] = "en"
         cfg["DISQUS_NAME"] = "__test__"
         bootstrap(os.path.join(self.tmpdir, "usual"), cfg)
-        self.assertTrue(os.path.isfile(os.path.join(self.tmpdir, "usual/_config.py")))
+        self.assertTrue(os.path.isfile(os.path.join(self.tmpdir, "usual/_config.py")), "config file not added")
 
     def test_in_docroot(self):
         """Bootstrap with URL path set to '/'"""
@@ -61,8 +61,8 @@ class BootstrapTestCase(unittest.TestCase):
               "AUTHOR": "John Doe",
           }
         })
-        self.assertTrue(os.path.isfile(os.path.join(self.tmpdir, "in_docroot/robots.txt")))
-        self.assertTrue(os.path.isfile(os.path.join(self.tmpdir, "in_docroot/humans.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(self.tmpdir, "in_docroot/robots.txt")), "robots.txt not added")
+        self.assertTrue(os.path.isfile(os.path.join(self.tmpdir, "in_docroot/humans.txt")), "humans.txt not added")
 
     def test_below_docroot(self):
         """Bootstrap with URL path set to '/foo/'"""
@@ -73,8 +73,8 @@ class BootstrapTestCase(unittest.TestCase):
               "AUTHOR": "John Doe",
           }
         })
-        self.assertFalse(os.path.isfile(os.path.join(self.tmpdir, "below_docroot/robots.txt")))
-        self.assertFalse(os.path.isfile(os.path.join(self.tmpdir, "below_docroot/humans.txt")))
+        self.assertFalse(os.path.isfile(os.path.join(self.tmpdir, "below_docroot/robots.txt")), "robots.txt not added")
+        self.assertFalse(os.path.isfile(os.path.join(self.tmpdir, "below_docroot/humans.txt")), "humans.txt not added")
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
@@ -103,7 +103,7 @@ class BuildTestCase(unittest.TestCase):
         """Check, if building to a different directory works"""
         builddir = tempfile.mkdtemp()
         build({"BUILD_TARGET": builddir})
-        self.assertTrue(os.path.isfile(os.path.join(builddir, "humans.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(builddir, "humans.txt")), "humans.txt not added to non-default build")
 
     def test_empty_build(self):
         """Check, if building w/o articles works"""
@@ -139,9 +139,9 @@ class ArticleTestCase(unittest.TestCase):
 <p>Test</p>""")
         art.close()
         build({"BUILD_TARGET": os.path.join(self.tmpdir, "site")})
-        self.assertTrue(os.path.isfile("site/foo.html"))
+        self.assertTrue(os.path.isfile("site/foo.html"), "article not built")
         c = open("site/foo.html")
-        self.assertIn("Foo", c.read())
+        self.assertIn("Foo", c.read(), "article content wrong")
         c.close()
 
     def test_categorized_article(self):
@@ -153,9 +153,10 @@ class ArticleTestCase(unittest.TestCase):
 <p>Test</p>""")
         art.close()
         build({"BUILD_TARGET": os.path.join(self.tmpdir, "site")})
-        self.assertTrue(os.path.isfile("site/bar/foo.html"))
+        self.assertTrue(os.path.isfile("site/bar/foo.html"), "article not built")
+        self.assertTrue(os.path.isfile("site/bar/index.html"), "category index page not built")
         c = open("site/bar/foo.html")
-        self.assertIn("Foo", c.read())
+        self.assertIn("Foo", c.read(), "article content wrong")
         c.close()
 
     def tearDown(self):
