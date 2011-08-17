@@ -17,11 +17,11 @@ _ = lambda s: s
 
 class Settings(object):
 
-    def __init__(self):
+    def __init__(self, **custom):
         self.h = {}
         h = {
             "BUILD_TARGET": "site",
-            "CATEGORY": [],
+            "CATEGORY": {},
             "NEGOTIATE_EXTENSIONS": False,
             "DATE_FORMAT": "%Y-%m-%dT%H:%M:%S",
             "DEBUG": False,
@@ -56,6 +56,8 @@ class Settings(object):
         for k, v in h.iteritems():
             if k not in self.h:
                 self.h[k] = v
+        for k, v in custom.iteritems():
+            self.h[k] = v
         for k, v in h['PROTOCOLS'].iteritems():
             if k not in self.h['PROTOCOLS']:
                 self.h['PROTOCOLS'][k] = v
@@ -82,6 +84,10 @@ class Settings(object):
         self.h['known_extensions'] = self.h['languages'] + self.h.get('KNOWN_EXTENSIONS', []) + \
                                      ["html", "htm", "xhtml", "xml", "xht", "php", "atom", "rdf", "rss", "py"]
         self.h['now'] = datetime.now()
+
+    def extend(self, **custom):
+        for k, v in custom.iteritems():
+            self.h[k] = v
 
     def __str__(self):
         return str(self.h)

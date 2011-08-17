@@ -73,8 +73,10 @@ def copy_statics():
                                    "*.mako", "Makefile", *settings.get("IGNORED_PATTERNS", [])))
 
 
-def build():
+def build(my_settings=None):
     """Build the final website"""
+    if my_settings is not None:
+        settings.extend(**my_settings)
     fire_hook("build.start")
     load_plugins()
     settings.ORIG_BUILD_TARGET = settings.BUILD_TARGET.rstrip("/")
