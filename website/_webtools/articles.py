@@ -67,6 +67,8 @@ def get_articles(dir=""):
 
     If non-articles are found, they are copied to the BUILD_TARGET."""
     dir = dir.strip("/") + "/"
+    if dir == "/":
+        dir = ""
     articles = []
     for a in os.listdir("_articles/" + dir):
         if os.path.isdir("_articles/" + dir + a):
@@ -88,7 +90,7 @@ def get_articles(dir=""):
             else:
                 if candidate.is_live():
                     articles.append(candidate)
-    if dir == "/":
+    if dir == "":
         articles.sort()
         logger.info("Found %s articles." % len(articles))
         return tuple(articles)
