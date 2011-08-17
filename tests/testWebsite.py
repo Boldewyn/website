@@ -99,6 +99,12 @@ class BuildTestCase(unittest.TestCase):
         """Check, if building directly after bootstrap works"""
         build()
 
+    def test_moved_build(self):
+        """Check, if building to a different directory works"""
+        builddir = tempfile.mkdtemp()
+        build({"BUILD_TARGET": builddir})
+        self.assertTrue(os.path.isfile(os.path.join(builddir, "humans.txt")))
+
     def test_empty_build(self):
         """Check, if building w/o articles works"""
         shutil.rmtree(os.path.join(self.tmpdir, "_articles"))
@@ -108,4 +114,52 @@ class BuildTestCase(unittest.TestCase):
     def tearDown(self):
         os.chdir(self.cwd)
         shutil.rmtree(self.tmpdir)
+
+
+class ArticleTestCase(unittest.TestCase):
+    """Test articles"""
+
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp()
+        self.cwd = os.getcwd()
+        os.chdir(self.tmpdir)
+        bootstrap(self.tmpdir, {
+          "URL": "localhost",
+          "TITLE": "Example",
+          "DEFAULTS": {
+              "AUTHOR": "John Doe",
+          }
+        })
+
+    def test_root_article(self):
+        """Test, that an article in the site root is built"""
+        art = open("_articles/foo.html", "w")
+        art.write("""Title: Foo
+
+<p>Test</p>""")
+        art.close()
+        build({"BUILD_TARGET": os.path.join(self.tmpdir, "site")})
+        self.assertTrue(os.path.isfile("site/foo.html"))
+        c = open("site/foo.html")
+        self.assertIn("Foo", c.read())
+        c.close()
+
+    def test_categorized_article(self):
+        """Test, that an article in a folder is built"""
+        os.mkdir("_articles/bar")
+        art = open("_articles/bar/foo.html", "w")
+        art.write("""Title: Foo
+
+<p>Test</p>""")
+        art.close()
+        build({"BUILD_TARGET": os.path.join(self.tmpdir, "site")})
+        self.assertTrue(os.path.isfile("site/bar/foo.html"))
+        c = open("site/bar/foo.html")
+        self.assertIn("Foo", c.read())
+        c.close()
+
+    def tearDown(self):
+        os.chdir(self.cwd)
+        shutil.rmtree(self.tmpdir)
+
 
