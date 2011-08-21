@@ -495,6 +495,7 @@ class Article(object):
                 # resolve all pseudo-schemes
                 ax = self.soup.findAll(href=re.compile(u"^%s:" % protocol))
                 ix = self.soup.findAll(src=re.compile(u"^%s:" % protocol))
+                dx = self.soup.findAll(data=re.compile(u"^%s:" % protocol))
                 for a in ax:
                     if callable(url_scheme):
                         a['href'] = url_scheme(a['href'][len(protocol)+1:])
@@ -509,6 +510,15 @@ class Article(object):
                         a['src'] = url_scheme(a['src'][len(protocol)+1:])
                     else:
                         a['src'] = url_scheme % a['src'][len(protocol)+1:]
+                    if a.get('class', False):
+                        a['class'] += " protocol_%s" % protocol
+                    else:
+                        a['class'] = "protocol_%s" % protocol
+                for a in dx:
+                    if callable(url_scheme):
+                        a['data'] = url_scheme(a['data'][len(protocol)+1:])
+                    else:
+                        a['data'] = url_scheme % a['data'][len(protocol)+1:]
                     if a.get('class', False):
                         a['class'] += " protocol_%s" % protocol
                     else:
