@@ -10,8 +10,8 @@ $success = False;
 $name = v('name');
 $mail = filter_var(v('mail'), FILTER_VALIDATE_EMAIL);
 $subj = v('subj');
-$text = str_replace("\r\n", "\n", v('text'));
-$honey = v('hp');
+$text = str_replace("\r\n", "\n", v('test'));
+$honey = v('message');
 $lang = '</%text>${lang}<%text>';
 $msg = '';
 
@@ -106,11 +106,11 @@ function v($s) {
     </p>
     <p>
       <label for="contact_text">${_(u"Your Message:")}</label>
-      <textarea name="text" id="contact_text"><?php echo h($text)?></textarea>
+      <textarea name="test" id="contact_text"><?php echo h($text)?></textarea>
     </p>
     <p class="honezpot">
-      <label for="contact_hp">${_(u"Please leave this field empty!")}</label>
-      <input type="text" name="hp" id="contact_hp" value="<?php echo h($honey)?>" />
+      <label for="contact_hp">${_(u"Please leave this field empty:")}</label>
+      <textarea name="message" id="contact_hp"><?php echo h($honey)?></textarea>
     </p>
     <%text><?php if (! $success): ?></%text>
     <p>
